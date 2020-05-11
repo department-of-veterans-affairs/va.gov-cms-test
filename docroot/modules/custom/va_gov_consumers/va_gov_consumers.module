@@ -15,7 +15,8 @@ use Drupal\va_gov_consumers\GithubConsumer;
  * Used for grabbing help markup from github.
  */
 function va_gov_consumers_block_view_alter(array &$build, BlockPluginInterface $block) {
-  if ($block->getBaseId() === 'system_main_block') {
+  if ($block->getBaseId() === 'system_main_block')
+  {
     $current_uri = \Drupal::request()->getRequestUri();
     // Make sure we are on the help page.
     if ($current_uri === '/training-guide') {
