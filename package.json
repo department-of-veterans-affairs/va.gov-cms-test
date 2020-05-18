@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/department-of-veterans-affairs/va.gov-cms#readme",
   "dependencies": {
-    "axe-core": "^3.3.2",
+    "axe-core": "^3.5.3",
     "axe-webdriverjs": "^2.3.0",
     "selenium-webdriver": "^3.6.0",
     "phantomjs-prebuilt": "^2.1.16",
