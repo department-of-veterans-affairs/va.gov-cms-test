@@ -1,4 +1,4 @@
-name: va-gov-cms
+name: va-gov-cms-test
 recipe: drupal8
 config:
   webroot: docroot
