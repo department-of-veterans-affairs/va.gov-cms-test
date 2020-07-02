@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f3e192fb1443f2749bc5f8a1f1cfc615",
+    "content-hash": "9437da534ec0b42039c4f3359c808904",
     "packages": [
         {
             "name": "alchemy/zippy",
@@ -10391,17 +10391,17 @@
         },
         {
             "name": "drupal/uswds",
-            "version": "1.0.0-beta3",
+            "version": "2.0.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/uswds.git",
-                "reference": "8.x-1.0-beta3"
+                "reference": "8.x-2.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/uswds-8.x-1.0-beta3.zip",
-                "reference": "8.x-1.0-beta3",
-                "shasum": "f220e5edc916417c9215a54ac8fcd4247669a855"
+                "url": "https://ftp.drupal.org/files/projects/uswds-8.x-2.0.zip",
+                "reference": "8.x-2.0",
+                "shasum": "35c2e58496f33aa0bab1b10a784ebc7085d52d6d"
             },
             "require": {
                 "drupal/core": "~8.0"
@@ -10409,8 +10409,8 @@
             "type": "drupal-theme",
             "extra": {
                 "drupal": {
-                    "version": "8.x-1.0-beta3",
-                    "datestamp": "1515004684",
+                    "version": "8.x-2.0",
+                    "datestamp": "1581966281",
                     "security-coverage": {
                         "status": "not-covered",
                         "message": "Project has not opted into security advisory coverage!"
@@ -10435,7 +10435,7 @@
                     "homepage": "https://www.drupal.org/user/709486"
                 }
             ],
-            "description": "Drupal theme for the U.S. Web Design Standards library.",
+            "description": "Drupal theme for the Beta v2.0 U.S. Web Design Standards library.",
             "homepage": "https://www.drupal.org/project/uswds",
             "support": {
                 "source": "http://cgit.drupalcode.org/uswds",
@@ -19055,6 +19055,7 @@
         "drupal/blazy": 5,
         "drupal/cer": 15,
         "drupal/content_lock": 15,
+        "drupal/entity_block": 10,
         "drupal/entity_clone": 10,
         "drupal/entityqueue": 10,
         "drupal/fast_404": 15,
@@ -19075,7 +19076,6 @@
         "drupal/site_alert": 20,
         "drupal/tour_ui": 10,
         "drupal/user_history": 15,
-        "drupal/uswds": 10,
         "drupal/views_data_export": 10,
         "drupal/views_tree": 15,
         "drupal/workbench_access": 10,
