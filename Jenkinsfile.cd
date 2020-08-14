@@ -14,21 +14,7 @@ pipeline {
   stages {
     stage('Checkout Code') {
       steps {
-        checkout([
-          $class: 'GitSCM',
-          branches: [
-            [
-                name: 'master'
-            ]
-            ],
-            doGenerateSubmoduleConfigurations: false,
-            extensions: [
-                [
-                    $class: 'MessageExclusion',
-                    excludedMessage: 'dude'
-                ]
-            ],
-        ])
+        checkout scm
       }
     }
 
@@ -88,9 +74,6 @@ pipeline {
     }
   }
   post {
-    always {
-      cleanWs()
-    }
     failure {
       slackSend(channel: params.slack_channel, color: 'danger', message: "Deployment for ${env.JOB_NAME} failed ${env.BUILD_URL}, please leave a checkmark emoji here to indicate ownership of failure. ")
     }
