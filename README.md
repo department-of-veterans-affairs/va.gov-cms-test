@@ -134,3 +134,6 @@ See [The BRD System: Build, Release, Deploy](READMES/brd.md) for more informatio
 should build
 trigger buil
 yes trigger
+DO
+NOT
+TRIGGER
