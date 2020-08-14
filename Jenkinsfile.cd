@@ -14,7 +14,21 @@ pipeline {
   stages {
     stage('Checkout Code') {
       steps {
-        checkout scm
+        checkout([
+          $class: 'GitSCM',
+          branches: [
+            [
+                name: 'master'
+            ]
+            ],
+            doGenerateSubmoduleConfigurations: false,
+            extensions: [
+                [
+                    $class: 'MessageExclusion',
+                    excludedMessage: 'dude'
+                ]
+            ],
+        ])
       }
     }
 
