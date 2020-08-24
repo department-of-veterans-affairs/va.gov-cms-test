@@ -58,6 +58,7 @@ services:
       # and update steps, because the results of those are inherited
       # from the base preview.
       build:
+        - echo "memory_limit = 512M" >> /usr/local/etc/php/conf.d/my-php.ini
         - composer install --optimize-autoloader
         - drush cache:rebuild
         - drush config:import -y
