@@ -51,6 +51,9 @@ services:
         - find "${DOCROOT}/sites/default/files" -type d -exec chmod 2775 {} \;
         - find "${DOCROOT}/sites/default/files" -type f -exec chmod 0664 {} \;
 
+      # sync files
+        - scripts/sync-files.sh
+
       # Commands that build the site. This is where you would add things
       # like feature reverts or any other drush commands required to
       # set up or configure the site. When a preview is built from a
@@ -61,9 +64,10 @@ services:
         - echo "memory_limit = 512M" >> /usr/local/etc/php/conf.d/my-php.ini
         - composer install --optimize-autoloader
         - drush cache:rebuild
-        - drush config:import -y
         - drush updatedb -y
+        - drush config:import -y
         - drush cache:rebuild
+        - composer yaml-tests
 
   # What to call the service hosting MySQL. This name also acts as the
   # hostname to access the service by from the php service.
