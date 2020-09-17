@@ -8275,7 +8275,7 @@
             "extra": {
                 "drupal": {
                     "version": "8.x-2.7",
-                    "datestamp": "1595616928",
+                    "datestamp": "1598506938",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -16623,16 +16623,16 @@
         },
         {
             "name": "va-gov/web",
-            "version": "v0.1.1040",
+            "version": "v0.1.1060",
             "source": {
                 "type": "git",
                 "url": "https://github.com/department-of-veterans-affairs/vets-website.git",
-                "reference": "fbaafe2b4b034cf163ab0cf32c76728802989e75"
+                "reference": "824643673a332c6f2bc18a89d44f647607165234"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/department-of-veterans-affairs/vets-website/zipball/fbaafe2b4b034cf163ab0cf32c76728802989e75",
-                "reference": "fbaafe2b4b034cf163ab0cf32c76728802989e75",
+                "url": "https://api.github.com/repos/department-of-veterans-affairs/vets-website/zipball/824643673a332c6f2bc18a89d44f647607165234",
+                "reference": "824643673a332c6f2bc18a89d44f647607165234",
                 "shasum": ""
             },
             "type": "node-project",
@@ -16657,7 +16657,7 @@
                 }
             ],
             "description": "Front-end for VA.gov. This repository contains the code that generates the www.va.gov website. It contains a Metalsmith static site builder that uses a Drupal CMS for content. This file is here to publish releases to https://packagist.org/packages/va-gov/web, so that the CMS CI system can install it and update it using standard composer processes, and so that we can run tests across both systems. See https://github.com/department-of-veterans-affairs/va.gov-cms for the CMS repo, and stand by for more documentation.",
-            "time": "2020-09-03T17:49:52+00:00"
+            "time": "2020-09-16T17:35:18+00:00"
         },
         {
             "name": "vlucas/phpdotenv",
