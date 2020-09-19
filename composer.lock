@@ -667,7 +667,7 @@
             "version": "v4.1.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/fengyuanchen/cropper.git",
+                "url": "git@github.com:fengyuanchen/cropper.git",
                 "reference": "617d9bdb8688cc4edb3b03bc49a04b83c7facbe7"
             },
             "dist": {
@@ -2556,6 +2556,7 @@
                 "GPL-2.0-or-later"
             ],
             "description": "Composer Plugin for updating the Drupal scaffold files when using drupal/core",
+            "abandoned": "drupal / core-composer-scaffold",
             "time": "2019-03-30T10:41:38+00:00"
         },
         {
@@ -8275,7 +8276,7 @@
             "extra": {
                 "drupal": {
                     "version": "8.x-2.7",
-                    "datestamp": "1595616928",
+                    "datestamp": "1598506938",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -16623,16 +16624,16 @@
         },
         {
             "name": "va-gov/web",
-            "version": "v0.1.1040",
+            "version": "v0.1.1071",
             "source": {
                 "type": "git",
                 "url": "https://github.com/department-of-veterans-affairs/vets-website.git",
-                "reference": "fbaafe2b4b034cf163ab0cf32c76728802989e75"
+                "reference": "51984381c559d72cf094ad0fb8b64c0c9e78036e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/department-of-veterans-affairs/vets-website/zipball/fbaafe2b4b034cf163ab0cf32c76728802989e75",
-                "reference": "fbaafe2b4b034cf163ab0cf32c76728802989e75",
+                "url": "https://api.github.com/repos/department-of-veterans-affairs/vets-website/zipball/51984381c559d72cf094ad0fb8b64c0c9e78036e",
+                "reference": "51984381c559d72cf094ad0fb8b64c0c9e78036e",
                 "shasum": ""
             },
             "type": "node-project",
@@ -16657,7 +16658,7 @@
                 }
             ],
             "description": "Front-end for VA.gov. This repository contains the code that generates the www.va.gov website. It contains a Metalsmith static site builder that uses a Drupal CMS for content. This file is here to publish releases to https://packagist.org/packages/va-gov/web, so that the CMS CI system can install it and update it using standard composer processes, and so that we can run tests across both systems. See https://github.com/department-of-veterans-affairs/va.gov-cms for the CMS repo, and stand by for more documentation.",
-            "time": "2020-09-03T17:49:52+00:00"
+            "time": "2020-09-18T17:50:47+00:00"
         },
         {
             "name": "vlucas/phpdotenv",
