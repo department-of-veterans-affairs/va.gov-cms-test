@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ec0c4193e8ee8a20dda5aa8acdefac41",
+    "content-hash": "21c36050ee578aac3c7bb6ff965bae28",
     "packages": [
         {
             "name": "alchemy/zippy",
@@ -2556,7 +2556,7 @@
                 "GPL-2.0-or-later"
             ],
             "description": "Composer Plugin for updating the Drupal scaffold files when using drupal/core",
-            "abandoned": "drupal / core-composer-scaffold",
+            "abandoned": "drupal/core-composer-scaffold",
             "time": "2019-03-30T10:41:38+00:00"
         },
         {
@@ -8467,16 +8467,16 @@
                     "homepage": "https://www.drupal.org/user/53892"
                 },
                 {
-                    "name": "brantwynn",
-                    "homepage": "https://www.drupal.org/user/252788"
-                },
-                {
                     "name": "cameronprince",
                     "homepage": "https://www.drupal.org/user/1765640"
                 },
                 {
                     "name": "larowlan",
                     "homepage": "https://www.drupal.org/user/395439"
+                },
+                {
+                    "name": "saltednut",
+                    "homepage": "https://www.drupal.org/user/252788"
                 }
             ],
             "description": "Taxonomy Entity Index",
@@ -16668,16 +16668,16 @@
         },
         {
             "name": "va-gov/web",
-            "version": "v0.1.1068",
+            "version": "v0.1.1073",
             "source": {
                 "type": "git",
                 "url": "https://github.com/department-of-veterans-affairs/vets-website.git",
-                "reference": "a5c099bce3ed146194ee9c0725dbbc66829de073"
+                "reference": "33fd54bb58ee515206c5d8957893709d13c2e08a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/department-of-veterans-affairs/vets-website/zipball/a5c099bce3ed146194ee9c0725dbbc66829de073",
-                "reference": "a5c099bce3ed146194ee9c0725dbbc66829de073",
+                "url": "https://api.github.com/repos/department-of-veterans-affairs/vets-website/zipball/33fd54bb58ee515206c5d8957893709d13c2e08a",
+                "reference": "33fd54bb58ee515206c5d8957893709d13c2e08a",
                 "shasum": ""
             },
             "type": "node-project",
@@ -16702,7 +16702,7 @@
                 }
             ],
             "description": "Front-end for VA.gov. This repository contains the code that generates the www.va.gov website. It contains a Metalsmith static site builder that uses a Drupal CMS for content. This file is here to publish releases to https://packagist.org/packages/va-gov/web, so that the CMS CI system can install it and update it using standard composer processes, and so that we can run tests across both systems. See https://github.com/department-of-veterans-affairs/va.gov-cms for the CMS repo, and stand by for more documentation.",
-            "time": "2020-09-17T22:03:57+00:00"
+            "time": "2020-09-22T17:36:25+00:00"
         },
         {
             "name": "vlucas/phpdotenv",
@@ -18220,7 +18220,7 @@
             },
             "require": {
                 "drupal/consumers": "^1.2",
-                "drupal/core": "^8.3",
+                "drupal/core": "~8.0",
                 "league/oauth2-server": "^7.1"
             },
             "type": "drupal-module",
@@ -18712,11 +18712,6 @@
                 "squizlabs/php_codesniffer": "^2.7"
             },
             "type": "library",
-            "extra": {
-                "patches_applied": {
-                    "Throw meaningful message for duplicate entry.": "https://patch-diff.githubusercontent.com/raw/TravisCarden/behat-table-comparison/pull/7.patch"
-                }
-            },
             "autoload": {
                 "psr-4": {
                     "TravisCarden\\BehatTableComparison\\": "src/BehatTableComparison/"
@@ -18737,7 +18732,12 @@
                 "Behat",
                 "gherkin"
             ],
-            "time": "2018-07-03T17:42:23+00:00"
+            "time": "2018-07-03T17:42:23+00:00",
+            "extra": {
+                "patches_applied": {
+                    "Throw meaningful message for duplicate entry.": "https://patch-diff.githubusercontent.com/raw/TravisCarden/behat-table-comparison/pull/7.patch"
+                }
+            }
         }
     ],
     "aliases": [],
