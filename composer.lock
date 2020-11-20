@@ -667,7 +667,7 @@
             "version": "v4.1.0",
             "source": {
                 "type": "git",
-                "url": "git@github.com:fengyuanchen/cropper.git",
+                "url": "https://github.com/fengyuanchen/cropper.git",
                 "reference": "617d9bdb8688cc4edb3b03bc49a04b83c7facbe7"
             },
             "dist": {
@@ -2512,6 +2512,7 @@
                 "reflection",
                 "static"
             ],
+            "abandoned": "roave/better-reflection",
             "time": "2020-03-27T11:06:43+00:00"
         },
         {
@@ -4988,6 +4989,10 @@
                 {
                     "name": "alexpott",
                     "homepage": "https://www.drupal.org/user/157725"
+                },
+                {
+                    "name": "pcambra",
+                    "homepage": "https://www.drupal.org/user/122101"
                 }
             ],
             "description": "Provides additional validators for entity reference fields.",
@@ -5283,8 +5288,8 @@
                     "dev-3.x": "3.x-dev"
                 },
                 "drupal": {
-                    "version": "8.x-3.1+0-dev",
-                    "datestamp": "1591740591",
+                    "version": "8.x-3.1+12-dev",
+                    "datestamp": "1605118690",
                     "security-coverage": {
                         "status": "not-covered",
                         "message": "Dev releases are not covered by Drupal security advisories."
@@ -5692,7 +5697,7 @@
                     "datestamp": "1552142584",
                     "security-coverage": {
                         "status": "not-covered",
-                        "message": "Project has not opted into security advisory coverage!"
+                        "message": "Beta releases are not covered by Drupal security advisories."
                     }
                 }
             },
@@ -6331,6 +6336,10 @@
             ],
             "authors": [
                 {
+                    "name": "joseph.olstad",
+                    "homepage": "https://www.drupal.org/user/1321830"
+                },
+                {
                     "name": "sandeepguntaka",
                     "homepage": "https://www.drupal.org/user/3397192"
                 }
@@ -6470,13 +6479,13 @@
                 "shasum": "c471d9982a6540fd7baccc94572947923634fb6b"
             },
             "require": {
-                "drupal/core": "^8 || ^9",
+                "drupal/core": "^8.7.7 || ^9",
                 "drupal/token": "^1.0"
             },
             "require-dev": {
                 "drupal/metatag_dc": "*",
                 "drupal/metatag_open_graph": "*",
-                "drupal/page_manager": "4.x-dev",
+                "drupal/page_manager": "*",
                 "drupal/redirect": "1.x-dev"
             },
             "type": "drupal-module",
@@ -16677,16 +16686,16 @@
         },
         {
             "name": "va-gov/web",
-            "version": "v0.1.1085",
+            "version": "v0.1.1166",
             "source": {
                 "type": "git",
                 "url": "https://github.com/department-of-veterans-affairs/vets-website.git",
-                "reference": "699a1275c68847cd96dc12d3afd440810e6c6e5e"
+                "reference": "15fa8c7f45d37ada91a9336eb029a082c04b294f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/department-of-veterans-affairs/vets-website/zipball/699a1275c68847cd96dc12d3afd440810e6c6e5e",
-                "reference": "699a1275c68847cd96dc12d3afd440810e6c6e5e",
+                "url": "https://api.github.com/repos/department-of-veterans-affairs/vets-website/zipball/15fa8c7f45d37ada91a9336eb029a082c04b294f",
+                "reference": "15fa8c7f45d37ada91a9336eb029a082c04b294f",
                 "shasum": ""
             },
             "type": "node-project",
@@ -16711,7 +16720,7 @@
                 }
             ],
             "description": "Front-end for VA.gov. This repository contains the code that generates the www.va.gov website. It contains a Metalsmith static site builder that uses a Drupal CMS for content. This file is here to publish releases to https://packagist.org/packages/va-gov/web, so that the CMS CI system can install it and update it using standard composer processes, and so that we can run tests across both systems. See https://github.com/department-of-veterans-affairs/va.gov-cms for the CMS repo, and stand by for more documentation.",
-            "time": "2020-10-02T18:58:21+00:00"
+            "time": "2020-11-19T18:39:04+00:00"
         },
         {
             "name": "vlucas/phpdotenv",
@@ -19195,11 +19204,6 @@
                 "squizlabs/php_codesniffer": "^2.7"
             },
             "type": "library",
-            "extra": {
-                "patches_applied": {
-                    "Throw meaningful message for duplicate entry.": "https://patch-diff.githubusercontent.com/raw/TravisCarden/behat-table-comparison/pull/7.patch"
-                }
-            },
             "autoload": {
                 "psr-4": {
                     "TravisCarden\\BehatTableComparison\\": "src/BehatTableComparison/"
@@ -19220,7 +19224,12 @@
                 "Behat",
                 "gherkin"
             ],
-            "time": "2018-07-03T17:42:23+00:00"
+            "time": "2018-07-03T17:42:23+00:00",
+            "extra": {
+                "patches_applied": {
+                    "Throw meaningful message for duplicate entry.": "https://patch-diff.githubusercontent.com/raw/TravisCarden/behat-table-comparison/pull/7.patch"
+                }
+            }
         }
     ],
     "aliases": [],
