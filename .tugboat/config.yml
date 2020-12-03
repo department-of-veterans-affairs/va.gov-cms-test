@@ -3,6 +3,10 @@ services:
   php:
     # Use PHP 7.x with Apache; this syntax pulls in the latest version of PHP 7
     image: tugboatqa/php:7.1-apache
+    
+    aliases: 
+      - web
+      - cms
 
     # Set this as the default service. This does a few things
     #   1. Clones the git repository into the service container
