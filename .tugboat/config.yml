@@ -21,6 +21,9 @@ services:
     commands:
       # Commands that set up the basic preview infrastructure
       init:
+        # Install python
+        - apt-get update
+        - apt-get install python
         # Install opcache and mod-rewrite.
         - docker-php-ext-install opcache
         - a2enmod headers rewrite
