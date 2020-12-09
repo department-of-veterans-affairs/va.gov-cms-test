@@ -21,6 +21,9 @@ services:
     commands:
       # Commands that set up the basic preview infrastructure
       init:
+        # Install python
+        - apt-get update
+        - apt-get install python
         # Install opcache and mod-rewrite.
         - docker-php-ext-install opcache
         - a2enmod headers rewrite
@@ -52,6 +55,7 @@ services:
         - cp "${TUGBOAT_ROOT}/.tugboat/settings.local.php" "${DOCROOT}/sites/default/settings/"
         # Install/update packages managed by composer, including drush.
         - composer install --optimize-autoloader
+        - composer va:web:install
 
         - curl --remote-name https://dsva-vagov-prod-cms-backup-sanitized.s3-us-gov-west-1.amazonaws.com/files/cms-prod-files-latest.tgz
         - tar --extract --gunzip --file cms-prod-files-latest.tgz --directory "${DOCROOT}/sites/default/files/"
@@ -74,6 +78,7 @@ services:
         - drush config:import -y
         - drush updatedb --cache-clear=0 -y
         - drush cache:rebuild
+        - composer va:web:install
 
   # What to call the service hosting MySQL. This name also acts as the
   # hostname to access the service by from the php service.
