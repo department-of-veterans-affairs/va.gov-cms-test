@@ -86,8 +86,7 @@ services:
         
       online:
         - composer yaml-test va/web/build
-      
-        
+        - composer yaml-test va/tests
 
   # What to call the service hosting MySQL. This name also acts as the
   # hostname to access the service by from the php service.
