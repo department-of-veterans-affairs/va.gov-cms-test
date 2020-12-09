@@ -141,7 +141,7 @@
         "symfony/config": "^3.4",
         "symfony/finder": "^3",
         "symfony/phpunit-bridge": "^5.1",
-        "va-gov/web": "^0.1",
+        "va-gov/web": "dev-nh_cms_node_sass_update",
         "webflo/drupal-finder": "^1.0.0",
         "webmozart/path-util": "^2.3",
         "weitzman/drupal-test-traits": "dev-master",
