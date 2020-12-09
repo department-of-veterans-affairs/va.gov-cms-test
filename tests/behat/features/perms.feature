@@ -6,7 +6,6 @@ Feature: Permissions
       | "page"                             |
       | "landing_page"                     |
       | "health_care_region_detail_page"   |
-      | "documentation_page"               |
       | "event"                            |
       | "event_listing"                    |
       | "health_care_local_facility"       |
@@ -51,7 +50,6 @@ Feature: Permissions
       | "content_editor" | "page"                             |
       | "content_editor" | "landing_page"                     |
       | "content_editor" | "health_care_region_detail_page"   |
-      | "content_editor" | "documentation_page"               |
       | "content_editor" | "event"                            |
       | "content_editor" | "event_listing"                    |
       | "content_editor" | "health_care_local_facility"       |
@@ -73,9 +71,10 @@ Feature: Permissions
     And I visit the "edit" page for a node with the title <title>
     Then I should see "EDITORIAL WORKFLOW"
     And the "#edit-moderation-state-0-current" element should exist
-    And I should see "Change to"
+    And I should see "Save as"
     And the "#edit-moderation-state-0-state" element should exist
-    And I should see "Revision log message"
+    And the "#edit-revision-information" element should exist
+    And the "#edit-revision-log-0-value" element should exist
 
     Then I am logged in as a user with the "authenticated" role
     And I visit the "edit" page for a node with the title <title>
@@ -84,16 +83,20 @@ Feature: Permissions
     Then I am logged in as a user with the "content_reviewer" role
     And I visit the "edit" page for a node with the title <title>
     Then "#edit-moderation-state-0-state" should contain "review"
+    And the "#edit-revision-information" element should exist
+    And the "#edit-revision-log-0-value" element should exist
 
     Then I am logged in as a user with the "content_publisher" role
     And I visit the "edit" page for a node with the title <title>
     Then "#edit-moderation-state-0-state" should contain "published"
+    And the "#edit-revision-information" element should exist
+    And the "#edit-revision-log-0-value" element should exist
+
     Examples:
       | type                             | title                                 |
       | "page"                           | "page page"                           |
       | "landing_page"                   | "landing_page page"                   |
       | "health_care_region_detail_page" | "health_care_region_detail_page page" |
-      | "documentation_page"             | "documentation_page page"             |
       | "event"                          | "event page"                          |
       | "event_listing"                  | "event_listing page"                  |
       | "health_care_local_facility"     | "health_care_local_facility page"     |
@@ -157,7 +160,6 @@ Feature: Permissions
       | "page"                           | "page page3"                           |
       | "landing_page"                   | "landing_page page3"                   |
       | "health_care_region_detail_page" | "health_care_region_detail_page page3" |
-      | "documentation_page"             | "documentation_page page3"             |
       | "event"                          | "event page3"                          |
       | "event_listing"                  | "event_listing page3"                  |
       | "health_care_local_facility"     | "health_care_local_facility page3"     |
@@ -191,3 +193,10 @@ Feature: Permissions
       | page                   | code |
       | "/admin/people"        | 200  |
       | "/admin/people/create" | 200  |
+
+  @perms @content_admin
+  Scenario: Content Admins should be able to browse sections from their profile even if none have been specifically assigned to them
+    Given I am logged in as a user with the "content_admin" role
+    And I am on "/user"
+    Then I should see the text "You can edit content in the following VA.gov sections"
+    And I should not see the text "You don't have permission to access content in any VA.gov sections yet"

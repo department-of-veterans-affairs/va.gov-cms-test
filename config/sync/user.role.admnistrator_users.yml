@@ -3,10 +3,10 @@ langcode: en
 status: true
 dependencies:
   module:
-    - lightning_core
+    - va_gov_backend
 third_party_settings:
-  lightning_core:
-    description: 'Can create and manage users, roles, and access to sections of content.'
+  va_gov_backend:
+    vgb_description: 'Can create and manage users, roles, and access to sections of content.'
 id: admnistrator_users
 label: 'User admin'
 weight: 1
@@ -23,6 +23,7 @@ permissions:
   - 'assign content_admin role'
   - 'assign content_api_consumer role'
   - 'assign content_creator_benefits_hubs role'
+  - 'assign content_creator_resources_and_support role'
   - 'assign content_editor role'
   - 'assign content_publisher role'
   - 'assign content_reviewer role'
@@ -41,6 +42,7 @@ permissions:
   - 'notify of path changes'
   - 'use text format rich_text'
   - 'use text format rich_text_limited'
+  - 'view cms_help_center in toolbar'
   - 'view node link report'
   - 'view sections in toolbar'
   - 'view the administration theme'

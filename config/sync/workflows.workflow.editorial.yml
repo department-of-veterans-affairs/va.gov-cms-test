@@ -5,6 +5,8 @@ dependencies:
   config:
     - block_content.type.alert
     - block_content.type.promo
+    - node.type.basic_landing_page
+    - node.type.campaign_landing_page
     - node.type.checklist
     - node.type.documentation_page
     - node.type.event
@@ -18,6 +20,8 @@ dependencies:
     - node.type.landing_page
     - node.type.leadership_listing
     - node.type.locations_listing
+    - node.type.media_list_images
+    - node.type.media_list_videos
     - node.type.nca_facility
     - node.type.news_story
     - node.type.office
@@ -31,6 +35,7 @@ dependencies:
     - node.type.regional_health_care_service_des
     - node.type.step_by_step
     - node.type.story_listing
+    - node.type.support_resources_detail_page
     - node.type.support_service
     - node.type.va_form
     - node.type.vamc_operating_status_and_alerts
@@ -80,7 +85,10 @@ type_settings:
     archive:
       label: Archive
       from:
+        - approved
+        - draft
         - published
+        - review
       to: archived
       weight: 1
     archived_published:
@@ -103,6 +111,7 @@ type_settings:
       to: published
       weight: 0
       from:
+        - approved
         - draft
         - published
         - review
@@ -118,6 +127,8 @@ type_settings:
       - alert
       - promo
     node:
+      - basic_landing_page
+      - campaign_landing_page
       - checklist
       - documentation_page
       - event
@@ -131,6 +142,8 @@ type_settings:
       - landing_page
       - leadership_listing
       - locations_listing
+      - media_list_images
+      - media_list_videos
       - nca_facility
       - news_story
       - office
@@ -144,6 +157,7 @@ type_settings:
       - regional_health_care_service_des
       - step_by_step
       - story_listing
+      - support_resources_detail_page
       - support_service
       - va_form
       - vamc_operating_status_and_alerts

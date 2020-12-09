@@ -41,11 +41,14 @@ module:
   embed: 0
   entity_block: 0
   entity_browser: 0
+  entity_browser_entity_form: 0
+  entity_browser_table: 0
   entity_clone: 0
   entity_embed: 0
   entity_reference: 0
   entity_reference_revisions: 0
   entity_reference_unpublished: 0
+  entity_reference_validators: 0
   entityqueue: 0
   environment_indicator: 0
   environment_indicator_ui: 0
@@ -74,12 +77,6 @@ module:
   layout_builder: 0
   layout_discovery: 0
   libraries: 0
-  lightning_api: 0
-  lightning_core: 0
-  lightning_page: 0
-  lightning_roles: 0
-  lightning_search: 0
-  lightning_workflow: 0
   link: 0
   linkit: 0
   markdown: 0
@@ -91,6 +88,7 @@ module:
   menu_breadcrumb: 0
   menu_export: 0
   menu_item_extras: 0
+  menu_link_attributes: 0
   menu_normalizer: 0
   menu_ui: 0
   metatag: 0
@@ -101,7 +99,6 @@ module:
   migrate_source_csv: 0
   migrate_tools: 0
   migration_tools: 0
-  moderation_sidebar: 0
   node: 0
   node_link_report: 0
   node_revision_delete: 0
@@ -140,6 +137,7 @@ module:
   simplesamlphp_auth: 0
   site_alert: 0
   slack: 0
+  smart_date: 0
   social_media_links: 0
   social_media_links_field: 0
   system: 0
@@ -173,6 +171,7 @@ module:
   va_gov_post_api: 0
   va_gov_preview: 0
   va_gov_user: 0
+  va_gov_workflow_assignments: 0
   video_embed_field: 0
   video_embed_media: 0
   views_bulk_edit: 0

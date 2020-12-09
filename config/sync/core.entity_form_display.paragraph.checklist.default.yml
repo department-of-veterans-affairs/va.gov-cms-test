@@ -4,7 +4,6 @@ status: true
 dependencies:
   config:
     - field.field.paragraph.checklist.field_checklist_sections
-    - field.field.paragraph.checklist.field_section_header
     - paragraphs.paragraphs_type.checklist
   module:
     - paragraphs
@@ -15,7 +14,7 @@ mode: default
 content:
   field_checklist_sections:
     type: paragraphs
-    weight: 1
+    weight: 2
     settings:
       title: 'Checklist section'
       title_plural: 'Checklist sections'
@@ -31,14 +30,6 @@ content:
         collapse_edit_all: collapse_edit_all
         duplicate: duplicate
     third_party_settings: {  }
-    region: content
-  field_section_header:
-    weight: 0
-    settings:
-      size: 60
-      placeholder: ''
-    third_party_settings: {  }
-    type: string_textfield
     region: content
 hidden:
   created: true
