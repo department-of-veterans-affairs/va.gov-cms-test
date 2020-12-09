@@ -30,6 +30,10 @@ services:
         # BRD Environments are set to 1G, DevShop and Lando are -1 (unlimited).
         - echo "memory_limit = 1G" >> /usr/local/etc/php/conf.d/my-php.ini
 
+        # Install VA Root CA
+        - cp "${TUGBOAT_ROOT}"/.tugboat/VA-Internal-S2-RCA1-v1.crt /usr/local/share/ca-certificates
+        - update-ca-certificates
+
         # Install drush-launcher, if desired.
         - wget -O /usr/local/bin/drush https://github.com/drush-ops/drush-launcher/releases/download/0.6.0/drush.phar
         - chmod +x /usr/local/bin/drush
