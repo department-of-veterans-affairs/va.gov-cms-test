@@ -79,7 +79,11 @@ services:
         - drush updatedb --cache-clear=0 -y
         - drush cache:rebuild
         - composer va:web:install
-        - composer va:web:build
+        
+      online:
+        - composer yaml-test va/web/build
+      
+        
 
   # What to call the service hosting MySQL. This name also acts as the
   # hostname to access the service by from the php service.
