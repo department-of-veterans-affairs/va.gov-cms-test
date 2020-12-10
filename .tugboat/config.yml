@@ -84,6 +84,9 @@ services:
       # and update steps, because the results of those are inherited
       # from the base preview.
       build:
+        # Currently resetting to the remote branch/PR SHA since yaml-tasks runs tests status against this commit.
+        # Tugboat currently merges the branch into master.
+        - git reset --hard $TUGBOAT_PREVIEW_SHA
         - j2 "${TUGBOAT_ROOT}/.tugboat/.env.j2" -o "${TUGBOAT_ROOT}/.env"
         - composer install --optimize-autoloader --apcu-autoloader
         - drush cache:rebuild
