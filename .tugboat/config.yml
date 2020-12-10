@@ -30,6 +30,8 @@ services:
         # BRD Environments are set to 1G, DevShop and Lando are -1 (unlimited).
         - echo "memory_limit = 1G" >> /usr/local/etc/php/conf.d/my-php.ini
         - echo "max_execution_time = 1200" >> /usr/local/etc/php/conf.d/my-php.ini
+        # Set unlimited memory limit for PHP cli to allow composer to run.
+        - echo "memory_limit = -1" >> /usr/local/etc/php/conf.d/php-cli.ini
 
         # .tugboat/.env.j2 Jinja2 template file support
         - apt-get install python3-apt python3-distutils python3
@@ -96,8 +98,8 @@ services:
         - composer va:web:install
 
       online:
-        - composer yaml-test va/web/build
-        - composer yaml-test va/tests
+        # We only want tests running on PRs, not branches like the base preview build of master.
+        - if [ "$TUGBOAT_PREVIEW_TYPE" = "pullrequest" ]; then composer yaml-test va/web/build va/tests; fi
 
   # What to call the service hosting MySQL. This name also acts as the
   # hostname to access the service by from the php service.
