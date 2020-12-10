@@ -99,6 +99,7 @@ services:
 
       online:
         # We only want tests running on PRs, not branches like the base preview build of master.
+        - if [ "$TUGBOAT_PREVIEW_TYPE" = "pullrequest" ]; then composer yaml-test va/web/build; fi
         - if [ "$TUGBOAT_PREVIEW_TYPE" = "pullrequest" ]; then composer yaml-test va/web/build va/tests; fi
 
   # What to call the service hosting MySQL. This name also acts as the
