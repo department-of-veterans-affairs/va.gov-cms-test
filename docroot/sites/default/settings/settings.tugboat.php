@@ -41,7 +41,7 @@ $config['environment_indicator.indicator']['fg_color'] = '#000000';
 $config['environment_indicator.indicator']['name'] = 'CI';
 
 $settings['trusted_host_patterns'] = [
-  '^'.getenv('DRUPAL_ADDRESS').'$',
+  '^' . getenv('DRUPAL_ADDRESS') . '$',
 ];
 
 // Github token for migrations
