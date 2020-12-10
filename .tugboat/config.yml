@@ -63,9 +63,8 @@ services:
       # skipping the init step, because the results of that step will
       # already be present.
       update:
-        - cp "${TUGBOAT_ROOT}/.tugboat/settings.local.php" "${DOCROOT}/sites/default/settings/"
         # Install/update packages managed by composer, including drush.
-        - composer install --optimize-autoloader
+        - composer install --optimize-autoloader --apcu-autoloader
         - composer va:web:install
 
         - curl --remote-name https://dsva-vagov-prod-cms-backup-sanitized.s3-us-gov-west-1.amazonaws.com/files/cms-prod-files-latest.tgz
@@ -85,7 +84,7 @@ services:
       # from the base preview.
       build:
         - j2 "${TUGBOAT_ROOT}/.tugboat/.env.j2" -o "${TUGBOAT_ROOT}/.env"
-        - composer install --optimize-autoloader
+        - composer install --optimize-autoloader --apcu-autoloader
         - drush cache:rebuild
         - drush config:import -y
         - drush updatedb --cache-clear=0 -y
