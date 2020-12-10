@@ -39,11 +39,8 @@ $config['views.settings']['ui']['show']['performance_statistics'] = TRUE;
 $config['system.logging']['error_level'] = 'all';
 $config['environment_indicator.indicator']['bg_color'] = '#79D4F0'; // light blue.
 $config['environment_indicator.indicator']['fg_color'] = '#000000';
-$config['environment_indicator.indicator']['name'] = 'CI';
+$config['environment_indicator.indicator']['name'] = 'Tugboat';
 
-echo getenv('DRUPAL_ADDRESS') . PHP_EOL;
-echo '2';
-echo $_SERVER['DRUPAL_ADDRESS'];
   
 $settings['trusted_host_patterns'] = [
   '^localhost$',
