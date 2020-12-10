@@ -64,7 +64,6 @@ services:
       # already be present.
       update:
         - cp "${TUGBOAT_ROOT}/.tugboat/settings.local.php" "${DOCROOT}/sites/default/settings/"
-        - j2 "${TUGBOAT_ROOT}/.tugboat/.env.j2" -o "${TUGBOAT_ROOT}/.env"
         # Install/update packages managed by composer, including drush.
         - composer install --optimize-autoloader
         - composer va:web:install
@@ -85,6 +84,7 @@ services:
       # and update steps, because the results of those are inherited
       # from the base preview.
       build:
+        - j2 "${TUGBOAT_ROOT}/.tugboat/.env.j2" -o "${TUGBOAT_ROOT}/.env"
         - composer install --optimize-autoloader
         - drush cache:rebuild
         - drush config:import -y
