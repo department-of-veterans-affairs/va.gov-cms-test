@@ -45,7 +45,7 @@ $settings['trusted_host_patterns'] = [
   '10\.199.*',
   '10\.247.*',
   'localhost',
-  '^.*\.ci\.cms\.va\.gov',
+  '*.tugboat.vfs.va.gov',
 ];
 
 // Github token for migrations
