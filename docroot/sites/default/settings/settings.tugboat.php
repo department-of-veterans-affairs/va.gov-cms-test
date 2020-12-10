@@ -41,11 +41,7 @@ $config['environment_indicator.indicator']['fg_color'] = '#000000';
 $config['environment_indicator.indicator']['name'] = 'CI';
 
 $settings['trusted_host_patterns'] = [
-  // For ALB/ELB Healthchecks.
-  '10\.199.*',
-  '10\.247.*',
-  'localhost',
-  '*.tugboat.vfs.va.gov',
+  '^'.getenv('DRUPAL_ADDRESS').'$',
 ];
 
 // Github token for migrations
