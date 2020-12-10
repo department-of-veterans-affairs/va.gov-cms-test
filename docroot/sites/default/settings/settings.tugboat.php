@@ -1,4 +1,5 @@
 <?php
+
 $databases['default']['default'] = array (
   'database' => 'tugboat',
   'username' => 'tugboat',
