@@ -41,7 +41,12 @@ $config['environment_indicator.indicator']['bg_color'] = '#79D4F0'; // light blu
 $config['environment_indicator.indicator']['fg_color'] = '#000000';
 $config['environment_indicator.indicator']['name'] = 'CI';
 
+echo getenv('DRUPAL_ADDRESS') . PHP_EOL;
+echo '2';
+echo $_SERVER['DRUPAL_ADDRESS'];
+  
 $settings['trusted_host_patterns'] = [
+  '^localhost$',
   '^' . getenv('DRUPAL_ADDRESS') . '$',
 ];
 
