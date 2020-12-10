@@ -1,7 +1,5 @@
 <?php
 
-$drupal_address = substr($_SERVER['DRUPAL_ADDRESS'], 0, -1);
-
 $databases['default']['default'] = array (
   'database' => 'tugboat',
   'username' => 'tugboat',
@@ -43,11 +41,9 @@ $config['environment_indicator.indicator']['bg_color'] = '#79D4F0'; // light blu
 $config['environment_indicator.indicator']['fg_color'] = '#000000';
 $config['environment_indicator.indicator']['name'] = 'Tugboat';
 
-echo $drupal_address;
-
 $settings['trusted_host_patterns'] = [
   '^localhost$',
-  '^' . $drupal_address . '$',
+  '^' . getenv('TUGBOAT_DEFAULT_SERVICE_URL_HOST') . '$',
 ];
 
 // Github token for migrations
@@ -57,8 +53,8 @@ $settings['va_cms_bot_github_auth_token'] = getenv('GITHUB_TOKEN') ?: FALSE;
 $settings['file_chmod_directory'] = 02775;
 $settings['skip_permissions_hardening'] = TRUE;
 
-$webhost_on_cli = $drupal_address;
+$webhost_on_cli = getenv('DRUPAL_ADDRESS');
 
 // Link to this file locally since lando can not access prod where the real
 // file exists.  You will need to copy the file from the same path on prod.
-$config['migrate_plus.migration.va_node_form']['source']['urls'] = [$drupal_address . '/sites/default/files/migrate_source/va_forms_data.csv'];
+$config['migrate_plus.migration.va_node_form']['source']['urls'] = [$webhost_on_cli . '/sites/default/files/migrate_source/va_forms_data.csv'];
