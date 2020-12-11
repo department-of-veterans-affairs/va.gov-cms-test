@@ -22,8 +22,6 @@
     "@axe-core/webdriverjs": "^4.0.0",
     "axe-core": "^4.0.2",
     "axe-reports": "^1.1.11",
-    "chromedriver": "^87.0.2",
-    "chromium": "^3.0.2",
     "phantomjs-prebuilt": "^2.1.16",
     "require": "^2.4.20",
     "selenium-webdriver": "^3.6.0"
