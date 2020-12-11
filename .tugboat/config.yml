@@ -109,6 +109,10 @@ services:
         # This sets the commit status checks to pending all at once.
         - if [ "$TUGBOAT_PREVIEW_TYPE" = "pullrequest" ]; then composer yaml-test va/web/build va/tests; fi
 
+        # Do run the WEB build if on a branch, tag or commit so the `web-*` prefix works.
+        - if [ "$TUGBOAT_PREVIEW_TYPE" != "pullrequest" ]; then composer yaml-test va/web/build; fi
+
+
   # What to call the service hosting MySQL. This name also acts as the
   # hostname to access the service by from the php service.
   mysql:
