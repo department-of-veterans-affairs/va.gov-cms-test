@@ -10,7 +10,7 @@ const password = 'drupal8';
 
 let totalViolations = 0;
 
-var chromeCapabilities = webdriver.Capabilities.chrome();
+var chromeCapabilities = webDriver.Capabilities.chrome();
 var chromeOptions = {
         'args': ['--test-type', '--start-maximized', "--remote-debugging-port=9222", "--disable-gpu", "--no-sandbox", "--headless"],
 };
