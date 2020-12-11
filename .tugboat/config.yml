@@ -46,6 +46,9 @@ services:
         - echo "export PATH=~/.local/bin:$PATH" >> ~/.bashrc
         - pip3 install j2cli
 
+        # Set up Chromium for accessibility tests.
+        - apt-get install chromium
+
         # Install VA Root CA
         - cp "${TUGBOAT_ROOT}"/.tugboat/VA-Internal-S2-RCA1-v1.crt /usr/local/share/ca-certificates
         - update-ca-certificates

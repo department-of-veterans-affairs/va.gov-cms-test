@@ -408,7 +408,6 @@
             "npm run stylelint-themes"
         ],
         "va:test:accessibility": [
-            "apt-get install chromium",
             "npm install --only=production",
             "npm test"
         ],
