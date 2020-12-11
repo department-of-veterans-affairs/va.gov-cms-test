@@ -1,5 +1,6 @@
 const axeBuilder = require('@axe-core/webdriverjs');
 const webDriver = require('selenium-webdriver');
+const chromium = require('chromium');
 const {By} = require('selenium-webdriver');
 const AxeReports = require('axe-reports');
 
@@ -12,7 +13,15 @@ let totalViolations = 0;
 
 var chromeCapabilities = webDriver.Capabilities.chrome();
 var chromeOptions = {
-        'args': ['--test-type', '--start-maximized', "--remote-debugging-port=9222", "--disable-gpu", "--no-sandbox", "--headless"],
+    binary: chromium.path,
+    args: [
+      '--test-type',
+      '--start-maximized',
+      '--remote-debugging-port=9222',
+      '--disable-gpu',
+      '--no-sandbox',
+      '--headless',
+    ],
 };
 chromeCapabilities.set('goog:chromeOptions', chromeOptions);
 
