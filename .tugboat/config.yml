@@ -31,6 +31,7 @@ services:
         - a2enmod headers rewrite vhost_alias
 
         # Setup web-*. vhost to serve static website.
+        - mkdir "${TUGBOAT_ROOT}/static" # Maybe put another "waiting" file here?
         - cp "${TUGBOAT_ROOT}"/.tugboat/web-vhost.conf /etc/apache2/sites-enabled/
 
         # BRD Environments are set to 1G, DevShop and Lando are -1 (unlimited).
