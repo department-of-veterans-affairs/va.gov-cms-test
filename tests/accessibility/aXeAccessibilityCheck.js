@@ -10,9 +10,15 @@ const password = 'drupal8';
 
 let totalViolations = 0;
 
-// create a phantomjs or chrome WebDriver instance
+var chromeCapabilities = webdriver.Capabilities.chrome();
+var chromeOptions = {
+        'args': ['--test-type', '--start-maximized', "--remote-debugging-port=9222", "--disable-gpu", "--no-sandbox", "--headless"],
+};
+chromeCapabilities.set('goog:chromeOptions', chromeOptions);
+
+// create a chrome WebDriver instance
 const driver = new webDriver.Builder()
-    .forBrowser('phantomjs')
+    .withCapabilities(chromeCapabilities)
     .build();
 
 // initiate axe-webdriverjs
