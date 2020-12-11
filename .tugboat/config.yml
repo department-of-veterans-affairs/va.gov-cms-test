@@ -107,10 +107,10 @@ services:
       online:
         # We only want tests running on PRs, not branches like the base preview build of master.
         # This sets the commit status checks to pending all at once.
-        - if [ "$TUGBOAT_PREVIEW_TYPE" = "pullrequest" ]; then composer yaml-test va/web/build va/tests; fi
+        - if [ "$TUGBOAT_PREVIEW_TYPE" = "pullrequest" ]; then composer yaml-test va/web/build; fi
 
         # Do run the WEB build if on a branch, tag or commit so the `web-*` prefix works.
-        - if [ "$TUGBOAT_PREVIEW_TYPE" != "pullrequest" ]; then composer yaml-test va/web/build; fi
+        #- if [ "$TUGBOAT_PREVIEW_TYPE" != "pullrequest" ]; then composer yaml-test va/web/build; fi
 
 
   # What to call the service hosting MySQL. This name also acts as the
