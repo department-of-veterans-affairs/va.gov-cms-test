@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d7e84c02320b1ac6dc643270838eb8db",
+    "content-hash": "aee81af407c74b725074a36c567446a8",
     "packages": [
         {
             "name": "alchemy/zippy",
@@ -19024,16 +19024,16 @@
         },
         {
             "name": "va-gov/web",
-            "version": "v0.1.1303",
+            "version": "dev-nps-individual-queries",
             "source": {
                 "type": "git",
                 "url": "https://github.com/department-of-veterans-affairs/vets-website.git",
-                "reference": "dec0058b1f958dbfc9d2a8f1dbae1fd3b12942a2"
+                "reference": "46d2e30e61d9a3bfab7e07f20f261fc7ca40c94d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/department-of-veterans-affairs/vets-website/zipball/dec0058b1f958dbfc9d2a8f1dbae1fd3b12942a2",
-                "reference": "dec0058b1f958dbfc9d2a8f1dbae1fd3b12942a2",
+                "url": "https://api.github.com/repos/department-of-veterans-affairs/vets-website/zipball/46d2e30e61d9a3bfab7e07f20f261fc7ca40c94d",
+                "reference": "46d2e30e61d9a3bfab7e07f20f261fc7ca40c94d",
                 "shasum": ""
             },
             "type": "node-project",
@@ -19058,7 +19058,7 @@
                 }
             ],
             "description": "Front-end for VA.gov. This repository contains the code that generates the www.va.gov website. It contains a Metalsmith static site builder that uses a Drupal CMS for content. This file is here to publish releases to https://packagist.org/packages/va-gov/web, so that the CMS CI system can install it and update it using standard composer processes, and so that we can run tests across both systems. See https://github.com/department-of-veterans-affairs/va.gov-cms for the CMS repo, and stand by for more documentation.",
-            "time": "2021-02-09T22:58:08+00:00"
+            "time": "2021-02-09T17:55:57+00:00"
         },
         {
             "name": "vlucas/phpdotenv",
@@ -21732,6 +21732,7 @@
         "drupal/views_tree": 15,
         "drupal/workbench_access": 10,
         "drupal/workflow_assignments": 20,
+        "va-gov/web": 20,
         "weitzman/drupal-test-traits": 20
     },
     "prefer-stable": true,
