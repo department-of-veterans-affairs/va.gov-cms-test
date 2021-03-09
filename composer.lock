@@ -767,12 +767,12 @@
             "version": "v5.5.0",
             "source": {
                 "type": "git",
-                "url": "git@github.com:enyo/dropzone.git",
+                "url": "https://github.com/dropzone/dropzone.git",
                 "reference": "08b9e0a763b54a685404dea523a9c54242fbe1b9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/enyo/dropzone/zipball/08b9e0a763b54a685404dea523a9c54242fbe1b9",
+                "url": "https://api.github.com/repos/dropzone/dropzone/zipball/08b9e0a763b54a685404dea523a9c54242fbe1b9",
                 "reference": "08b9e0a763b54a685404dea523a9c54242fbe1b9"
             },
             "type": "bower-asset"
@@ -7948,31 +7948,31 @@
         },
         {
             "name": "drupal/password_strength",
-            "version": "2.0.0-alpha2",
+            "version": "2.0.0-beta1",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/password_strength.git",
-                "reference": "8.x-2.0-alpha2"
+                "reference": "8.x-2.0-beta1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/password_strength-8.x-2.0-alpha2.zip",
-                "reference": "8.x-2.0-alpha2",
-                "shasum": "9f4b309731c396306880b1085a87841ca8323ac4"
+                "url": "https://ftp.drupal.org/files/projects/password_strength-8.x-2.0-beta1.zip",
+                "reference": "8.x-2.0-beta1",
+                "shasum": "ac70d4aa5cd45be5009a2be06f43b0b991fd8c1e"
             },
             "require": {
-                "bjeavons/zxcvbn-php": "*",
-                "drupal/core": "~8.0",
+                "bjeavons/zxcvbn-php": "0.4.0",
+                "drupal/core": "^8 || ^9",
                 "drupal/password_policy": "*"
             },
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "8.x-2.0-alpha2",
-                    "datestamp": "1490306283",
+                    "version": "8.x-2.0-beta1",
+                    "datestamp": "1614007268",
                     "security-coverage": {
                         "status": "not-covered",
-                        "message": "Alpha releases are not covered by Drupal security advisories."
+                        "message": "Beta releases are not covered by Drupal security advisories."
                     }
                 }
             },
@@ -10146,7 +10146,7 @@
             "extra": {
                 "drupal": {
                     "version": "6.0.2",
-                    "datestamp": "1614791851",
+                    "datestamp": "1614794871",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -21830,11 +21830,6 @@
                 "squizlabs/php_codesniffer": "^2.7"
             },
             "type": "library",
-            "extra": {
-                "patches_applied": {
-                    "Throw meaningful message for duplicate entry. See https://github.com/TravisCarden/behat-table-comparison/pull/7": "patches/duplicate-row-message.patch"
-                }
-            },
             "autoload": {
                 "psr-4": {
                     "TravisCarden\\BehatTableComparison\\": "src/BehatTableComparison/"
@@ -21855,7 +21850,12 @@
                 "Behat",
                 "gherkin"
             ],
-            "time": "2018-07-03T17:42:23+00:00"
+            "time": "2018-07-03T17:42:23+00:00",
+            "extra": {
+                "patches_applied": {
+                    "Throw meaningful message for duplicate entry. See https://github.com/TravisCarden/behat-table-comparison/pull/7": "patches/duplicate-row-message.patch"
+                }
+            }
         },
         {
             "name": "vipnytt/robotstxtparser",
@@ -22055,7 +22055,6 @@
         "drupal/openapi": 10,
         "drupal/paragraphs_browser": 15,
         "drupal/password_policy": 15,
-        "drupal/password_strength": 15,
         "drupal/path_redirect_import": 10,
         "drupal/pathologic": 15,
         "drupal/role_delegation": 15,
