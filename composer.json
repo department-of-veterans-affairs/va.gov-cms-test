@@ -139,7 +139,7 @@
         "drush/drush": "^10.4",
         "easyrdf/easyrdf": "1.1.1 as 0.9.1",
         "http-interop/http-factory-guzzle": "^1.0",
-        "knplabs/github-api": "^1.4",
+        "knplabs/github-api": "^2.19",
         "michelf/php-markdown": "^1.8",
         "mikey179/vfsstream": "^1.6",
         "mouf/nodejs-installer": "^1.0",
