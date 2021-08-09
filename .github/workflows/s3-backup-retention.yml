@@ -4,6 +4,7 @@ on:
   # UTC 5am is ET 1am, everyday.
   schedule:
     - cron: '0 5 * * *'
+  workflow_dispatch:
 
 jobs:
   backup-daily:
