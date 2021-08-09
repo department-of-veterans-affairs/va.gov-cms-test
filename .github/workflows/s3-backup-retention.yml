@@ -62,7 +62,7 @@ jobs:
           latest_file=$(aws s3api list-objects \
           --bucket $BUCKET \
           --prefix $SOURCE_PREFIX \
-          --query "Contents[?contains(Key, 'latest') == ``false``] | reverse(sort_by(@, &LastModified)[].{LastModified:LastModified,Key:Key}) | [:1]" | jq '.[].Key' --raw-output)
+          --query "Contents[?contains(Key, 'latest') == \`false\`] | reverse(sort_by(@, &LastModified)[].{LastModified:LastModified,Key:Key}) | [:1]" | jq '.[].Key' --raw-output)
 
           latest_file_no_prefix=$(echo $latest_file | sed 's%^$SOURCE_PREFIX/%%g')
 
@@ -77,7 +77,7 @@ jobs:
           latest_file=$(aws s3api list-objects \
           --bucket $BUCKET \
           --prefix $SOURCE_PREFIX \
-          --query "Contents[?contains(Key, 'latest') == `false`] | reverse(sort_by(@, &LastModified)[].{LastModified:LastModified,Key:Key}) | [:1]" | jq '.[].Key' --raw-output)
+          --query "Contents[?contains(Key, 'latest') == \`false\`] | reverse(sort_by(@, &LastModified)[].{LastModified:LastModified,Key:Key}) | [:1]" | jq '.[].Key' --raw-output)
 
           latest_file_no_prefix=$(echo $latest_file | sed 's%^$SOURCE_PREFIX/%%g')
 
