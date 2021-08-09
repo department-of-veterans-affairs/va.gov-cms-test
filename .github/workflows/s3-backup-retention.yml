@@ -15,6 +15,9 @@ jobs:
         id: date
         run: echo "::set-output name=date::$(date)"
 
+      - name: Display date
+        run: echo "The current date is ${{ steps.date.outputs.date }}"
+
       # Get the initial AWS IAM User credentials. Only has basic permissions for sts:assumeRole
       - name: Configure AWS credentials (1)
         uses: aws-actions/configure-aws-credentials@v1
@@ -111,7 +114,7 @@ jobs:
           latest_file=$(aws s3api list-objects \
           --bucket $BUCKET \
           --prefix $SOURCE_PREFIX \
-          --query "Contents[?contains(Key, 'latest') == `false`] | reverse(sort_by(@, &LastModified)[].{LastModified:LastModified,Key:Key}) | [:1]" | jq '.[].Key' --raw-output)
+          --query "Contents[?contains(Key, 'latest') == \`false\`] | reverse(sort_by(@, &LastModified)[].{LastModified:LastModified,Key:Key}) | [:1]" | jq '.[].Key' --raw-output)
 
           latest_file_no_prefix=$(echo $latest_file | sed 's%^$SOURCE_PREFIX/%%g')
 
@@ -127,7 +130,7 @@ jobs:
           latest_file=$(aws s3api list-objects \
           --bucket $BUCKET \
           --prefix $SOURCE_PREFIX \
-          --query "Contents[?contains(Key, 'latest') == `false`] | reverse(sort_by(@, &LastModified)[].{LastModified:LastModified,Key:Key}) | [:1]" | jq '.[].Key' --raw-output)
+          --query "Contents[?contains(Key, 'latest') == \`false\`] | reverse(sort_by(@, &LastModified)[].{LastModified:LastModified,Key:Key}) | [:1]" | jq '.[].Key' --raw-output)
 
           latest_file_no_prefix=$(echo $latest_file | sed 's%^$SOURCE_PREFIX/%%g')
 
