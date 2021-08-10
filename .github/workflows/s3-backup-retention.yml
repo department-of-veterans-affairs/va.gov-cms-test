@@ -52,12 +52,12 @@ jobs:
           --prefix $SOURCE_PREFIX \
           --query "Contents[?contains(Key, 'cmsapp')] | reverse(sort_by(@, &LastModified)[].{LastModified:LastModified,Key:Key}) | [:1]" | jq '.[].Key' --raw-output)
 
-          latest_file_no_prefix=$(echo $latest_file | sed 's%^$SOURCE_PREFIX/%%g')
+          latest_file_no_prefix=$(echo $latest_file | sed 's%^$SOURCE_PREFIX%%g')
 
           aws s3 cp s3://$BUCKET/$latest_file s3://$BUCKET/$DESTINATION_PREFIX/$latest_file_no_prefix
         env:
           SOURCE_PREFIX: files/
-          DESTINATION_PREFIX: files/daily
+          DESTINATION_PREFIX: backups/files/daily
           BUCKET: dsva-vagov-prod-cms-test-backup-sanitized
 
       - name: Backup Daily Sanitized SQL Files
@@ -67,12 +67,12 @@ jobs:
           --prefix $SOURCE_PREFIX \
           --query "Contents[?contains(Key, 'latest') == \`false\`] | reverse(sort_by(@, &LastModified)[].{LastModified:LastModified,Key:Key}) | [:1]" | jq '.[].Key' --raw-output)
 
-          latest_file_no_prefix=$(echo $latest_file | sed 's%^$SOURCE_PREFIX/%%g')
+          latest_file_no_prefix=$(echo $latest_file | sed 's%^$SOURCE_PREFIX%%g')
 
           aws s3 cp s3://$BUCKET/$latest_file s3://$BUCKET/$DESTINATION_PREFIX/$latest_file_no_prefix
         env:
           SOURCE_PREFIX: database/
-          DESTINATION_PREFIX: database/daily
+          DESTINATION_PREFIX: backups/database/daily
           BUCKET: dsva-vagov-prod-cms-test-backup-sanitized
 
       - name: Backup Daily Production SQL Files
@@ -82,12 +82,12 @@ jobs:
           --prefix $SOURCE_PREFIX \
           --query "Contents[?contains(Key, 'latest') == \`false\`] | reverse(sort_by(@, &LastModified)[].{LastModified:LastModified,Key:Key}) | [:1]" | jq '.[].Key' --raw-output)
 
-          latest_file_no_prefix=$(echo $latest_file | sed 's%^$SOURCE_PREFIX/%%g')
+          latest_file_no_prefix=$(echo $latest_file | sed 's%^$SOURCE_PREFIX%%g')
 
           aws s3 cp s3://$BUCKET/$latest_file s3://$BUCKET/$DESTINATION_PREFIX/$latest_file_no_prefix
         env:
           SOURCE_PREFIX: database/
-          DESTINATION_PREFIX: database/daily
+          DESTINATION_PREFIX: backups/database/daily
           BUCKET: dsva-vagov-prod-cms-test-backup
 
         # Weekly
@@ -100,12 +100,12 @@ jobs:
           --prefix $SOURCE_PREFIX \
           --query "Contents[?contains(Key, 'cmsapp')] | reverse(sort_by(@, &LastModified)[].{LastModified:LastModified,Key:Key}) | [:1]" | jq '.[].Key' --raw-output)
 
-          latest_file_no_prefix=$(echo $latest_file | sed 's%^$SOURCE_PREFIX/%%g')
+          latest_file_no_prefix=$(echo $latest_file | sed 's%^$SOURCE_PREFIX%%g')
 
           aws s3 cp s3://$BUCKET/$latest_file s3://$BUCKET/$DESTINATION_PREFIX/$latest_file_no_prefix
         env:
           SOURCE_PREFIX: files/
-          DESTINATION_PREFIX: files/weekly
+          DESTINATION_PREFIX: backups/files/weekly
           BUCKET: dsva-vagov-prod-cms-test-backup-sanitized
 
       - name: Backup Weekly Sanitized SQL Files
@@ -116,12 +116,12 @@ jobs:
           --prefix $SOURCE_PREFIX \
           --query "Contents[?contains(Key, 'latest') == \`false\`] | reverse(sort_by(@, &LastModified)[].{LastModified:LastModified,Key:Key}) | [:1]" | jq '.[].Key' --raw-output)
 
-          latest_file_no_prefix=$(echo $latest_file | sed 's%^$SOURCE_PREFIX/%%g')
+          latest_file_no_prefix=$(echo $latest_file | sed 's%^$SOURCE_PREFIX%%g')
 
           aws s3 cp s3://$BUCKET/$latest_file s3://$BUCKET/$DESTINATION_PREFIX/$latest_file_no_prefix
         env:
           SOURCE_PREFIX: database/
-          DESTINATION_PREFIX: database/weekly
+          DESTINATION_PREFIX: backups/database/weekly
           BUCKET: dsva-vagov-prod-cms-test-backup-sanitized
 
       - name: Backup Weekly Production SQL Files
@@ -132,10 +132,10 @@ jobs:
           --prefix $SOURCE_PREFIX \
           --query "Contents[?contains(Key, 'latest') == \`false\`] | reverse(sort_by(@, &LastModified)[].{LastModified:LastModified,Key:Key}) | [:1]" | jq '.[].Key' --raw-output)
 
-          latest_file_no_prefix=$(echo $latest_file | sed 's%^$SOURCE_PREFIX/%%g')
+          latest_file_no_prefix=$(echo $latest_file | sed 's%^$SOURCE_PREFIX%%g')
 
           aws s3 cp s3://$BUCKET/$latest_file s3://$BUCKET/$DESTINATION_PREFIX/$latest_file_no_prefix
         env:
           SOURCE_PREFIX: database/
-          DESTINATION_PREFIX: database/weekly
+          DESTINATION_PREFIX: backups/database/weekly
           BUCKET: dsva-vagov-prod-cms-test-backup
