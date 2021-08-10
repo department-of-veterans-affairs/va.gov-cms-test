@@ -52,7 +52,7 @@ jobs:
           --prefix $SOURCE_PREFIX \
           --query "Contents[?contains(Key, 'cmsapp')] | reverse(sort_by(@, &LastModified)[].{LastModified:LastModified,Key:Key}) | [:1]" | jq '.[].Key' --raw-output)
 
-          latest_file_no_prefix=$(echo $latest_file | sed 's%^$SOURCE_PREFIX%%g')
+          latest_file_no_prefix=$(echo $latest_file | sed "s%^$SOURCE_PREFIX%%g")
 
           aws s3 cp s3://$BUCKET/$latest_file s3://$BUCKET/$DESTINATION_PREFIX/$latest_file_no_prefix
         env:
@@ -67,7 +67,7 @@ jobs:
           --prefix $SOURCE_PREFIX \
           --query "Contents[?contains(Key, 'latest') == \`false\`] | reverse(sort_by(@, &LastModified)[].{LastModified:LastModified,Key:Key}) | [:1]" | jq '.[].Key' --raw-output)
 
-          latest_file_no_prefix=$(echo $latest_file | sed 's%^$SOURCE_PREFIX%%g')
+          latest_file_no_prefix=$(echo $latest_file | sed "s%^$SOURCE_PREFIX%%g")
 
           aws s3 cp s3://$BUCKET/$latest_file s3://$BUCKET/$DESTINATION_PREFIX/$latest_file_no_prefix
         env:
@@ -82,7 +82,7 @@ jobs:
           --prefix $SOURCE_PREFIX \
           --query "Contents[?contains(Key, 'latest') == \`false\`] | reverse(sort_by(@, &LastModified)[].{LastModified:LastModified,Key:Key}) | [:1]" | jq '.[].Key' --raw-output)
 
-          latest_file_no_prefix=$(echo $latest_file | sed 's%^$SOURCE_PREFIX%%g')
+          latest_file_no_prefix=$(echo $latest_file | sed "s%^$SOURCE_PREFIX%%g")
 
           aws s3 cp s3://$BUCKET/$latest_file s3://$BUCKET/$DESTINATION_PREFIX/$latest_file_no_prefix
         env:
@@ -100,7 +100,7 @@ jobs:
           --prefix $SOURCE_PREFIX \
           --query "Contents[?contains(Key, 'cmsapp')] | reverse(sort_by(@, &LastModified)[].{LastModified:LastModified,Key:Key}) | [:1]" | jq '.[].Key' --raw-output)
 
-          latest_file_no_prefix=$(echo $latest_file | sed 's%^$SOURCE_PREFIX%%g')
+          latest_file_no_prefix=$(echo $latest_file | sed "s%^$SOURCE_PREFIX%%g")
 
           aws s3 cp s3://$BUCKET/$latest_file s3://$BUCKET/$DESTINATION_PREFIX/$latest_file_no_prefix
         env:
@@ -116,7 +116,7 @@ jobs:
           --prefix $SOURCE_PREFIX \
           --query "Contents[?contains(Key, 'latest') == \`false\`] | reverse(sort_by(@, &LastModified)[].{LastModified:LastModified,Key:Key}) | [:1]" | jq '.[].Key' --raw-output)
 
-          latest_file_no_prefix=$(echo $latest_file | sed 's%^$SOURCE_PREFIX%%g')
+          latest_file_no_prefix=$(echo $latest_file | sed "s%^$SOURCE_PREFIX%%g")
 
           aws s3 cp s3://$BUCKET/$latest_file s3://$BUCKET/$DESTINATION_PREFIX/$latest_file_no_prefix
         env:
@@ -132,7 +132,7 @@ jobs:
           --prefix $SOURCE_PREFIX \
           --query "Contents[?contains(Key, 'latest') == \`false\`] | reverse(sort_by(@, &LastModified)[].{LastModified:LastModified,Key:Key}) | [:1]" | jq '.[].Key' --raw-output)
 
-          latest_file_no_prefix=$(echo $latest_file | sed 's%^$SOURCE_PREFIX%%g')
+          latest_file_no_prefix=$(echo $latest_file | sed "s%^$SOURCE_PREFIX%%g")
 
           aws s3 cp s3://$BUCKET/$latest_file s3://$BUCKET/$DESTINATION_PREFIX/$latest_file_no_prefix
         env:
