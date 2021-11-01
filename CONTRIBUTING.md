@@ -1,6 +1,6 @@
 <!-- markdownlint-disable MD013 -->
 <!-- omit in toc -->
-# Contributing to Project-Name
+# Contributing to Project-Name 
 
 First off, thanks for taking the time to contribute! :heart:
 
