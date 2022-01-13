@@ -238,16 +238,16 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.208.2",
+            "version": "3.209.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "ad35b407046b8eb3856b78795371f1fde46769f4"
+                "reference": "784e5ccc1b544db5018a41fc4dbfeda4c7d436b3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/ad35b407046b8eb3856b78795371f1fde46769f4",
-                "reference": "ad35b407046b8eb3856b78795371f1fde46769f4",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/784e5ccc1b544db5018a41fc4dbfeda4c7d436b3",
+                "reference": "784e5ccc1b544db5018a41fc4dbfeda4c7d436b3",
                 "shasum": ""
             },
             "require": {
@@ -323,9 +323,9 @@
             "support": {
                 "forum": "https://forums.aws.amazon.com/forum.jspa?forumID=80",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.208.2"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.209.4"
             },
-            "time": "2021-12-06T19:15:55+00:00"
+            "time": "2022-01-12T19:14:37+00:00"
         },
         {
             "name": "behat/behat",
@@ -21019,7 +21019,7 @@
         },
         {
             "name": "symfony/polyfill-php72",
-            "version": "v1.23.0",
+            "version": "v1.24.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-php72.git",
@@ -21075,7 +21075,7 @@
                 "shim"
             ],
             "support": {
-                "source": "https://github.com/symfony/polyfill-php72/tree/v1.23.0"
+                "source": "https://github.com/symfony/polyfill-php72/tree/v1.24.0"
             },
             "funding": [
                 {
@@ -24754,5 +24754,5 @@
     "platform-overrides": {
         "php": "7.3"
     },
-    "plugin-api-version": "2.1.0"
+    "plugin-api-version": "2.2.0"
 }
