@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "224f750e43f497807dc958f8d06f1552",
+    "content-hash": "5ae581c254a53abe0d40c36324a73293",
     "packages": [
         {
             "name": "acquia/drupal-spec-tool",
@@ -13744,10 +13744,10 @@
         },
         {
             "name": "npm-asset/yarn",
-            "version": "1.21.1",
+            "version": "2.4.3",
             "dist": {
                 "type": "tar",
-                "url": "https://registry.npmjs.org/yarn/-/yarn-1.21.1.tgz"
+                "url": "https://registry.npmjs.org/yarn/-/yarn-2.4.3.tgz"
             },
             "type": "npm-asset",
             "license": [
