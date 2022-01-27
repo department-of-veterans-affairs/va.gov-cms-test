@@ -5910,17 +5910,17 @@
         },
         {
             "name": "drupal/flag",
-            "version": "4.0.0-beta2",
+            "version": "4.0.0-beta3",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/flag.git",
-                "reference": "8.x-4.0-beta2"
+                "reference": "8.x-4.0-beta3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/flag-8.x-4.0-beta2.zip",
-                "reference": "8.x-4.0-beta2",
-                "shasum": "6f180b6f65e0e778e6fccebd07de9f9c689f6a1f"
+                "url": "https://ftp.drupal.org/files/projects/flag-8.x-4.0-beta3.zip",
+                "reference": "8.x-4.0-beta3",
+                "shasum": "856a4871034955406e111aee2227e716cc8064d6"
             },
             "require": {
                 "drupal/core": "^8.8 || ^9"
@@ -5928,8 +5928,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "8.x-4.0-beta2",
-                    "datestamp": "1595273815",
+                    "version": "8.x-4.0-beta3",
+                    "datestamp": "1638201553",
                     "security-coverage": {
                         "status": "not-covered",
                         "message": "Beta releases are not covered by Drupal security advisories."
@@ -24887,7 +24887,6 @@
         "drupal/entityqueue": 10,
         "drupal/fast_404": 20,
         "drupal/fieldhelptext": 10,
-        "drupal/flag": 10,
         "drupal/graphql_menu": 15,
         "drupal/jsonapi_resources": 10,
         "drupal/libraries": 15,
