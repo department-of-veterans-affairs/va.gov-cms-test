@@ -2,7 +2,7 @@ name: Test
 on: [push]
 jobs:
   Fetch-Commits:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, x64]
     steps:
       - name: checkout branch
         uses: actions/checkout@v3
