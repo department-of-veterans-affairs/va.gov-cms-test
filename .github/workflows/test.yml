@@ -9,7 +9,9 @@ jobs:
         with:
           ref: ElijahLynn-patch-1
           fetch-depth: 1
+          path: pineapple
           
       - name: list commits
         run: |
           git log --oneline
+          ls -al
