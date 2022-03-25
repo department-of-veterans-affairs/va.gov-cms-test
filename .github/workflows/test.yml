@@ -13,5 +13,6 @@ jobs:
           
       - name: list commits
         run: |
-          cd pineapple; git log --oneline
           ls -al
+          cd pineapple; git log --oneline
+          
