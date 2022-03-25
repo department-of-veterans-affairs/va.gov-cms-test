@@ -9,10 +9,13 @@ jobs:
         with:
           ref: ElijahLynn-patch-1
           fetch-depth: 1
-          path: pineapple
           
-      - name: list commits
+      - name: Push a new commit
         run: |
           ls -al
-          cd pineapple; git log --oneline
-          
+          date > generated.txt
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add .
+          git commit -m 'generated'
+          git push
