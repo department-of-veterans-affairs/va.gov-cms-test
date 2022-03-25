@@ -4,4 +4,7 @@ jobs:
   Fetch-Commits:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "test"
+      - name: checkout branch
+        uses: actions/checkout@v3
+        with:
+          ref: ElijahLynn-patch-1
