@@ -9,5 +9,7 @@ jobs:
         with:
           ref: ElijahLynn-patch-1
           fetch-depth: 0
+          
+      - name: list commits
         run: |
           git log --oneline
