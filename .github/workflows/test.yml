@@ -9,3 +9,5 @@ jobs:
         with:
           ref: ElijahLynn-patch-1
           fetch-depth: 0
+        run: |
+          git log --oneline
