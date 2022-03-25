@@ -12,10 +12,4 @@ jobs:
           
       - name: Push a new commit
         run: |
-          ls -al
-          date > generated.txt
-          git config user.name github-actions
-          git config user.email github-actions@github.com
-          git add .
-          git commit -m 'generated'
-          git push
+          dig jenkins.vfs.va.gov
