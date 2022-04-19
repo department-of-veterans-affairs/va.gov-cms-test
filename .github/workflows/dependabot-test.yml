@@ -20,15 +20,18 @@ jobs:
         id: dependabot-allow-list
         run: |
           echo "::set-output name=dependabot-allow-list::$(yq eval '.dependabot.allow-list | join(", ")' .github/workflows/config/config.yml)"
-          
+
+      - name: Dependabot metadata
+        id: dependabot-metadata
+        uses: dependabot/fetch-metadata@v1.1.1
+        with:
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
+
       - name: Show yaml list
-        if: ${{contains(steps.dependabot-allow-list.outputs.dependabot-allow-list, steps.dependabot-metadata.outputs.dependency-names)}}
+        if: ${{ contains(steps.dependabot-allow-list.outputs.dependabot-allow-list, steps.dependabot-metadata.outputs.dependency-names }}
         run: |
-          echo "True"
-          
-
-
-        
+          echo "True"          
+       
       # This first step will fail if there's no metadata and so the approval
       # will not occur.
 #       - name: Dependabot metadata
