@@ -15,15 +15,18 @@ jobs:
      # Checkout repo to make package allow list available
       - name: Checkout
         uses: actions/checkout@v2
-        
-      - name: Show current working directory
-        run: pwd
-        
-      - name: Show current working directory
+                
+      - name: Read list of Allowed Auto-merge Packages
+        id: dependabot-allow-list
         run: |
-          cd .github/workflows
-          ls
-          pwd
+          echo "::set-output name=dependabot-allow-list::$(yq .dependabot.allow-list .github/workflows/config/config.yml)\n"
+          
+      - name: Show yaml list
+        run: |
+          echo ${ steps.dependabot-allow-list.outputs.dependabot-allow-list }
+          
+
+
         
       # This first step will fail if there's no metadata and so the approval
       # will not occur.
