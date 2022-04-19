@@ -19,6 +19,12 @@ jobs:
       - name: Show current working directory
         run: pwd
         
+      - name: Show current working directory
+        run: |
+          cd .github/workflows
+          ls
+          pwd
+        
       # This first step will fail if there's no metadata and so the approval
       # will not occur.
 #       - name: Dependabot metadata
