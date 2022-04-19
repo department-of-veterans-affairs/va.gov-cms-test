@@ -28,7 +28,7 @@ jobs:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
 
       - name: Show yaml list
-        if: ${{ contains(steps.dependabot-allow-list.outputs.dependabot-allow-list, steps.dependabot-metadata.outputs.dependency-names }}
+        if: ${{ contains(steps.dependabot-allow-list.outputs.dependabot-allow-list, steps.dependabot-metadata.outputs.dependency-names) }}
         run: |
           echo "True"          
        
