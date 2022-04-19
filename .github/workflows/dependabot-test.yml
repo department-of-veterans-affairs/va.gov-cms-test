@@ -23,7 +23,7 @@ jobs:
           
       - name: Show yaml list
         run: |
-          echo ${ steps.dependabot-allow-list.outputs.dependabot-allow-list }
+          echo ${{ steps.dependabot-allow-list.outputs.dependabot-allow-list }}
           
 
 
