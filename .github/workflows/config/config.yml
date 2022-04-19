@@ -1,3 +1,4 @@
 dependabot:
   allow-list:
-    - va-gov/content-build
+    va-gov/content-build
+    test/test
