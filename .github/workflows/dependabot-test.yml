@@ -19,7 +19,7 @@ jobs:
       - name: Read list of Allowed Auto-merge Packages
         id: dependabot-allow-list
         run: |
-          echo "::set-output name=dependabot-allow-list::$(yq .dependabot.allow-list .github/workflows/config/config.yml)\n"
+          echo "::set-output name=dependabot-allow-list::$(yq eval .dependabot.allow-list[] .github/workflows/config/config.yml)"
           
       - name: Show yaml list
         run: |
