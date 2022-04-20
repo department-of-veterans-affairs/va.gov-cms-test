@@ -28,13 +28,38 @@ jobs:
         id: dependabot-allow-list
         run: |
           echo "::set-output name=dependabot-allow-list::$(yq eval '.dependabot.allow-list | join(", ")' .github/workflows/config/config.yml)"        
-              
+
+      # Get the initial AWS IAM User credentials. Only has basic permissions for sts:assumeRole
+      - name: Configure AWS credentials (1)
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-gov-west-1
+
+      # Get credentials from our SSM role. Least privilege method for AWS IAM.
+      - name: Configure AWS Credentials (2)
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-gov-west-1
+          role-to-assume: ${{ secrets.AWS_VAGOV_CMS_PROD_READ_SSM_ROLE }}
+          role-duration-seconds: 900
+          role-session-name: vsp-vagov-cms-githubaction
+
+      - name: Get Parameter
+        uses: marvinpinto/action-inject-ssm-secrets@latest
+        with:
+          ssm_parameter: /cms/va-cms-bot/github_token
+          env_variable_name: VA_CMS_BOT_TOKEN
+
       - name: Approve a PR
         if: ${{ contains(steps.dependabot-allow-list.outputs.dependabot-allow-list, steps.dependabot-metadata.outputs.dependency-names) }}
         run: gh pr review --approve "$PR_URL"
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
-          GITHUB_TOKEN: ${{ secrets.VA_CMS_BOT_TOKEN }}
+          GITHUB_TOKEN: ${{ VA_CMS_BOT_TOKEN }}
           
       # Finally, this sets the PR to allow auto-merging for only allowed dependencies
       - name: Enable auto-merge for Dependabot PRs
