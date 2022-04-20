@@ -22,7 +22,8 @@ jobs:
       # Checkout repo to make package allow list available
       - name: Checkout
         uses: actions/checkout@v2
-      
+        
+      # Use a YAML formatted config file to list which dependencies can be auto-merged
       - name: Read list of Allowed Auto-merge Dependencies
         id: dependabot-allow-list
         run: |
@@ -46,7 +47,8 @@ jobs:
           role-to-assume: ${{ secrets.AWS_VAGOV_CMS_PROD_READ_SSM_ROLE }}
           role-duration-seconds: 900
           role-session-name: vsp-vagov-cms-githubaction
-
+          
+      # Get VA_CMS_BOT Github token from SSM. this will be used to approve a matching PR.
       - name: Get Parameter
         uses: marvinpinto/action-inject-ssm-secrets@latest
         with:
