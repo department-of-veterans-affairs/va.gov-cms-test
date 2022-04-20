@@ -59,7 +59,7 @@ jobs:
         run: gh pr review --approve "$PR_URL"
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
-          GITHUB_TOKEN: ${{ VA_CMS_BOT_TOKEN }}
+          GITHUB_TOKEN: ${{ env.VA_CMS_BOT_TOKEN }}
           
       # Finally, this sets the PR to allow auto-merging for only allowed dependencies
       - name: Enable auto-merge for Dependabot PRs
