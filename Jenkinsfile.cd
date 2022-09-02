@@ -37,7 +37,7 @@ pipeline {
            booleanParam(name: 'notify_slack', value: true),
            stringParam(name: 'slack_channel', value: "${params.slack_channel}"),
            stringParam(name: 'ref', value: commit),
-           booleanParam(name: 'force_rebuild', value: false)
+           booleanParam(name: 'force_rebuild', value: true)
          ], wait: true
          }
        }
