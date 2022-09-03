@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "289c28aa5518cfbb59eb2e2fa8a92012",
+    "content-hash": "63717bd9ea3bfb4d61edee7474d62813",
     "packages": [
         {
             "name": "acquia/drupal-spec-tool",
@@ -25546,16 +25546,16 @@
         },
         {
             "name": "va-gov/content-build",
-            "version": "v0.0.3089",
+            "version": "v0.0.3091",
             "source": {
                 "type": "git",
                 "url": "https://github.com/department-of-veterans-affairs/content-build.git",
-                "reference": "b32fe85f21c329a26e960c0b29b59d0d6d6d8bb8"
+                "reference": "4a0eb6fc85d0b5fcc7d02b61c90e594de279ae11"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/department-of-veterans-affairs/content-build/zipball/b32fe85f21c329a26e960c0b29b59d0d6d6d8bb8",
-                "reference": "b32fe85f21c329a26e960c0b29b59d0d6d6d8bb8",
+                "url": "https://api.github.com/repos/department-of-veterans-affairs/content-build/zipball/4a0eb6fc85d0b5fcc7d02b61c90e594de279ae11",
+                "reference": "4a0eb6fc85d0b5fcc7d02b61c90e594de279ae11",
                 "shasum": ""
             },
             "type": "node-project",
@@ -25582,9 +25582,9 @@
             "description": "Front-end for VA.gov. This repository contains the code that generates the www.va.gov website. It contains a Metalsmith static site builder that uses a Drupal CMS for content. This file is here to publish releases to https://packagist.org/packages/va-gov/content-build, so that the CMS CI system can install it and update it using standard composer processes, and so that we can run tests across both systems. See https://github.com/department-of-veterans-affairs/va.gov-cms for the CMS repo, and stand by for more documentation.",
             "support": {
                 "issues": "https://github.com/department-of-veterans-affairs/content-build/issues",
-                "source": "https://github.com/department-of-veterans-affairs/content-build/tree/v0.0.3089"
+                "source": "https://github.com/department-of-veterans-affairs/content-build/tree/v0.0.3091"
             },
-            "time": "2022-08-31T16:08:01+00:00"
+            "time": "2022-09-02T14:26:51+00:00"
         },
         {
             "name": "vlucas/phpdotenv",
