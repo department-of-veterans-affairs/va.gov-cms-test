@@ -27,20 +27,20 @@ pipeline {
       }
 
       steps {
-        retry(3) {
-         script {
-           commit = sh(returnStdout: true, script: "git rev-parse HEAD").trim()
-         }
+        script {
+          commit = sh(returnStdout: true, script: "git rev-parse HEAD").trim()
+        }
 
-         build job: "builds/${params.app}", parameters: [
-           booleanParam(name: 'release', value: false),
-           booleanParam(name: 'notify_slack', value: true),
-           stringParam(name: 'slack_channel', value: "${params.slack_channel}"),
-           stringParam(name: 'ref', value: commit),
-           booleanParam(name: 'force_rebuild', value: true)
-         ], wait: true
-         }
-       }
+        retry(3){
+          build job: "builds/${params.app}", parameters: [
+            booleanParam(name: 'release', value: false),
+            booleanParam(name: 'notify_slack', value: true),
+            stringParam(name: 'slack_channel', value: "${params.slack_channel}"),
+            stringParam(name: 'ref', value: commit),
+            booleanParam(name: 'force_rebuild', value: true)
+          ], wait: true
+        }
+      }
     }
 
     stage('Deploy to DEV') {
