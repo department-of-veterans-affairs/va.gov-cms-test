@@ -1,7 +1,7 @@
 # Ignore binaries.
 /bin
 
-pr_advice/
+.pr_advice/
 
 # Ignore Drush contrib
 /drush/contrib/
