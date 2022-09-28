@@ -27,7 +27,7 @@ jobs:
       - name: Find available advice for each modified file.
         id: find_advice
         run: |
-          echo "::set-output name=run_job::false";
+          echo "::set-output name=provide_advice::false";
           mkdir -p ./pr_advice;
           advice_path=".github/workflows/config/advice/";
           while read filename; do
@@ -48,7 +48,7 @@ jobs:
             done;
             if [ ! -z "${advice_filename}" ]; then
               cp "${advice_filename}" ./pr_advice/;
-              echo "::set-output name=run_job::true";
+              echo "::set-output name=provide_advice::true";
             fi;
           done < <(git diff --name-only "${GITHUB_BASE_SHA}" HEAD);
         env:
@@ -56,7 +56,7 @@ jobs:
           GITHUB_PR_SHA: ${{ github.event.pull_request.head.sha }}
  
       - name: Provide advice in a PR comment.
-        if: steps.find_advice.outputs.run_job == 'true'
+        if: steps.find_advice.outputs.provide_advice == 'true'
         run: |
           # Find comments containing token, if any, and delete them.
           gh api \
