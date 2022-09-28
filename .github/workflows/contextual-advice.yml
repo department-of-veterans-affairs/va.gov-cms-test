@@ -36,7 +36,7 @@ jobs:
           GITHUB_PR_SHA: ${{ github.event.pull_request.head.sha }}
  
       - name: Provide advice in a PR comment.
-        if: find_advice.outputs.run_job == 'true'
+        if: steps.find_advice.outputs.run_job == 'true'
         run: |
           # Find comments containing token, if any, and delete them.
           gh api \
