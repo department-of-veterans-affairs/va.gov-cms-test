@@ -33,7 +33,7 @@ jobs:
           echo "testing too";
           mkdir -p ./.pr_advice;
           advice_path=".github/workflows/config/advice/";
-          git diff --name-only main HEAD;
+          git diff --name-only $GITHUB_BASE_SHA $GITHUB_PR_SHA;
           while read filename; do
             echo "::debug::Looking for relevant advice for ${filename}...";
             IFS='/' read -r -a path_components <<< "${filename}";
