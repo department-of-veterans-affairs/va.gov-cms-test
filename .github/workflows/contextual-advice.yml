@@ -21,7 +21,7 @@ jobs:
             IFS=', ' read -r -a path_components <<< "${filename}";
             filename_path=".github/workflows/config/advice/";
             advice_filename="";
-            for path_component in "${path_components[@]"; do
+            for path_component in "${path_components[@]}"; do
               filename_path="${filename_path}_${path_component}";
               if [ -f "${filename_path}.md" ]; then
                 advice_filename="${filename_path}.md";
