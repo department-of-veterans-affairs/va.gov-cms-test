@@ -32,7 +32,7 @@ jobs:
           advice_path=".github/workflows/config/advice/";
           while read filename; do
             echo "Looking for relevant advice for ${filename}...";
-            IFS=', ' read -r -a path_components <<< "${filename}";
+            IFS='/' read -r -a path_components <<< "${filename}";
             advice_file_path="${advice_path}";
             advice_filename="";
             for path_component in "${path_components[@]}"; do
