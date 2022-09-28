@@ -77,6 +77,8 @@ module:
   filter: 0
   flag: 0
   flood_control: 0
+  flysystem: 0
+  flysystem_s3: 0
   geocoder: 0
   geocoder_address: 0
   geocoder_field: 0
@@ -165,6 +167,7 @@ module:
   pathologic: 0
   pfm: 0
   post_api: 0
+  preprocess_event_dispatcher: 0
   prometheus_exporter: 0
   rdf: 0
   redirect: 0
@@ -201,7 +204,6 @@ module:
   token: 0
   toolbar: 0
   toolbar_menu: 0
-  update: 0
   user: 0
   user_history: 0
   va_gov_api: 0
@@ -219,6 +221,7 @@ module:
   va_gov_govdelivery: 0
   va_gov_graphql: 0
   va_gov_help_center: 0
+  va_gov_links: 0
   va_gov_login: 0
   va_gov_lovell: 0
   va_gov_media: 0
