@@ -27,7 +27,6 @@ jobs:
       - name: Find available advice for each modified file.
         id: find_advice
         run: |
-          echo "::set-output name=provide_advice::false";
           mkdir -p ./pr_advice;
           advice_path=".github/workflows/config/advice/";
           while read filename; do
