@@ -11,6 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with: 
+          fetch-depth: 0
       # To create advice for a file or directory, determine the filename by:
       # $ `echo "$filename" | sed -E 's/[^[:alnum:]]+/_/g'`
       #
@@ -58,7 +60,7 @@ jobs:
             else
               echo "::debug::... none found.";
             fi;
-          done < <(git diff --name-only "${GITHUB_BASE_SHA}" HEAD);
+          done < <(git diff --name-only "${GITHUB_BASE_SHA}" "${GITHUB_PR_SHA}");
         env:
           GITHUB_BASE_SHA: ${{ github.event.pull_request.base.sha }}
           GITHUB_PR_SHA: ${{ github.event.pull_request.head.sha }}
