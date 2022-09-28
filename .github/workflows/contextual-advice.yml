@@ -14,9 +14,11 @@ jobs:
         with: 
           fetch-depth: 0
       # To create advice for a file or directory, determine the filename by:
-      # $ `echo "$filename" | sed -E 's/[^[:alnum:]]+/_/g'`
+      # $ echo "$filename" | sed -E 's/[^[:alnum:]]+/_/g'
       #
-      # Then add `.md` to the end of the filename and stick it in
+      # (Leave off trailing '/' for directories.)
+      #
+      # Then add `.md` to the end of the resulting string and stick it in
       # the advice folder.
       #
       # E.g.:
