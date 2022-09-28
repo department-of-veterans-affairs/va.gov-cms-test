@@ -31,23 +31,28 @@ jobs:
           mkdir -p ./pr_advice;
           advice_path=".github/workflows/config/advice/";
           while read filename; do
-            echo "${filename}";
+            echo "Looking for relevant advice for ${filename}...";
             IFS=', ' read -r -a path_components <<< "${filename}";
-            filename_path="${advice_path}";
+            advice_file_path="${advice_path}";
             advice_filename="";
             for path_component in "${path_components[@]}"; do
               sanitized="$(echo "${path_component}" | sed -E 's/[^[:alnum:]]+/_/g')";
-              filename_path="${filename_path}_${sanitized}";
-              if [ -f "${filename_path}.md" ]; then
-                advice_filename="${filename_path}.md";
+              advice_file_path="${advice_file_path}_${sanitized}";
+              if [ -f "${advice_file_path}.md" ]; then
+                if [ ! -z "${advice_filename}" ]; then
+                  echo "Discarding advice in ${advice_filename} for (presumably) more relevant advice...";
+                fi;
+                advice_filename="${advice_file_path}.md";
+                echo "Found relevant advice for ${filename} at ${advice_filename}!"
               fi;
             done;
             if [ ! -z "${advice_filename}" ]; then
               cp "${advice_filename}" ./pr_advice/;
               echo "::set-output name=run_job::true";
             fi;
-          done < <(git diff --name-only "${GITHUB_SHA}" "${GITHUB_PR_SHA}");
+          done < <(git diff --name-only "${GITHUB_BASE_SHA}" "${GITHUB_PR_SHA}");
         env:
+          GITHUB_BASE_SHA: ${{ github.event.pull_request.base.sha }}
           GITHUB_PR_SHA: ${{ github.event.pull_request.head.sha }}
  
       - name: Provide advice in a PR comment.
