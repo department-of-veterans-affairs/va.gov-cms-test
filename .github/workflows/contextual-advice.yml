@@ -31,6 +31,7 @@ jobs:
         run: |
           mkdir -p ./.pr_advice;
           advice_path=".github/workflows/config/advice/";
+          git diff --name-only "${GITHUB_BASE_SHA}" HEAD;
           while read filename; do
             echo "::debug::Looking for relevant advice for ${filename}...";
             IFS='/' read -r -a path_components <<< "${filename}";
@@ -66,7 +67,7 @@ jobs:
           GITHUB_PR_SHA: ${{ github.event.pull_request.head.sha }}
  
       - name: Provide advice in a PR comment.
-        if: steps.find_advice.outputs.provide_advice == 'true'
+        if: ${{ steps.find_advice.outputs.provide_advice == 'true' }}
         run: |
           # Find comments containing token, if any, and delete them.
           gh api \
