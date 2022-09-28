@@ -28,6 +28,7 @@ jobs:
       # config/sync/core.extension.yml            -> config_sync_core_extension_yml.md
       # docroot/sites/default                     -> docroot_sites_default.md
       #
+      
       - name: Find available advice for each modified file.
         id: find_advice
         run: |
