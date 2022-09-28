@@ -50,7 +50,7 @@ jobs:
               cp "${advice_filename}" ./pr_advice/;
               echo "::set-output name=run_job::true";
             fi;
-          done < <(git diff --name-only "${GITHUB_BASE_SHA}" "${GITHUB_PR_SHA}");
+          done < <(git diff --name-only "${GITHUB_BASE_SHA}" HEAD);
         env:
           GITHUB_BASE_SHA: ${{ github.event.pull_request.base.sha }}
           GITHUB_PR_SHA: ${{ github.event.pull_request.head.sha }}
