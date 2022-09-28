@@ -80,14 +80,15 @@ jobs:
                 "/repos/${GITHUB_REPOSITORY}/issues/comments/${pr_comment}"; \
               done;
 
-          body="$(cat ./.pr_advice/*.md)";
+          body="$(awk 'FNR==1 && NR!=1 {print "\n<hr/>\n"}{print}' ./.pr_advice/*.md)";
 
           # Create a new comment containing the compiled advice.
           gh api \
             --method POST \
             -H "Accept: application/vnd.github+json" \
             /repos/${GITHUB_REPOSITORY}/issues/${GITHUB_PR}/comments \
-            -f body="<!-- PR Advice -->\n${body}";
+            -f body="<!-- PR Advice -->
+            ${body}";
           
         env:
           GITHUB_PR: "${{ github.event.pull_request.number }}"
