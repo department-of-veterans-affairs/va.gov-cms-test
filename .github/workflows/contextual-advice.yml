@@ -29,6 +29,7 @@ jobs:
       - name: Find available advice for each modified file.
         id: find_advice
         run: |
+          echo "testing";
           mkdir -p ./.pr_advice;
           advice_path=".github/workflows/config/advice/";
           git diff --name-only "${GITHUB_BASE_SHA}" HEAD;
