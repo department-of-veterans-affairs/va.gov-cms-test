@@ -27,16 +27,21 @@ jobs:
       - name: Find available advice for each modified file.
         id: find_advice
         run: |
-          mkdir -p ./pr_advice;
+          mkdir -p ./.pr_advice;
           advice_path=".github/workflows/config/advice/";
           while read filename; do
             echo "::debug::Looking for relevant advice for ${filename}...";
             IFS='/' read -r -a path_components <<< "${filename}";
             advice_file_path="${advice_path}";
             advice_filename="";
+            # We'll separate path components by underscore, but we don't want
+            # a leading underscore in the filename.  So we'll set the delimiter
+            # to an underscore after the first path component is processed.
+            delimiter="";
             for path_component in "${path_components[@]}"; do
               sanitized="$(echo "${path_component}" | sed -E 's/[^[:alnum:]]+/_/g')";
-              advice_file_path="${advice_file_path}_${sanitized}";
+              advice_file_path="${advice_file_path}${delimiter}${sanitized}";
+              echo "::debug::Looking in ${advice_file_path}.md ...";
               if [ -f "${advice_file_path}.md" ]; then
                 if [ ! -z "${advice_filename}" ]; then
                   echo "::debug::Discarding advice in ${advice_filename} for (presumably) more relevant advice...";
@@ -44,9 +49,11 @@ jobs:
                 advice_filename="${advice_file_path}.md";
                 echo "::debug::Found relevant advice for ${filename} at ${advice_filename}.";
               fi;
+              # Join second and subsequent path components with an underscore.
+              delimiter="_";
             done;
             if [ ! -z "${advice_filename}" ]; then
-              cp "${advice_filename}" ./pr_advice/;
+              cp "${advice_filename}" ./.pr_advice/;
               echo "::set-output name=provide_advice::true";
             else
               echo "::debug::... none found.";
@@ -71,7 +78,7 @@ jobs:
                 "/repos/${GITHUB_REPOSITORY}/issues/comments/${pr_comment}"; \
               done;
 
-          body="$(cat ./pr_advice/*.md)";
+          body="$(cat ./.pr_advice/*.md)";
 
           # Create a new comment containing the compiled advice.
           gh api \

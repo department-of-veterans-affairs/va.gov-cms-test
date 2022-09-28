@@ -2,6 +2,7 @@
 /bin
 
 TEST THING
+pr_advice/
 
 # Ignore Drush contrib
 /drush/contrib/
