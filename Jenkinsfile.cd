@@ -10,7 +10,7 @@ def shouldBail() {
 
 pipeline {
   agent any
-
+{ stray parenthesis
   stages {
     stage('Checkout Code') {
       steps {
