@@ -11,18 +11,33 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      # To create advice for a file or directory, determine the filename by:
+      # $ `echo "$filename" | sed -E 's/[^[:alnum:]]+/_/g'`
+      #
+      # Then add `.md` to the end of the filename and stick it in
+      # the advice folder.
+      #
+      # E.g.:
+      #
+      # .gitignore                                -> _gitignore.md
+      # .github/actions/post-checkout/action.yml  -> _github_actions_post_checkout_action_yml.md
+      # config/sync/core.extension.yml            -> config_sync_core_extension_yml.md
+      # docroot/sites/default                     -> docroot_sites_default.md
+      #
       - name: Find available advice for each modified file.
         id: find_advice
         run: |
           echo "::set-output name=run_job::false";
           mkdir -p ./pr_advice;
+          advice_path=".github/workflows/config/advice/";
           while read filename; do
             echo "${filename}";
             IFS=', ' read -r -a path_components <<< "${filename}";
-            filename_path=".github/workflows/config/advice/";
+            filename_path="${advice_path}";
             advice_filename="";
             for path_component in "${path_components[@]}"; do
-              filename_path="${filename_path}_${path_component}";
+              sanitized="$(echo "${path_component}" | sed -E 's/[^[:alnum:]]+/_/g')";
+              filename_path="${filename_path}_${sanitized}";
               if [ -f "${filename_path}.md" ]; then
                 advice_filename="${filename_path}.md";
               fi;
@@ -31,12 +46,12 @@ jobs:
               cp "${advice_filename}" ./pr_advice/;
               echo "::set-output name=run_job::true";
             fi;
-          done < <(git diff --name-only "${GITHUB_SHA}" "${GITHUB_PR_SHA}")
+          done < <(git diff --name-only "${GITHUB_SHA}" "${GITHUB_PR_SHA}");
         env:
           GITHUB_PR_SHA: ${{ github.event.pull_request.head.sha }}
  
       - name: Provide advice in a PR comment.
-        if: steps.find_advice.outputs.run_job == 'true'
+        if: find_advice.outputs.run_job == 'true'
         run: |
           # Find comments containing token, if any, and delete them.
           gh api \
