@@ -3,12 +3,12 @@ on:
   workflow_dispatch:
 jobs:
   runtime-task:
-    runs-on: ubuntu-latest
+    runs-on:
+      - self-hosted
+      - linux
+      - x64
     steps:  
-      - uses: actions/checkout@v3
-        with:
-          repository: 'department-of-veterans-affairs/devops'
-          ref: 'master'
-          path: 'devops'
-      - name: current directory
-        run: pwd
+      - name: Ansible Version
+        run: ansible ---version
+      - name: List Ansible Galaxy
+        run: ansible-galaxy collection list
