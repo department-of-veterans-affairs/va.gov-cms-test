@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/sh
 set -euo pipefail
 
 export ADDITIONAL_CA_CERTS="/usr/local/share/ca-certificates"
