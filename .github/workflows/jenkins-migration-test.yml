@@ -7,8 +7,6 @@ jobs:
       - self-hosted
       - linux
       - x64
-    steps:  
-      - name: Ansible Version
-        run: ansible ---version
-      - name: List Ansible Galaxy
-        run: ansible-galaxy collection list
+    steps:
+    - uses: ./.github/actions/ansible
+
