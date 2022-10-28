@@ -2,6 +2,8 @@ FROM alpine
 
 ENV ANSIBLE_HOST_KEY_CHECKING=False
 
+RUN curl www.google.com
+
 COPY install_certs.sh /tmp/install_certs.sh
 RUN chmod a+x /tmp/install_certs.sh && /tmp/install_certs.sh
 
