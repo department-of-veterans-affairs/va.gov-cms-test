@@ -53,5 +53,5 @@ jobs:
           IMAGE_TAG: "${{ matrix.image['version'] }}"
           BUILD_ARG: "--build-arg APP_VERSION=${{ matrix.image['version'] }} --build-arg REPO=${{ matrix.image['repo'] }}"
         run: |
-          docker build $BUILD_ARG -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker build $BUILD_ARG -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .github/docker/Dockerfile
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
