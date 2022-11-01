@@ -1,0 +1,57 @@
+name: Mirror sorry-cypress images to ECR when versions.json/Dockerfile* changes
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "versions.json"
+      - "Dockerfile*"
+  schedule:
+    - cron: '0 0 1,15 * *'
+  workflow_dispatch:
+
+jobs:
+  prepare-build:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Capture cms-test Docker image versions
+        id: images
+        run: |
+          echo "::set-output name=images::$(jq -c .images versions.json)"
+    outputs:
+      images: ${{ steps.images.outputs.images }}
+
+  mirror:
+    runs-on: ubuntu-20.04
+    needs: prepare-build
+    strategy:
+      matrix:
+        image: ${{ fromJson(needs.prepare-build.outputs.images) }}
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Configure AWS Credentials 
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-gov-west-1
+          role-to-assume: ${{ secrets.AWS_VAGOV_CMS_PROD_ECR_POWERUSER_ROLE }}
+          role-duration-seconds: 900
+          role-session-name: vsp-vagov-cms-githubaction
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build, tag, and push image to Amazon ECR
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: "${{ matrix.image['ecr'] }}" 
+          IMAGE_TAG: "${{ matrix.image['version'] }}"
+          BUILD_ARG: "--build-arg APP_VERSION=${{ matrix.image['version'] }} --build-arg REPO=${{ matrix.image['repo'] }}"
+        run: |
+          docker build $BUILD_ARG -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
