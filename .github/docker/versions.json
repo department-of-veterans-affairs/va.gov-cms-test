@@ -1,0 +1,11 @@
+{
+  "images": [
+    {
+      "repo": "alpine",
+      "ecr": "dsva/cms-ansible",
+      "name": "cms-ansible",
+      "version": "latest",
+      "dockerfile": "Dockerfile"
+    }
+  ]
+}
