@@ -1,12 +1,12 @@
-name: Mirror sorry-cypress images to ECR when versions.json/Dockerfile* changes
+name: Mirror cms-test images to ECR when versions.json/Dockerfile* changes
 
 on:
   push:
     branches:
       - main
     paths:
-      - "versions.json"
-      - "Dockerfile*"
+      - ".github/docker/versions.json"
+      - ".github/docker/Dockerfile*"
   schedule:
     - cron: '0 0 1,15 * *'
   workflow_dispatch:
