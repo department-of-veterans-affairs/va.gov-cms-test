@@ -7,16 +7,12 @@ jobs:
       - self-hosted
       - linux
       - x64
+    container:
+      image: 008577686731.dkr.ecr.us-gov-west-1.amazonaws.com/dsva/cms-ansible:latest
     steps:
-    - name: Install Ansible
-      run: |
-        pip --version
-#        sudo add-apt-repository ppa:ansible/ansible
-#        sudo apt-get update
-#        sudo apt-get install -y --no-install-recommends ansible
-#    - name: Check Version
-#      run: ansible --version
-#    - name: Check galaxy list
-#      run: ansible-galaxy collection list
+    - name: Check Version
+      run: ansible --version
+    - name: Check galaxy list
+      run: ansible-galaxy collection list
         
 
