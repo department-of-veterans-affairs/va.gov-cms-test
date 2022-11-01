@@ -19,7 +19,7 @@ jobs:
       - name: Capture cms-test Docker image versions
         id: images
         run: |
-          echo "::set-output name=images::$(jq -c .images versions.json)"
+          echo "::set-output name=images::$(jq -c .images .github/docker/versions.json)"
     outputs:
       images: ${{ steps.images.outputs.images }}
 
