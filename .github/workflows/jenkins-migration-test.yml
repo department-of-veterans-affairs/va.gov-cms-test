@@ -8,6 +8,14 @@ jobs:
       - linux
       - x64
     steps:
-    - uses: actions/checkout@v1
-    - uses: ./.github/actions/ansible
+    - name: Install Ansible
+      run: |
+        add-apt-repository ppa:ansible/ansible
+        apt-get update
+        apt-get install -y --no-install-recommends ansible
+    - name: Check Version
+      run: ansible --version
+    - name: Check galaxy list
+      run: ansible-galaxy collection list
+        
 
