@@ -5,7 +5,7 @@
       "ecr": "dsva/cms-ansible",
       "name": "cms-ansible",
       "version": "latest",
-      "dockerfile": "Dockerfile"
+      "dockerfile": ".github/docker/Dockerfile"
     }
   ]
 }
