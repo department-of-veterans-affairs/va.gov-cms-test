@@ -26,8 +26,8 @@ jobs:
       run: ansible --version
     - name: Check galaxy list
       run: ansible-galaxy collection list
-    - name: List Inventory
-      run: ansible-inventory -i demo.aws_ec2.yml --graph
+    - name: find Inventory
+      run: find / -type f -name ansible.cfg
 
         
 
