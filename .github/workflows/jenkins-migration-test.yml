@@ -2,14 +2,26 @@ name: CMS-Test Runtime Tasks
 on:
   workflow_dispatch:
 jobs:
+  get-ecr-password:
+    runs-on:
+      - self-hosted
+      - linux
+      - x64
+    steps:
+    - name: Get ECR Password
+      run: echo "::add-mask::ECR_PASSWORD=$(aws ecr get-login-password --region us-gov-west-1)" >> $GITHUB_ENV 
   runtime-task:
     runs-on:
       - self-hosted
       - linux
       - x64
+    needs: get-ecr-password
     container:
       image: 008577686731.dkr.ecr.us-gov-west-1.amazonaws.com/dsva/cms-ansible:latest
-    steps:
+      credentials:
+        username: AWS
+        password: ${{ env.ECR_PASSWORD }}
+    steps:    
     - name: Check Version
       run: ansible --version
     - name: Check galaxy list
