@@ -7,9 +7,12 @@ jobs:
       - self-hosted
       - linux
       - x64
+    outputs: 
+      ecr-password: ${{ env.ECR_PASSWORD }}      
     steps:
     - name: Get ECR Password
-      run: echo "::add-mask::ECR_PASSWORD=$(aws ecr get-login-password --region us-gov-west-1)" >> $GITHUB_ENV 
+      run: echo "::add-mask:: ECR_PASSWORD=$(aws ecr get-login-password --region us-gov-west-1)" >> $GITHUB_ENV 
+
   runtime-task:
     runs-on:
       - self-hosted
@@ -20,7 +23,7 @@ jobs:
       image: 008577686731.dkr.ecr.us-gov-west-1.amazonaws.com/dsva/cms-ansible:latest
       credentials:
         username: AWS
-        password: ${{ env.ECR_PASSWORD }}
+        password: ${{ needs.get-ecr-password.outputs.ecr-password }}
     steps:    
     - name: Check Version
       run: ansible --version
