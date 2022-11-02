@@ -11,7 +11,7 @@ jobs:
       ecr-password: ${{ env.ECR_PASSWORD }}      
     steps:
     - name: Get ECR Password
-      run: echo "::add-mask:: ECR_PASSWORD=$(aws ecr get-login-password --region us-gov-west-1)" >> $GITHUB_ENV 
+      run: echo "ECR_PASSWORD=::add-mask::$(aws ecr get-login-password --region us-gov-west-1)" >> $GITHUB_ENV 
 
   runtime-task:
     runs-on:
