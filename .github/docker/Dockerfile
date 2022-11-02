@@ -6,7 +6,7 @@ FROM ${REPO}:${APP_VERSION}
 USER root
 
 RUN apk update && \
-    apk add ca-certificates curl bash openssl ansible gcc python3-dev libc-dev libffi-dev openssl-dev
+    apk add ca-certificates curl bash openssl ansible gcc python3-dev python3 py3-pip libc-dev libffi-dev openssl-dev
 
 COPY install_certs.sh /tmp/install_certs.sh
 COPY requirements.txt /tmp/requirements.txt
