@@ -2,15 +2,13 @@ name: CMS-Test Runtime Tasks
 on:
   workflow_dispatch:
 jobs:
-  get-ecr-password:
+  login-ecr:
     runs-on:
       - self-hosted
       - linux
-      - x64
-    outputs: 
-      ecr-password: ${{ env.ECR_PASSWORD }}      
+      - x64    
     steps:
-    - name: Get ECR Password
+    - name: Login to ECR
       run: aws ecr get-login-password --region us-gov-west-1 | docker login --username AWS --password-stdin 008577686731.dkr.ecr.us-gov-west-1.amazonaws.com
 
   runtime-task:
@@ -18,13 +16,18 @@ jobs:
       - self-hosted
       - linux
       - x64
-    needs: get-ecr-password
+    needs: login-ecr
     container:
       image: 008577686731.dkr.ecr.us-gov-west-1.amazonaws.com/dsva/cms-ansible:latest
     steps:    
+    - name: Checkout
+      uses: actions/checkout@v3          
     - name: Check Version
       run: ansible --version
     - name: Check galaxy list
       run: ansible-galaxy collection list
+    -name: List Inventory
+      run: ansible-inventory -i demo.aws_ec2.yml --graph
+
         
 
