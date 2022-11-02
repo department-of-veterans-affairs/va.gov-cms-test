@@ -12,4 +12,4 @@ COPY install_certs.sh /tmp/install_certs.sh
 COPY requirements.txt /tmp/requirements.txt
 
 RUN chmod a+x /tmp/install_certs.sh && /tmp/install_certs.sh
-RUN pip install -r requirements.txt
+RUN pip3 install -r requirements.txt
