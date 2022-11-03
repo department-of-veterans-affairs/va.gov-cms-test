@@ -46,4 +46,4 @@ jobs:
       
     - name: List inventory
       working-directory: ansible/
-      run: ansible-inventory -i inventory/aws_ec2.yml --graph
+      run: ansible-inventory --graph
