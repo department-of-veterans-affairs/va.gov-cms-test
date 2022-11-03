@@ -54,5 +54,5 @@ jobs:
       run: find / -type f -name ansible.cfg
       
     - name: List inventory
-      cwd: ansible/
+      working-directory: ansible/
       run: ansible-inventory --graph
