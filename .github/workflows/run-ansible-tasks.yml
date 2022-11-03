@@ -19,6 +19,7 @@ jobs:
       - linux
       - x64
     permissions:
+      id-token: write
       contents: read
     needs: login-ecr
     container:
