@@ -1,0 +1,36 @@
+name: CMS-Test Runtime Tasks
+on:
+  workflow_dispatch:
+jobs:
+  login-ecr:
+    runs-on:
+      - self-hosted
+      - linux
+      - x64    
+    steps:
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+
+  runtime-task:
+    runs-on:
+      - self-hosted
+      - linux
+      - x64
+    needs: login-ecr
+    container:
+      image: 008577686731.dkr.ecr.us-gov-west-1.amazonaws.com/dsva/cms-ansible:latest
+    steps:    
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        repository: department-of-veterans-affairs/vsp-infra-cms
+        ref: main
+    - name: Check Version
+      run: ansible --version
+    - name: Check galaxy list
+      run: ansible-galaxy collection list
+    - name: find cfg
+      run: find / -type f -name ansible.cfg
+    - name: List inventory
+      run: ansible-inventory --graph
