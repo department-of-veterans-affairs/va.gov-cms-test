@@ -11,6 +11,8 @@ jobs:
     - name: Login to Amazon ECR
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
+      with:
+        aws-region: us-gov-west-1
 
   runtime-task:
     runs-on:
