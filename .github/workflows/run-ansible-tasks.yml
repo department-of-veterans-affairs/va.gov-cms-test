@@ -24,16 +24,37 @@ jobs:
     needs: login-ecr
     container:
       image: 008577686731.dkr.ecr.us-gov-west-1.amazonaws.com/dsva/cms-ansible:latest
-    steps:    
+    steps:
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.awsRegion }}
+        role-to-assume: ${{ secrets.AWS_VAGOV_CMS_PROD_ECR_POWERUSER_ROLE }}
+        role-duration-seconds: 900
+        role-session-name: vsp-vagov-cms-githubaction          
+        
+    - name: Get bot token from Parameter Store
+      uses: marvinpinto/action-inject-ssm-secrets@latest
+      with:
+        ssm_parameter: /devops/VA_VSP_BOT_GITHUB_TOKEN
+        env_variable_name: VA_VSP_BOT_GITHUB_TOKEN    
+        
     - name: Checkout
       uses: actions/checkout@v2
       with:
         repository: department-of-veterans-affairs/vsp-infra-cms
+        ttoken: ${{ env.VA_VSP_BOT_GITHUB_TOKEN }}
+        
     - name: Check Version
       run: ansible --version
+      
     - name: Check galaxy list
       run: ansible-galaxy collection list
+      
     - name: find cfg
       run: find / -type f -name ansible.cfg
+      
     - name: List inventory
       run: ansible-inventory --graph
