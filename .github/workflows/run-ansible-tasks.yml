@@ -1,8 +1,5 @@
 name: CMS-Test Runtime Tasks
 
-permissions:
-  contents: read
-
 on:
   workflow_dispatch:
 jobs:
@@ -21,6 +18,8 @@ jobs:
       - self-hosted
       - linux
       - x64
+    permissions:
+      contents: read
     needs: login-ecr
     container:
       image: 008577686731.dkr.ecr.us-gov-west-1.amazonaws.com/dsva/cms-ansible:latest
