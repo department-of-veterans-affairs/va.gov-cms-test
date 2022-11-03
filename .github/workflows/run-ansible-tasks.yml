@@ -1,4 +1,8 @@
 name: CMS-Test Runtime Tasks
+
+permissions:
+  contents: read
+
 on:
   workflow_dispatch:
 jobs:
