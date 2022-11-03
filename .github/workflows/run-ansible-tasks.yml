@@ -49,5 +49,5 @@ jobs:
       run: ansible-inventory --graph
       
     - name: Run Test Playbook
-      working-directory: ansible/cms/
-      run: ansible-playbook --verbose --extra-vars "deployment_name=cms-test deployment_env=vagov_staging" test.yml
+      working-directory: ansible/
+      run: ansible-playbook --verbose --extra-vars "deployment_name=cms-test deployment_env=vagov_staging" cms/test.yml
