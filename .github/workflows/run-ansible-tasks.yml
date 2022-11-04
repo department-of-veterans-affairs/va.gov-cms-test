@@ -43,7 +43,13 @@ jobs:
       with:
         repository: department-of-veterans-affairs/vsp-infra-cms
         token: ${{ env.VA_VSP_BOT_GITHUB_TOKEN }}      
+
+    - name: whoami
+      run: whoami
       
+    - name: display home folder
+      run: ls -la ~
+
     - name: Run Test Playbook
       working-directory: ansible/
       run: ansible-playbook --verbose --extra-vars "deployment_name=cms-test deployment_env=vagov_staging" cms/test.yml
