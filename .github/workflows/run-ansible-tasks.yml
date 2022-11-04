@@ -67,4 +67,4 @@ jobs:
 
     - name: Run Test Playbook
       working-directory: ansible/
-      run: ansible-playbook --verbose --extra-vars "deployment_name=cms-test deployment_env=vagov_staging" cms/test.yml
+      run: ansible-playbook -vvv --extra-vars "deployment_name=cms-test deployment_env=vagov_staging" cms/test.yml
