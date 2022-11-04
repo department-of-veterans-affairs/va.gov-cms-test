@@ -44,11 +44,8 @@ jobs:
         repository: department-of-veterans-affairs/vsp-infra-cms
         token: ${{ env.VA_VSP_BOT_GITHUB_TOKEN }}      
 
-    - name: whoami
-      run: whoami
-      
-    - name: display home folder
-      run: ls -la ~
+    - name: cat ssh_config
+      run: cat /etc/ssh/ssh_config
 
     - name: Run Test Playbook
       working-directory: ansible/
