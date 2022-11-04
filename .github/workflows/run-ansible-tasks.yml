@@ -44,6 +44,14 @@ jobs:
         ssm_parameter: /cms/ansible_ssh_id_rsa
         env_variable_name: ANSIBLE_SSH_ID_RSA
 
+    - name: whoami
+      run: whoami
+      
+    - name: where is home
+      run: |
+        cd ~
+        pwd
+
     - name: mkdir .ssh
       run: mkdir ~/.ssh
       
