@@ -44,10 +44,6 @@ jobs:
         repository: department-of-veterans-affairs/vsp-infra-cms
         token: ${{ env.VA_VSP_BOT_GITHUB_TOKEN }}      
       
-    - name: List inventory
-      working-directory: ansible/
-      run: ansible-inventory --graph
-      
     - name: Run Test Playbook
       working-directory: ansible/
       run: ansible-playbook --verbose --extra-vars "deployment_name=cms-test deployment_env=vagov_staging" cms/test.yml
