@@ -52,7 +52,7 @@ jobs:
         echo -e "Host *
           StrictHostKeyChecking no
           UserKnownHostsFile /dev/null
-        " >> /home/jenkins/.ssh/config
+        " >> ~/.ssh/config
         
     - name: setup ssh private key
       run: |
