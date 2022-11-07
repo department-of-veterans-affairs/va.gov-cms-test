@@ -9,15 +9,14 @@ jobs:
       - linux
       - x64    
     steps:
-    
-    - name: Get AWS Creds
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-region: us-gov-west-1
-        
+   
+    # Instead of using a combination aws-actions configure-aws-credential and amazon-ecr-login to login in to 
+    # Amazon ECR use this aws cli command that pipes to docker. AWS CLI will automatically use the instance profile
+    # credentials to obtain the login password. Docker CLI will automatically store the password in the runner'socker config.json
+    # The aws-actions commands will not do this without additional steps.
     - name: Login to Amazon ECR
       id: login-ecr
-      uses: aws-actions/amazon-ecr-login@v1
+      run: aws ecr get-login-password --region us-gov-west-1 | docker login --username AWS --password-stdin 008577686731.dkr.ecr.us-gov-west-1.amazonaws.com
 
   runtime-task:
     runs-on:
