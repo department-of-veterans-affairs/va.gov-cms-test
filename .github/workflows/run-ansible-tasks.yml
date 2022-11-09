@@ -39,27 +39,6 @@ jobs:
         ssm_parameter: /devops/VA_VSP_BOT_GITHUB_TOKEN
         env_variable_name: VA_VSP_BOT_GITHUB_TOKEN    
 
-    - name: Get bot token from Parameter Store
-      uses: marvinpinto/action-inject-ssm-secrets@latest
-      with:
-        ssm_parameter: /cms/ansible_ssh_id_rsa
-        env_variable_name: ANSIBLE_SSH_ID_RSA
-
-    - name: mkdir .ssh
-      run: mkdir -p ~/.ssh
-      
-    - name: setup ssh config
-      run: |
-        echo -e "Host *
-          StrictHostKeyChecking no
-          UserKnownHostsFile /dev/null
-        " >> ~/.ssh/config
-        
-    - name: setup ssh private key
-      run: |
-        echo -e "${{ env.ANSIBLE_SSH_ID_RSA }}" >> ~/.ssh/id_rsa
-        chmod 0600 ~/.ssh/*
-
     - name: Checkout
       uses: actions/checkout@v2
       with:
