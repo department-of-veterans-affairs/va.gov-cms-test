@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 jobs:
   call-run-ansible-playbook:
-    uses: department-of-veterans-affairs/vsp-infra-cms/.github/workflows/run-ansible-playbook.yml@main
+    uses: department-of-veterans-affairs/va.gov-cms-test/.github/workflows/run-ansible-playbook.yml@main
     with:
       extra-vars: --extra-vars "deployment_name=cms-test deployment_env=vagov_staging"
       playbook-name-path: cms/test.yml
