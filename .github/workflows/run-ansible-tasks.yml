@@ -9,11 +9,9 @@ jobs:
       - linux
       - x64    
     steps:
-   
-    # Instead of using a combination aws-actions configure-aws-credential and amazon-ecr-login to login in to 
-    # Amazon ECR use this aws cli command that pipes to docker. AWS CLI will automatically use the instance profile
-    # credentials to obtain the login password. Docker CLI will automatically store the password in the runner'socker config.json
-    # The aws-actions commands will not do this without additional steps.
+    # We need the Eclastic Container Repository password stored in the self-hosted runner's docker config.json.
+    # This can be achieved in one step using AWS and docker cli. Using the appropriate aws-actions workflows would
+    # take several. AWS Cli automatically discovers the self-hosted runner's IAM Instance Profile permissions.
     - name: Login to Amazon ECR
       id: login-ecr
       run: aws ecr get-login-password --region us-gov-west-1 | docker login --username AWS --password-stdin 008577686731.dkr.ecr.us-gov-west-1.amazonaws.com
@@ -24,20 +22,59 @@ jobs:
       - linux
       - x64
     needs: login-ecr
+    # This container is maintained and built here:
+    # https://github.com/department-of-veterans-affairs/vsp-infra-cms/
     container:
       image: 008577686731.dkr.ecr.us-gov-west-1.amazonaws.com/dsva/cms-ansible:latest
     steps:
 
+    # Without providing keys or a role to assume, configure-aws-credentials will use the self-hosted runner
+    # IAM Instance Profile permissions. Region is required.
     - name: Get AWS Creds
       uses: aws-actions/configure-aws-credentials@v1
       with:
         aws-region: us-gov-west-1        
-        
+
+    # To checkout a different repo, we need a token to do so. Fetch the VSP token from SSM Parameter Store.
     - name: Get bot token from Parameter Store
       uses: marvinpinto/action-inject-ssm-secrets@latest
       with:
         ssm_parameter: /devops/VA_VSP_BOT_GITHUB_TOKEN
         env_variable_name: VA_VSP_BOT_GITHUB_TOKEN    
+    
+    # It is much safer at workflow runtime to fetch and configure the SSH Private key rather than
+    # baking it into the Ansible container image. While it is stored in a private repository, it is built on
+    # a Github hosted runner.
+    - name: Get bot token from Parameter Store
+      uses: marvinpinto/action-inject-ssm-secrets@latest
+      with:
+        ssm_parameter: /cms/ansible_ssh_id_rsa
+        env_variable_name: ANSIBLE_SSH_ID_RSA
+
+    # Create .ssh dir if it doesn't already exist
+    - name: mkdir .ssh
+      run: mkdir -p /github/home/.ssh
+      
+    # Hosts we will connect to are ephemeral and will change. We also don't want to be prompted.
+    - name: setup ssh config
+      run: |
+        echo -e "Host *
+          StrictHostKeyChecking no
+          UserKnownHostsFile /dev/null
+        " >> /github/home/.ssh/config
+
+    # echo -e doesn't appear to cause formatting issues while writing the private key obtained from
+    # SSM Parameter Store.
+    - name: setup ssh private key
+      run: |
+        echo -e "${{ env.ANSIBLE_SSH_ID_RSA }}" >> /github/home/.ssh/id_rsa
+        chmod 0600 /github/home/.ssh/*
+
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        repository: department-of-veterans-affairs/vsp-infra-cms
+        token: ${{ env.VA_VSP_BOT_GITHUB_TOKEN }}
 
     - name: Checkout
       uses: actions/checkout@v2
@@ -46,5 +83,6 @@ jobs:
         token: ${{ env.VA_VSP_BOT_GITHUB_TOKEN }}
 
     - name: Run Test Playbook
+      # After checkout all ansible files/configs are under a dir called ansible.
       working-directory: ansible/
       run: ansible-playbook --verbose --extra-vars "deployment_name=cms-test deployment_env=vagov_staging" cms/test.yml
