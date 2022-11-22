@@ -238,16 +238,16 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.242.0",
+            "version": "3.247.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "cab6d4f830ce275a1742a3e35e2625917b006dd2"
+                "reference": "2cd51e75e753dfe1f1677bb0a2e13a9ce70cba26"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/cab6d4f830ce275a1742a3e35e2625917b006dd2",
-                "reference": "cab6d4f830ce275a1742a3e35e2625917b006dd2",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/2cd51e75e753dfe1f1677bb0a2e13a9ce70cba26",
+                "reference": "2cd51e75e753dfe1f1677bb0a2e13a9ce70cba26",
                 "shasum": ""
             },
             "require": {
@@ -326,9 +326,9 @@
             "support": {
                 "forum": "https://forums.aws.amazon.com/forum.jspa?forumID=80",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.242.0"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.247.0"
             },
-            "time": "2022-11-10T19:15:37+00:00"
+            "time": "2022-11-21T21:31:13+00:00"
         },
         {
             "name": "behat/behat",
@@ -28450,6 +28450,7 @@
         "drupal/blazy": 5,
         "drupal/cer": 20,
         "drupal/components": 10,
+        "drupal/content_lock": 15,
         "drupal/entity_block": 10,
         "drupal/entity_clone": 10,
         "drupal/entity_field_fetch": 10,
