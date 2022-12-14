@@ -63,7 +63,9 @@ jobs:
         with:
           api-key: ${{ secrets.DATADOG_API_KEY }}
           api-url: https://api.ddog-gov.com
-          metrics: ${{ steps.module_file_line_counts.outputs.raw_config }}
+          metrics: |
+            # Test.
+              ${{ steps.module_file_line_counts.outputs.raw_config }}
       - name: Send Metrics to DataDog.
         # https://github.com/masci/datadog/releases/tag/v1.4.0
         uses: masci/datadog@863b639c95138e957eb6e1e2499cecb82040a10b
