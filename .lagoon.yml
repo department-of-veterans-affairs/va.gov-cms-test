@@ -1,0 +1,18 @@
+# https://docs.lagoon.sh/using-lagoon-the-basics/lagoon-yml/
+docker-compose-yaml: docker-compose.yml
+
+project: demo-vagov-cmstest
+
+tasks:
+  pre-rollout:
+    - run:
+        name: Copy Lagoon .env into place
+        command: ep .lagoon/.env.conf .env
+        service: cli
+        shell: bash
+#  post-rollout:
+#    - run:
+#        name: Run drush deploy
+#        command: drush deploy
+#        service: cli
+#        shell: bash
