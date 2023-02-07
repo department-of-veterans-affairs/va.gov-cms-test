@@ -7,7 +7,7 @@ COPY hooks/ /app/hooks/
 COPY simplesamlphp-config-metadata/ /app/simplesamlphp-config-metadata/
 COPY composer.* /app/
 
-COPY .tugboat/*.crt /usr/local/share/ca-certificates
+COPY .tugboat/*.crt /usr/local/share/ca-certificates/
 RUN update-ca-certificates
 
 RUN composer install --no-dev
