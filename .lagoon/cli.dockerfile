@@ -7,6 +7,8 @@ COPY hooks/ /app/hooks/
 COPY simplesamlphp-config-metadata/ /app/simplesamlphp-config-metadata/
 COPY composer.* /app/
 RUN composer install --no-dev
+RUN composer va:theme:compile
+RUN composer va:web:install
 
 COPY . /app
 RUN mkdir --parents --verbose --mode=775 /app/docroot/sites/default/files
