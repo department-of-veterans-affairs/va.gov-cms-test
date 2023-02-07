@@ -6,7 +6,14 @@ COPY patches/ /app/patches/
 COPY hooks/ /app/hooks/
 COPY simplesamlphp-config-metadata/ /app/simplesamlphp-config-metadata/
 COPY composer.* /app/
+
+COPY .tugboat/*.crt /usr/local/share/ca-certificates
+RUN update-ca-certificates
+
 RUN composer install --no-dev
+RUN bin/npm install
+RUN composer va:theme:compile
+RUN composer va:web:install
 
 COPY . /app
 RUN mkdir --parents --verbose --mode=775 /app/docroot/sites/default/files
