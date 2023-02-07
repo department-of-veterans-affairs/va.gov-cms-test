@@ -13,3 +13,5 @@ $databases['default']['default'] = array(
 
 $settings['va_gov_web_root'] = getenv('LAGOON_ROOT');
 $settings['va_gov_app_root'] = getenv('LAGOON_ROOT') . '/web';
+
+ini_set('memory_limit', '4G');
