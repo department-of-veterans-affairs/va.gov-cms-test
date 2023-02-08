@@ -14,9 +14,9 @@ RUN composer install --no-dev
 RUN bin/npm install
 
 # Break out VA Theme compile into its component commands
-RUN cd bin && ln -sf ../docroot/libraries/yarn/bin/yarn yarn
-RUN export NODE_EXTRA_CA_CERTS=/etc/pki/tls/certs/ca-bundle.crt PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=TRUE; cd docroot/core && yarn install
-RUN cd docroot/core && yarn build:css
+RUN cd /app/bin && ln -sf ../docroot/libraries/yarn/bin/yarn yarn
+RUN export NODE_EXTRA_CA_CERTS=/etc/pki/tls/certs/ca-bundle.crt PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=TRUE; cd /app/docroot/core && yarn install
+RUN cd /app/docroot/core && yarn build:css
 RUN cd /app/docroot/design-system && yarn install && yarn build:drupal
 RUN cd /app/docroot/themes/custom/vagovclaro && yarn install && yarn build
 
