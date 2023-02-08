@@ -1,19 +1,23 @@
 FROM uselagoon/php-8.1-cli-drupal:latest
 
-COPY .lagoon/ /app/.lagoon/
-COPY .git/ /app/.git/
-COPY patches/ /app/patches/
-COPY hooks/ /app/hooks/
-COPY simplesamlphp-config-metadata/ /app/simplesamlphp-config-metadata/
-COPY composer.* /app/
+COPY . /app
+
+#COPY .lagoon/ /app/.lagoon/
+#COPY .git/ /app/.git/
+#COPY patches/ /app/patches/
+#COPY hooks/ /app/hooks/
+#COPY simplesamlphp-config-metadata/ /app/simplesamlphp-config-metadata/
+#COPY composer.* /app/
 #COPY docroot/ /app/docroot/
 
 COPY .tugboat/*.crt /usr/local/share/ca-certificates/
 RUN update-ca-certificates
-RUN composer install --no-dev
-#RUN bin/npm install
 
-#RUN composer va:theme:compile
+RUN composer install --no-dev
+
+RUN bin/npm install
+
+RUN composer va:theme:compile
 
 # Break out VA Theme compile into its component commands
 #RUN cd /app/bin && ln -sf ../docroot/libraries/yarn/bin/yarn yarn
@@ -22,7 +26,7 @@ RUN composer install --no-dev
 #RUN cd /app/docroot/design-system && yarn install && yarn build:drupal
 #RUN cd /app/docroot/themes/custom/vagovclaro && yarn install && yarn build
 
-#RUN composer va:web:install
+RUN composer va:web:install
 
 COPY . /app
 RUN mkdir --parents --verbose --mode=775 /app/docroot/sites/default/files
