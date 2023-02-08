@@ -3,19 +3,25 @@ docker-compose-yaml: docker-compose.yml
 
 project: demo-vagov-cmstest
 
-#tasks:
-#  # pre-rollout tasks run on the old containers
-#  pre-rollout:
+tasks:
+  # pre-rollout tasks run on the old containers
+  pre-rollout:
 
   # post-rollout tasks run on the new containers
-#  post-rollout:
-#    - run:
-#        name: Copy Lagoon .env into place
-#        command: ep --dry-run .lagoon/.env.ep > .env
-#        service: cli
-#        shell: bash
-#    - run:
-#        name: Run drush deploy
-#        command: drush deploy
-#        service: cli
-#        shell: bash
+  post-rollout:
+    - run:
+        name: NPM install
+        command: /app/bin/npm install 
+        service: cli
+        shell: bash
+    - run:
+        name: Install VA Themes
+        command: composer va:theme:compile
+        service: cli
+        shell: bash
+    - run:
+        name: Install VA web 
+        command: composer va:web:install
+        service: cli
+        shell: bash
+
