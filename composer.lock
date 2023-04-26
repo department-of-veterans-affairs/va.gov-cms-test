@@ -5601,21 +5601,21 @@
         },
         {
             "name": "drupal/entity_browser_table",
-            "version": "1.2.0",
+            "version": "1.4.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/entity_browser_table.git",
-                "reference": "8.x-1.2"
+                "reference": "8.x-1.4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/entity_browser_table-8.x-1.2.zip",
-                "reference": "8.x-1.2",
-                "shasum": "2bc170671d784e881f8efc1287acfb247838a17e"
+                "url": "https://ftp.drupal.org/files/projects/entity_browser_table-8.x-1.4.zip",
+                "reference": "8.x-1.4",
+                "shasum": "9272f52b015f5ca0d532e111926bfd71f826c5cf"
             },
             "require": {
-                "drupal/core": "^8 || ^9",
-                "drupal/entity_browser": "~2.2"
+                "drupal/core": "^8 || ^9 || ^10",
+                "drupal/entity_browser": "~2.9"
             },
             "require-dev": {
                 "drupal/media": "*"
@@ -5623,8 +5623,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "8.x-1.2",
-                    "datestamp": "1590913837",
+                    "version": "8.x-1.4",
+                    "datestamp": "1678795945",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
