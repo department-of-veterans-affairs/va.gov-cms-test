@@ -12,8 +12,8 @@ jobs:
 
     - name: Update PR title
       run: |
-        PR_TITLE=${{ github.event.pull_request.title }}
-        UPDATED_TITLE=$(echo "$PR_TITLE" | sed -E 's/vacms ([0-9]+) /VACMS-\1: /I')
+        PR_TITLE="${{ github.event.pull_request.title }}"
+        UPDATED_TITLE="$(echo "$PR_TITLE" | sed -E 's/vacms ([0-9]+) /VACMS-\1: /I')"
         if [ "$PR_TITLE" != "$UPDATED_TITLE" ]; then
           curl \
             -X PATCH \
