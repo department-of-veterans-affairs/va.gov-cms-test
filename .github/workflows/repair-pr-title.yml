@@ -10,28 +10,20 @@ jobs:
 
     steps:
 
-      - name: Fetch PR and extract title
-        id: pr_title
+      - name: Repair PR title
         run: |
           PR=$(curl \
             -H "Accept: application/vnd.github.v3+json" \
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             "https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}")
-          TITLE="$(jq '.title' <<< "$PR")"
-          echo "title=$TITLE" >> $GITHUB_OUTPUT
-        shell: bash
-
-      - name: Update PR title
-        run: |
-          ORIGINAL_TITLE=$(jq -r <<< ${{ steps.pr_title.outputs.title }})
-          UPDATED_TITLE=$(echo "$ORIGINAL_TITLE" | sed -E 's/vacms ([0-9]+) /VACMS-\1: /I')
+          ORIGINAL_TITLE="$(jq '.title' <<< "$PR")"
+          UPDATED_TITLE="$(echo "$ORIGINAL_TITLE" | sed -E 's/vacms ([0-9]+) /VACMS-\1: /I')"
           if [ "$ORIGINAL_TITLE" != "$UPDATED_TITLE" ]; then
-            ESCAPED_UPDATED_TITLE=$(jq -R -s -j <<< "$UPDATED_TITLE")
             curl \
               -X PATCH \
               -H "Accept: application/vnd.github.v3+json" \
               -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
               "https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}" \
-              -d "{\"title\":$ESCAPED_UPDATED_TITLE}"
+              -d "{\"title\":$UPDATED_TITLE}"
           fi
         shell: bash
