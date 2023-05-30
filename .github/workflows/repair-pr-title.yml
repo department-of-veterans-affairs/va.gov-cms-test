@@ -12,14 +12,14 @@ jobs:
 
     - name: Update PR title
       run: |
-        UPDATED_TITLE=$(jq -R --slurp <<< "${{ github.event.pull_request.title }}" | sed -E 's/vacms ([0-9]+) /VACMS-\1: /I')
-        if [ "${{ github.event.pull_request.title }}" != "$UPDATED_TITLE" ]; then
-          ESCAPED_TITLE=$(jq -R --slurp <<< "$UPDATED_TITLE")
+        ORIGINAL_TITLE=$(jq -R --slurp <<< "${{ github.event.pull_request.title }}")
+        UPDATED_TITLE=$(echo $ORIGINAL_TITLE | sed -E 's/vacms ([0-9]+) /VACMS-\1: /I')
+        if [ "$ORIGINAL_TITLE" != "$UPDATED_TITLE" ]; then
           curl \
             -X PATCH \
             -H "Accept: application/vnd.github.v3+json" \
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }} \
-            -d "{\"title\":$ESCAPED_TITLE}"
+            -d "{\"title\":$UPDATED_TITLE}"
         fi
       shell: bash
