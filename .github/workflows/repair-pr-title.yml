@@ -18,7 +18,7 @@ jobs:
           PR="$(curl \
             -H "Accept: application/vnd.github.v3+json" \
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            "${PR_API_URL}")
+            "${PR_API_URL}")"
           echo "PR: $PR"
 
           # This will be a JSON-quoted string. We do _not_ strip the quotes.
