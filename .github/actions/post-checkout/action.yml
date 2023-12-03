@@ -19,6 +19,9 @@ runs:
         done < <(git diff --name-only "${GITHUB_BASE_SHA}" "${GITHUB_PR_SHA}");
         echo "docs_only=${docs_only}" >> $GITHUB_OUTPUT;
       shell: bash
+      env:
+          GITHUB_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          GITHUB_PR_SHA: ${{ github.event.pull_request.head.sha }}
 
     - name: Get Composer cache directory
       id: composer-cache
