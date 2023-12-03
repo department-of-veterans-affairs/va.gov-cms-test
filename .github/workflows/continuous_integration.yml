@@ -3,7 +3,7 @@ on:
   pull_request:
     paths-ignore:
       - '**.md'
-permissions:k
+permissions:
   pull-requests: write
   issues: write
 jobs:
