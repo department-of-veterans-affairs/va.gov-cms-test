@@ -16,7 +16,7 @@ runs:
             echo "${filepath} is a non documentation file";
             docs_only="false";
           fi;
-        done << (git diff --name-only "${GITHUB_BASE_SHA}" "${GITHUB_PR_SHA}");
+        done < <(git diff --name-only "${GITHUB_BASE_SHA}" "${GITHUB_PR_SHA}");
         echo "docs_only=${docs_only}" >> $GITHUB_OUTPUT;
       shell: bash
 
