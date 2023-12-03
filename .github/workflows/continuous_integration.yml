@@ -1,8 +1,5 @@
 name: Continuous Integration
-on:
-  pull_request:
-    paths-ignore:
-      - '**.md'
+on: [pull_request]
 jobs:
 
   # Check whether certain fields exist in the CMS configuration.
