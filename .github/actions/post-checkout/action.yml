@@ -8,6 +8,7 @@ runs:
     - name: Check for documentation only changes
       id: docs-only
       run: |
+        git log --max-count=10
         docs_only="true";
         while read filepath; do
           if [ $filepath == *.md ]; then
