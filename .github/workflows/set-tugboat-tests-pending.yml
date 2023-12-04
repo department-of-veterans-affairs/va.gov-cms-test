@@ -21,7 +21,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
+      - name: Documentation Only PR Check
+        uses: ./.github/actions/docs-only
+        id: docs-only
       - name: Set status for Tugboat tasks.
         run: |
           test_names=(
@@ -31,13 +34,23 @@ jobs:
             va/tests/status-error
           )
           for test_name in "${test_names[@]}"; do
+            if [ $DOCS_ONLY == "true" ]; then
             gh api \
               --method POST \
               -H "Accept: application/vnd.github+json" \
               "/repos/${GITHUB_REPOSITORY}/statuses/${SHA}" \
-              -f state='pending' \
+              -f state='success' \
               -f context="${test_name}";
+            else
+              gh api \
+                --method POST \
+                -H "Accept: application/vnd.github+json" \
+                "/repos/${GITHUB_REPOSITORY}/statuses/${SHA}" \
+                -f state='pending' \
+                -f context="${test_name}";
+            fi
           done;
         env:
           SHA: ${{ github.event.pull_request.head.sha }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DOCS_ONLY: ${{ steps.docs-only.outputs.docs-only }}

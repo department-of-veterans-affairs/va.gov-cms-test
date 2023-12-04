@@ -14,13 +14,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
+      - name: Documentation Only PR Check
+        uses: ./.github/actions/docs-only
+        id: docs-only
       - name: Check Corresponding Entity Reference Fields
-        # See also `composer va:test:check-cer` in composer.json
+      # See also `composer va:test:check-cer` in composer.json
+        if: ${{ steps.docs-only.outputs.docs-only == 'false' }}
         run: ./tests/scripts/check-cer.sh
       - name: Check Revision Log fields
         # See also `composer va:test:check-node-revision-logs` in composer.json
         # See also `composer va:test:check-taxonomy-revision-logs` in composer.json
+        if: ${{ steps.docs-only.outputs.docs-only == 'false' }}
         run: |
           ./tests/scripts/check-node-revision-logs.sh
           ./tests/scripts/check-taxonomy-revision-logs.sh
@@ -31,8 +36,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
+      - name: Documentation Only PR Check
+        uses: ./.github/actions/docs-only
+        id: docs-only
       - name: Composer Validate
+        if: ${{ steps.docs-only.outputs.docs-only == 'false' }}
         run: composer validate
 
   # Check style of ES/JS files with ESLint and ReviewDog.
@@ -41,11 +50,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
+      - name: Documentation Only PR Check
+        uses: ./.github/actions/docs-only
+        id: docs-only
       - name: Post-Checkout Actions
+        if: ${{ steps.docs-only.outputs.docs-only == 'false' }}
         uses: ./.github/actions/post-checkout
       - name: ReviewDog
         # See also `composer va:test:eslint` in composer.json
+        if: ${{ steps.docs-only.outputs.docs-only == 'false' }}
         uses: reviewdog/action-eslint@10ca150f51dbbb963467c37a03c873ba1fa75f91 # v1.20.0
         with:
           reporter: github-pr-review
@@ -58,11 +72,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
+      - name: Documentation Only PR Check
+        uses: ./.github/actions/docs-only
+        id: docs-only
       - name: Post-Checkout Actions
         uses: ./.github/actions/post-checkout
       - name: Run PHP_CodeSniffer and ReviewDog
         # See also `composer va:test:php_codesniffer` in composer.json
+        if: ${{ steps.docs-only.outputs.docs-only == 'false' }}
         run: |
           export REVIEWDOG_GITHUB_API_TOKEN="${GITHUB_TOKEN}"
           bin/phpcs \
@@ -82,11 +100,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
+      - name: Documentation Only PR Check
+        uses: ./.github/actions/docs-only
+        id: docs-only
       - name: Post-Checkout Actions
+        if: ${{ steps.docs-only.outputs.docs-only == 'false' }}
         uses: ./.github/actions/post-checkout
       - name: Run PHPLint
         # See also `composer va:test:lint-php` in composer.json
+        if: ${{ steps.docs-only.outputs.docs-only == 'false' }}
         run: ./tests/scripts/lint-php.sh
 
   # Analyze the codebase for programming errors with PHPStan.
@@ -95,11 +118,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
+      - name: Documentation Only PR Check
+        uses: ./.github/actions/docs-only
+        id: docs-only
       - name: Post-Checkout Actions
         uses: ./.github/actions/post-checkout
       - name: Run PHPStan and ReviewDog
         # See also `composer va:test:phpstan` in composer.json
+        if: ${{ steps.docs-only.outputs.docs-only == 'false' }}
         run: |
           bin/phpstan analyze \
             --no-progress \
@@ -122,11 +149,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
+      - name: Documentation Only PR Check
+        uses: ./.github/actions/docs-only
+        id: docs-only
       - name: Post-Checkout Actions
+        if: ${{ steps.docs-only.outputs.docs-only == 'false' }}
         uses: ./.github/actions/post-checkout
       - name: Run PHPUnit (Unit Tests only)
         # See also `composer va:test:phpunit-unit` in composer.json
+        if: ${{ steps.docs-only.outputs.docs-only == 'false' }}
         run: bin/phpunit \
           --group unit \
           --exclude-group disabled \
@@ -139,9 +171,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
+      - name: Documentation Only PR Check
+        uses: ./.github/actions/docs-only
+        id: docs-only
       - name: Stylelint modules
         # See also `composer va:test:stylelint-modules` in composer.json
+        if: ${{ steps.docs-only.outputs.docs-only == 'false' }}
         uses: reviewdog/action-stylelint@548276a94275c7865effa8d72fa8b6983d9f47c4 # v1.18.1
         with:
           fail_on_error: true
@@ -152,6 +188,7 @@ jobs:
           stylelint_input: 'docroot/modules/custom/**/*.css'
       - name: Stylelint themes
         # See also `composer va:test:stylelint-themes` in composer.json
+        if: ${{ steps.docs-only.outputs.docs-only == 'false' }}
         uses: reviewdog/action-stylelint@548276a94275c7865effa8d72fa8b6983d9f47c4 # v1.18.1
         with:
           fail_on_error: true
@@ -170,7 +207,11 @@ jobs:
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
         with:
           fetch-depth: 0
+      - name: Documentation Only PR Check
+        uses: ./.github/actions/docs-only
+        id: docs-only
       - name: Delete any existing comment.
+        if: ${{ steps.docs-only.outputs.docs-only == 'false' }}
         uses: thollander/actions-comment-pull-request@1d3973dc4b8e1399c0620d3f2b1aa5e795465308 # v2.4.3
         continue-on-error: true
         with:
@@ -179,6 +220,7 @@ jobs:
           message: |
             Checking composer.lock changes...
       - name: Check changes in composer.lock.
+        if: ${{ steps.docs-only.outputs.docs-only == 'false' }}
         run: |
           LINES_CHANGED=$(git diff --numstat origin/main..HEAD -- composer.lock | awk '{print $1+$2}')
           THRESHOLD=200
@@ -188,7 +230,7 @@ jobs:
           echo "THRESHOLD=$THRESHOLD" >> $GITHUB_ENV
       - name: Comment if composer.lock changes exceed threshold.
         uses: thollander/actions-comment-pull-request@1d3973dc4b8e1399c0620d3f2b1aa5e795465308 # v2.4.3
-        if: env.LINES_CHANGED > env.THRESHOLD
+        if: env.LINES_CHANGED > env.THRESHOLD && ${{ steps.docs-only.outputs.docs-only == 'false' }}
         continue-on-error: true
         with:
           comment_tag: check-composer-lock-changes
