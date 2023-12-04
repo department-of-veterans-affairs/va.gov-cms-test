@@ -8,7 +8,7 @@ runs:
     - name: Check for documentation only changes
       id: docs-only
       run: |
-        git log --max-count=10
+        git log --max-count=10;
         docs_only="true";
         while read filepath; do
           if [ $filepath == *.md ]; then
@@ -17,12 +17,12 @@ runs:
             echo "${filepath} is a non documentation file";
             docs_only="false";
           fi;
-        done < <(git diff --name-only "${GITHUB_BASE_SHA}" "${GITHUB_PR_SHA}");
+        done < <(git diff --name-only "${GITHUB_BASE_BRANCH}" "${GITHUB_PR_BRANCH}");
         echo "docs_only=${docs_only}" >> $GITHUB_OUTPUT;
       shell: bash
       env:
-          GITHUB_BASE_SHA: ${{ github.event.pull_request.base.sha }}
-          GITHUB_PR_SHA: ${{ github.event.pull_request.head.sha }}
+          GITHUB_BASE_BRANCH: ${{ github.event.pull_request.base.ref }}
+          GITHUB_PR_BRANCH: ${{ github.event.pull_request.head.ref }}
 
     - name: Get Composer cache directory
       id: composer-cache
