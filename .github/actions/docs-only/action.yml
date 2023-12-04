@@ -26,6 +26,7 @@ runs:
           for (const file of files) {
             console.log(`Checking PR file: ${file}`)
             if (!file.endsWith('.md')) {
+              console.log(`Code changes found in: ${file}`)
               return "false"
             }
           }
