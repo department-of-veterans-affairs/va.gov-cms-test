@@ -19,7 +19,7 @@ jobs:
           -o .tugboat_response.json \
           https://api.tugboat.vfs.va.gov/v3/previews
     - name: Diagnostics
-      run: cat tugboat_response.json
+      run: cat .tugboat_response.json
     - name: Extract Preview ID
       run: jq -r .preview .tugboat_response.json > .tugboat_preview.txt
     - name: Save  Preview ID
