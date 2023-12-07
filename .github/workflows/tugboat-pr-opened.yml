@@ -3,6 +3,7 @@ on:
   pull_request:
     types:
       - opened
+      - reopened
 
 jobs:
   tugboat_create_preview:
@@ -22,7 +23,12 @@ jobs:
       run: cat .tugboat_response.json
     - name: Extract Preview ID
       run: jq -r .preview .tugboat_response.json > .tugboat_preview.txt
-    - name: Save  Preview ID
+    - name: Delete Previous Preview ID
+      continue-on-error: true
+      run: |
+        gh extension install actions/gh-actions-cache
+        gh actions-cache delete "${{ runner.os }}-tugboat-preview-id-pr-${{ github.event.pull_request.number }}" --confirm
+    - name: Save Preview ID
       uses: actions/cache/save@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
       with:
         path: .tugboat_preview.txt

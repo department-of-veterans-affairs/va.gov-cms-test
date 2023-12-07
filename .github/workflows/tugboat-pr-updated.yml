@@ -1,0 +1,27 @@
+name: Rebuild Tugboat Preview
+on:
+  pull_request:
+    types:
+      - synchronize
+
+jobs:
+  tugboat_rebuild_preview:
+    runs-on: self-hosted
+    name: Rebuild Tugboat Preview
+    steps:
+    - name: Restore Preview ID
+      uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+      with:
+        path: .tugboat_preview.txt
+        key: ${{ runner.os }}-tugboat-preview-id-pr-${{ github.event.pull_request.number }}
+    - name: Set Preview ID
+      run: |
+        PREVIEW_ID=$(cat .tugboat_preview.txt)
+        echo $PREVIEW_ID
+        echo "PREVIEW_ID=$PREVIEW_ID" >> $GITHUB_ENV
+    - name: Rebuild Tugboat Preview
+      run: |
+        curl -H "Authorization: Bearer ${{ secrets.TUGBOAT_API_TOKEN }}" \
+          -H "Content-Type: application/json" \
+          -X POST \
+          https://api.tugboat.vfs.va.gov/v3/previews/${{ env.PREVIEW_ID }}/rebuild
