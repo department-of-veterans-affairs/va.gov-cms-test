@@ -7,7 +7,7 @@ on:
 jobs:
   tugboat_create_preview:
     runs-on: self-hosted
-    name: Create a Tugboat Preview
+    name: Create Tugboat Preview
     steps:
     - name: Create Tugboat Preview
       id: tugboat_pr_preview
@@ -16,7 +16,7 @@ jobs:
           -H "Content-Type: application/json" \
           -X POST \
           -d '{ "repo": "${{ secrets.TUGBOAT_REPOSITORY }}", "ref": "${{ github.event.pull_request.number }}", "name": "${{ github.event.pull_request.title }}", "type": "pullrequest" }' \
-          -o .tugboat_response.json
+          -o .tugboat_response.json \
           https://api.tugboat.vfs.va.gov/v3/previews
     - name: Diagnostics
       run: cat tugboat_response.json
