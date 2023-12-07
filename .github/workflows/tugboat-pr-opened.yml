@@ -33,3 +33,5 @@ jobs:
       with:
         path: .tugboat_preview.txt
         key: ${{ runner.os }}-tugboat-preview-id-pr-${{ github.event.pull_request.number }}
+    - name: Cleanup temporary file
+      run: rm .tugboat_preview.txt
