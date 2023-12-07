@@ -9,17 +9,31 @@ jobs:
     runs-on: self-hosted
     name: Rebuild Tugboat Preview
     steps:
+    - name: Documentation Only PR Check
+      uses: ./.github/actions/docs-only
+      id: docs-only
     - name: Restore Preview ID
+      if: ${{ steps.docs-only.outputs.docs-only == 'false' }}
       uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
       with:
         path: .tugboat_preview.txt
         key: ${{ runner.os }}-tugboat-preview-id-pr-${{ github.event.pull_request.number }}
     - name: Set Preview ID
+      if: ${{ steps.docs-only.outputs.docs-only == 'false' }}
       run: |
         PREVIEW_ID=$(cat .tugboat_preview.txt)
-        echo $PREVIEW_ID
-        echo "PREVIEW_ID=$PREVIEW_ID" >> $GITHUB_ENV
+        if [ -z "$PREVIEW_ID" ]; then
+          echo "Preview ID not found, please manually rebuild Tugboat Preview."
+          exit 1
+        else
+          echo $PREVIEW_ID
+          echo "PREVIEW_ID=$PREVIEW_ID" >> $GITHUB_ENV
+        fi
+    - name: Cleanup temporary file
+      if: ${{ steps.docs-only.outputs.docs-only == 'false' }}
+      run: rm .tugboat_preview.txt
     - name: Rebuild Tugboat Preview
+      if: ${{ steps.docs-only.outputs.docs-only == 'false' }}
       run: |
         curl -H "Authorization: Bearer ${{ secrets.TUGBOAT_API_TOKEN }}" \
           -H "Content-Type: application/json" \
