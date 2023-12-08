@@ -34,14 +34,13 @@ jobs:
     - name: Set Preview ID
       if: ${{ steps.docs-only.outputs.docs-only == 'false' }}
       run: |
-        PREVIEW_ID=$(cat .tugboat_preview.txt)
-        if [ -z "$PREVIEW_ID" ]; then
+        if [ -f "$PREVIEW_ID" ]; then
           echo "Preview ID not found, please manually delete Tugboat Preview."
           exit 1
-        else
-          echo $PREVIEW_ID
-          echo "PREVIEW_ID=$PREVIEW_ID" >> $GITHUB_ENV
         fi
+        PREVIEW_ID=$(cat .tugboat_preview.txt)
+        echo "Preview ID: ${PREVIEW_ID}"
+        echo "PREVIEW_ID=$PREVIEW_ID" >> $GITHUB_ENV
     - name: Cleanup temporary file
       if: ${{ steps.docs-only.outputs.docs-only == 'false' }}
       run: rm .tugboat_preview.txt
