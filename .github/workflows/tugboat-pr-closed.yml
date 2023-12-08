@@ -50,5 +50,7 @@ jobs:
       if: ${{ steps.docs-only.outputs.docs-only == 'false' }}
       run: |
         curl -H "Authorization: Bearer ${{ secrets.TUGBOAT_API_TOKEN }}" \
+          -H "Content-Type: application/json" \
           -X DELETE \
+          -d '{ "force": "false" }' \
           https://api.tugboat.vfs.va.gov/v3/previews/${{ env.PREVIEW_ID }}
