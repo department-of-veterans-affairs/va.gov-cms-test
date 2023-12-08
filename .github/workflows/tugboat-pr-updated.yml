@@ -3,6 +3,8 @@ on:
   pull_request:
     types:
       - synchronize
+    paths-ignore:
+      - '**.md'
 
 jobs:
   tugboat_rebuild_preview:
@@ -11,28 +13,12 @@ jobs:
       NODE_EXTRA_CA_CERTS: /etc/ssl/certs/ca-certificates.crt
     name: Rebuild Tugboat Preview
     steps:
-    # The following checks out the code from the pull request.
-    #
-    # This is not normally secure or recommended.  It is safe in this context,
-    # however, because we are not executing any code located within the PR
-    # branch or its commits, regardless of provenance.
-    #
-    # Do not execute any code located within the repository!
-    - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-      with:
-        fetch-depth: 0
-        ref: ${{ github.event.pull_request.head.sha }}
-    - name: Documentation Only PR Check
-      uses: ./.github/actions/docs-only
-      id: docs-only
     - name: Restore Preview ID
-      if: ${{ steps.docs-only.outputs.docs-only == 'false' }}
       uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
       with:
         path: .tugboat_preview.txt
         key: ${{ runner.os }}-tugboat-preview-id-pr-${{ github.event.pull_request.number }}
     - name: Set Preview ID
-      if: ${{ steps.docs-only.outputs.docs-only == 'false' }}
       run: |
         if ! [ -f "$PREVIEW_ID" ]; then
           echo "Preview ID not found, please manually rebuild Tugboat Preview."
@@ -42,10 +28,8 @@ jobs:
         echo "Preview ID: ${PREVIEW_ID}"
         echo "PREVIEW_ID=$PREVIEW_ID" >> $GITHUB_ENV
     - name: Cleanup temporary file
-      if: ${{ steps.docs-only.outputs.docs-only == 'false' }}
       run: rm .tugboat_preview.txt
     - name: Rebuild Tugboat Preview
-      if: ${{ steps.docs-only.outputs.docs-only == 'false' }}
       run: |
         curl -H "Authorization: Bearer ${{ secrets.TUGBOAT_API_TOKEN }}" \
           -H "Content-Type: application/json" \

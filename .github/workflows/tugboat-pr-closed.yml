@@ -3,6 +3,8 @@ on:
   pull_request:
     types:
       - closed
+    paths-ignore:
+      - '**.md'
 
 jobs:
   tugboat_delete_preview:
