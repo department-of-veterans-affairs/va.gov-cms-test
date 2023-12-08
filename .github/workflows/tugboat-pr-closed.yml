@@ -36,7 +36,7 @@ jobs:
     - name: Set Preview ID
       if: ${{ steps.docs-only.outputs.docs-only == 'false' }}
       run: |
-        if ! [ -f "$PREVIEW_ID" ]; then
+        if ! [ -f .tugboat_preview.txt ]; then
           echo "Preview ID not found, please manually delete Tugboat Preview."
           exit 1
         fi

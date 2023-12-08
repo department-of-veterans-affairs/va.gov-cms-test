@@ -20,7 +20,7 @@ jobs:
         key: ${{ runner.os }}-tugboat-preview-id-pr-${{ github.event.pull_request.number }}
     - name: Set Preview ID
       run: |
-        if ! [ -f "$PREVIEW_ID" ]; then
+        if ! [ -f .tugboat_preview.txt ]; then
           echo "Preview ID not found, please manually rebuild Tugboat Preview."
           exit 1
         fi
