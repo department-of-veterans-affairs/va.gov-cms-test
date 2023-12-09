@@ -9,7 +9,7 @@ output: 'group'
 
 tasks:
 
-  # Hello world!
+  # Hello world! Hello again!
 
   # Any changes to test names or additions or removals must be updated in
   # .github/workflows/set-tests-statuses.yml as well for the
