@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "35774bde30d44b309b85235627346447",
+    "content-hash": "427b34c30a5c0dcad0292d12f991457b",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -12135,6 +12135,82 @@
             "homepage": "https://www.drupal.org/project/simplesamlphp_auth",
             "support": {
                 "source": "https://git.drupalcode.org/project/simplesamlphp_auth"
+            }
+        },
+        {
+            "name": "drupal/siteimprove",
+            "version": "dev-2.0.x",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupalcode.org/project/siteimprove.git",
+                "reference": "d6a68d1c6c8adbb8cebdef40590608b6a78a66d9"
+            },
+            "require": {
+                "drupal/core": "^9.2 || ^10"
+            },
+            "require-dev": {
+                "drupal/domain_access": "*"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "branch-alias": {
+                    "dev-2.0.x": "2.0.x-dev"
+                },
+                "drupal": {
+                    "version": "2.0.1+4-dev",
+                    "datestamp": "1701681306",
+                    "security-coverage": {
+                        "status": "not-covered",
+                        "message": "Dev releases are not covered by Drupal security advisories."
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0+"
+            ],
+            "authors": [
+                {
+                    "name": "bartvig",
+                    "homepage": "https://www.drupal.org/user/3107079"
+                },
+                {
+                    "name": "beltofte",
+                    "homepage": "https://www.drupal.org/user/151799"
+                },
+                {
+                    "name": "cbccharlie",
+                    "homepage": "https://www.drupal.org/user/616836"
+                },
+                {
+                    "name": "Hjalteschurmann",
+                    "homepage": "https://www.drupal.org/user/3730405"
+                },
+                {
+                    "name": "kreynen",
+                    "homepage": "https://www.drupal.org/user/48877"
+                },
+                {
+                    "name": "rofejo",
+                    "homepage": "https://www.drupal.org/user/3284851"
+                },
+                {
+                    "name": "Siteimprove",
+                    "homepage": "https://www.drupal.org/user/3521441"
+                },
+                {
+                    "name": "tlyngej",
+                    "homepage": "https://www.drupal.org/user/413139"
+                }
+            ],
+            "description": "Integration with Siteimprove.",
+            "homepage": "https://www.drupal.org/project/siteimprove",
+            "keywords": [
+                "Drupal"
+            ],
+            "support": {
+                "source": "https://git.drupalcode.org/project/siteimprove",
+                "issues": "https://www.drupal.org/project/issues/siteimprove"
             }
         },
         {
@@ -26739,6 +26815,7 @@
         "drupal/schemata": 10,
         "drupal/seven": 15,
         "drupal/simplesamlphp_auth": 5,
+        "drupal/siteimprove": 20,
         "drupal/styleguide": 10,
         "drupal/user_history": 15,
         "drupal/viewfield": 10,
