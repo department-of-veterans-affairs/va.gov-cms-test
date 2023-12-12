@@ -5,7 +5,7 @@ jobs:
   container-test-job:
     runs-on: self-hosted
     container:
-      image: public.ecr.aws/node/node:18
+      image: public.ecr.aws/node/node:latest
       env:
         NODE_ENV: development
       ports:
