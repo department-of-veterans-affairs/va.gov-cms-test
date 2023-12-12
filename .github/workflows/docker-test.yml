@@ -18,6 +18,7 @@ jobs:
         uses: actions/checkout@v4
       - name: Install Oracle Instant Client Libraries
         run: |
+          ls -la /etc/ssl
           pwd
           cd /opt
           mkdir -p /opt/oracle
