@@ -88,6 +88,15 @@ $settings['file_scan_ignore_directories'] = [
  */
 $settings['entity_update_batch_size'] = 50;
 
+
+/**
+ * Site Improve
+ */
+$config['siteimprove.settings']['prepublish_enabled'] = TRUE;
+$config['siteimprove.settings']['api_username'] = getenv('SITEIMPROVE_API_USER');
+$config['siteimprove.settings']['api_key'] = getenv('SITEIMPROVE_API_KEY');
+
+
 /**
  * Image Style Settings
  *
