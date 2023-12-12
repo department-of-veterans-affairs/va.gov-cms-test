@@ -7,7 +7,7 @@ jobs:
     container:
       image: public.ecr.aws/docker/library/ruby:3.2.2-bullseye
       env:
-        SSL_CERT_FILE: /etc/ssl/certs
+        SSL_CERT_FILE: /etc/ssl/certs/ca-certificates.crt
       ports:
         - 80
       volumes:
