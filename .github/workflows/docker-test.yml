@@ -5,7 +5,7 @@ jobs:
   container-test-job:
     runs-on: self-hosted
     container:
-      image: public.ecr.aws/node/node:latest
+      image: public.ecr.aws/docker/library/ruby:3.2.2-slim-bullseye
       env:
         NODE_ENV: development
       ports:
