@@ -7,11 +7,12 @@ jobs:
     container:
       image: public.ecr.aws/docker/library/ruby:3.2.2-bullseye
       env:
-        NODE_ENV: development
+        SSL_CERT_FILE: /etc/ssl/certs
       ports:
         - 80
       volumes:
         - my_docker_volume:/home/runner
+        - /etc/ssl/certs:/etc/ssl/certs
       options: --cpus 1
     steps:
       - name: Checkout Repository
