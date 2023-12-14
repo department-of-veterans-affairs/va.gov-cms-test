@@ -1,7 +1,7 @@
 name: Refresh Tugboat Preview ID Cache
 on:
   schedule:
-    - cron: '1 * * * *'
+    - cron: '*/15 * * * *'
 jobs:
   testing:
     runs-on: ubuntu-latest
