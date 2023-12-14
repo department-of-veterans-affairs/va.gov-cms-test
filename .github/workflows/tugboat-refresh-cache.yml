@@ -25,7 +25,6 @@ jobs:
             const prs = await github.paginate(
               openPrOpts,
               (response) => {
-                console.log(response.data)
                 response.data.map(
                   (pr) => pr.number
                 )
