@@ -17,50 +17,49 @@ jobs:
             console.log(`owner: ${context.repo.owner}`)
             console.log(`repo: ${context.repo.repo}`)
 
-            const openPrOpts = github.rest.pulls.list.endpoint.merge({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              state: 'open',
-            })
-            const prs = await github.paginate(
-              openPrOpts,
-              (response) => {
-                response.data.map(
-                  (pr) => pr.number
-                )
+            const prs = []
+            for await (const response of octokit.paginate.iterator(
+              github.rest.pulls.list,
+              {
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                state: 'open',
               }
-            )
-
-            for (const pr of prs) {
-              console.log(`PR: ${pr}`)
-            }
-
-            const cacheOps = github.rest.actions.getActionsCacheList.endpoint.merge({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-            })
-            const cacheKeys = await github.paginate(
-              cacheOps,
-              (response) => response.data.map(
-                (cache) => cache.key
+            )) {
+              response.data.map(
+                (pr) => {
+                  console.log(`PR: ${pr}`)
+                  prs.push(pr.number)
+                }
               )
-            )
-
-            for (const key of cacheKeys) {
-              console.log(`Key: ${key}`)
             }
 
-            const toRefresh = []
-            for (const pr of prs) {
-              if (cacheKeys.includes(`${{ runner.os }}-tugboat-preview-id-pr-${pr}`)) {
-                console.log(`Need to refresh: ${pr}`)
-                toRefresh.push(pr)
-              }
-            }
+            # const cacheOps = github.rest.actions.getActionsCacheList.endpoint.merge({
+            #   owner: context.repo.owner,
+            #   repo: context.repo.repo,
+            # })
+            # const cacheKeys = await github.paginate(
+            #   cacheOps,
+            #   (response) => response.data.map(
+            #     (cache) => cache.key
+            #   )
+            # )
 
-            const result = JSON.stringify(toRefresh)
-            console.log(`Result: ${result}`)
-            return result
+            # for (const key of cacheKeys) {
+            #   console.log(`Key: ${key}`)
+            # }
+
+            # const toRefresh = []
+            # for (const pr of prs) {
+            #   if (cacheKeys.includes(`${{ runner.os }}-tugboat-preview-id-pr-${pr}`)) {
+            #     console.log(`Need to refresh: ${pr}`)
+            #     toRefresh.push(pr)
+            #   }
+            # }
+
+            # const result = JSON.stringify(toRefresh)
+            # console.log(`Result: ${result}`)
+            # return result
           result-encoding: string
 
   # Refresh cache for given keys
