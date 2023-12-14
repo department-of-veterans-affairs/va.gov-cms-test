@@ -17,7 +17,7 @@ jobs:
             console.log(`owner: ${context.repo.owner}`)
             console.log(`repo: ${context.repo.repo}`)
 
-            const openPrOpts = github.rest.pulls.list({
+            const openPrOpts = github.rest.pulls.list.endpoint.merge({
               owner: context.repo.owner,
               repo: context.repo.repo,
               state: 'open',
@@ -36,7 +36,7 @@ jobs:
               console.log(`PR: ${pr}`)
             }
 
-            const cacheOps = github.rest.actions.getActionsCacheList({
+            const cacheOps = github.rest.actions.getActionsCacheList.endpoint.merge({
               owner: context.repo.owner,
               repo: context.repo.repo,
             })
