@@ -50,7 +50,7 @@ jobs:
 
             const toRefresh = []
             for (const pr of prs) {
-              if (cacheKeys.includes(`${{ runner.os }}-tugboat-preview-id-pr-${pr}`) {
+              if (cacheKeys.includes(`Linux-tugboat-preview-id-pr-${pr}`) {
                 console.log(`Need to refresh: ${pr}`)
                 toRefresh.push(pr)
               }
