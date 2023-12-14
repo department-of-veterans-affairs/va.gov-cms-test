@@ -21,13 +21,16 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               state: 'open',
-            })
+            });
             const prs = await github.paginate(
               openPrOpts,
-              (response) => response.data.map(
-                (pr) => pr.number
-              )
-            )
+              (response) => {
+                console.log(response.data)
+                response.data.map(
+                  (pr) => pr.number
+                )
+              }
+            );
 
             for (const pr of prs) {
               console.log(`PR: ${pr}`)
