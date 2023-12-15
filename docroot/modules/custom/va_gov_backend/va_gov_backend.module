@@ -33,6 +33,10 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Mime\MimeTypeGuesserInterface;
 
 /**
+ * Just adding a comment here.
+ */
+
+/**
  * Implements hook_help().
  */
 function va_gov_backend_help($route_name, RouteMatchInterface $route_match) {
