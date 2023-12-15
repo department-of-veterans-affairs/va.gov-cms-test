@@ -101,3 +101,5 @@ This can be confirmed by running `docker ps`; if you don't see a container whose
 `ddev restart` will fix this in the short term. If the problem persists, bumping up your Docker RAM to 4GB or higher should fix the issue.
 
 [Table of Contents](../README.md)
+
+hello world!

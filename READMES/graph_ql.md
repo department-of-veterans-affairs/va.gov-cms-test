@@ -74,3 +74,5 @@ To run, from project root: `cd metalsmith_app && node index.js`
 ----
 
 [Table of Contents](../README.md)
+
+hello world!

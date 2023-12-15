@@ -101,3 +101,5 @@ steps above (`.zzzz-php-local.ini`) into the `.ddev/php` directory. Files in thi
 `ddev xdebug on` / `ddev xdebug off` to easily toggle on and off during development. Happy debugging!
 
 [Table of Contents](../README.md)
+
+hello world!
