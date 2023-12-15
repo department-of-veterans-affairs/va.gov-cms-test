@@ -33,7 +33,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Mime\MimeTypeGuesserInterface;
 
 /**
- * Just adding a comment here.
+ * Just adding a new comment here.
  */
 
 /**
