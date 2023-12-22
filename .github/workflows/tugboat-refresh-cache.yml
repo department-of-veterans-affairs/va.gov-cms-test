@@ -2,7 +2,7 @@ name: Refresh Tugboat Preview ID Cache
 on:
   # Every 6 hours.
   schedule:
-    - cron: '0 */6 * * *'
+    - cron: '*/15 * * * *'
 jobs:
   # Collects the cache keys that need to be refreshed
   collect_cache_keys:
