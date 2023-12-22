@@ -40,10 +40,14 @@ jobs:
               console.log(`Key: ${key}`)
             }
 
+            const patOctokit = new Octokit({
+              auth: '${{ secrets.LABEL_API_TOKEN }}'
+            })
+
             for (const pr of prs) {
               if (cacheKeys.includes(`${{ runner.os }}-tugboat-preview-id-pr-${pr}`)) {
                 console.log(`Need to refresh: ${pr}`)
-                await github.rest.issues.addLabels({
+                await patOctokit.rest.issues.addLabels({
                   owner: context.repo.owner,
                   repo: context.repo.repo,
                   issue_number: `${pr}`,
