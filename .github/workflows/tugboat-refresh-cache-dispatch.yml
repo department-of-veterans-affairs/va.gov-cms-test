@@ -1,0 +1,23 @@
+
+
+name: Refresh Tugboat Preview ID Cache - Dispatch
+on:
+  workflow_dispatch:
+    inputs:
+      key:
+        description: 'Cache key of the entry to be refreshed'
+        required: false
+        type: string
+jobs:
+  # Refresh cache for given keys
+  refresh_cache:
+    name: Refresh cache for given keys
+    runs-on: ubuntu-latest
+    steps:
+      - name: Refresh Preview ID
+        uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: .tugboat_preview.txt
+          key: ${{ inputs.key }}
+      - name: Cleanup temporary file
+        run: rm .tugboat_preview.txt
