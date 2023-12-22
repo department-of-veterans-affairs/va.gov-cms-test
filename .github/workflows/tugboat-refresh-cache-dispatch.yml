@@ -2,7 +2,7 @@
 
 name: Refresh Tugboat Preview ID Cache - Dispatch
 on:
-  pull_request:
+  pull_request_target:
     types: [ labeled ]
 jobs:
   # Refresh cache for given keys
