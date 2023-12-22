@@ -10,7 +10,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Cross reference open PRs against cache keys in repo
-        id: cache-keys
         uses: actions/github-script@d7906e4ad0b1822421a7e6a35d5ca353c962f410 # v6.4.1
         with:
           script: |
@@ -41,10 +40,14 @@ jobs:
               console.log(`Key: ${key}`)
             }
 
-            const toRefresh = []
             for (const pr of prs) {
               if (cacheKeys.includes(`${{ runner.os }}-tugboat-preview-id-pr-${pr}`)) {
                 console.log(`Need to refresh: ${pr}`)
-                toRefresh.push(pr)
+                await octokit.rest.issues.addLabels({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: `${pr}`,
+                  labels: ['refresh-tugboat-cache'],
+                });
               }
             }
