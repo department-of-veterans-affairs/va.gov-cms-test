@@ -1,4 +1,4 @@
-name: Delete Tugboat Preview
+name: Diagnose github context
 on:
   pull_request:
     types:
