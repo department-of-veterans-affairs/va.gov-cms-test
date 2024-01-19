@@ -14,6 +14,10 @@ jobs:
       NODE_EXTRA_CA_CERTS: /etc/ssl/certs/ca-certificates.crt
     name: Create Tugboat Preview
     steps:
+    - name: Dump GitHub context
+      env:
+        GITHUB_CONTEXT: ${{ toJson(github) }}
+      run: echo "$GITHUB_CONTEXT"
     - name: Create Tugboat Preview
       id: tugboat_pr_preview
       run: |

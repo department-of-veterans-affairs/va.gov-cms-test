@@ -13,6 +13,10 @@ jobs:
       NODE_EXTRA_CA_CERTS: /etc/ssl/certs/ca-certificates.crt
     name: Delete Tugboat Preview
     steps:
+    - name: Dump GitHub context
+      env:
+        GITHUB_CONTEXT: ${{ toJson(github) }}
+      run: echo "$GITHUB_CONTEXT"
     - name: Restore Preview ID
       uses: actions/cache/restore@704facf57e6136b1bc63b828d79edcd491f0ee84 # v3.3.2
       with:
