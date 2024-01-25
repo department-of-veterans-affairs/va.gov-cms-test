@@ -23,6 +23,6 @@ jobs:
             ref: 'main',
             inputs: {
               action: 'delete',
-              pr_number: ${{ github.event.pull_request.number }},
+              pr_number: '${{ github.event.pull_request.number }}',
             }
           });

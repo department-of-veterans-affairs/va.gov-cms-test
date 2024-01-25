@@ -23,6 +23,6 @@ jobs:
             ref: 'main',
             inputs: {
               action: 'rebuild',
-              pr_number: ${{ github.event.pull_request.number }},
+              pr_number: '${{ github.event.pull_request.number }}',
             }
           });
