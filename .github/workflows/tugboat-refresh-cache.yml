@@ -61,7 +61,7 @@ jobs:
         value: ${{fromJSON(needs.collect_cache_keys.outputs.matrix)}}
     steps:
       - name: Refresh Preview ID
-        uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        uses: actions/cache/restore@13aacd865c20de90d75de3b17ebe84f7a17d57d2 # v4.0.0
         with:
           path: .tugboat_preview.txt
           key: ${{ runner.os }}-tugboat-preview-id-pr-${{ matrix.value }}
