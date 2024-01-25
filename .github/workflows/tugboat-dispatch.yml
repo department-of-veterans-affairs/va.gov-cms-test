@@ -1,0 +1,107 @@
+name: Dispatch Tugboat API Calls
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        type: choice
+        description: 'Tugboat API action'
+        options:
+          - create
+          - rebuild
+          - delete
+        required: true
+      pr_number:
+        type: number
+        description: 'The pull request number to take action on'
+        required: true
+      pr_title:
+        type: string
+        description: 'The pull request title for creating previews, requied for creation'
+        required: false
+jobs:
+  dispatch_tugboat_api:
+    runs-on: self-hosted
+    env:
+      NODE_EXTRA_CA_CERTS: /etc/ssl/certs/ca-certificates.crt
+    name: Dispatch Tugboat API Calls
+    steps:
+      # Setup
+      - name: Confirm Workflow Inputs
+        run: |
+          echo "Action: ${{ inputs.action }} PR Number: ${{ inputs.pr_number }} PR Title: ${{ inputs.pr_title }}"
+
+      # Restore Preview ID for non-creation actions
+      - name: Restore Preview ID
+        if: ${{ inputs.action != 'create' }}
+        uses: actions/cache/restore@704facf57e6136b1bc63b828d79edcd491f0ee84 # v3.3.2
+        with:
+          path: .tugboat_preview.txt
+          key: ${{ runner.os }}-tugboat-preview-id-pr-${{ inputs.pr_number }}
+      - name: Set Preview ID
+        if: ${{ inputs.action != 'create' }}
+        run: |
+          if ! [ -f .tugboat_preview.txt ]; then
+            echo "Preview ID not found, please contact platform-cms-qa on Github or CMS QA Engineers in #cms-support on Slack for assistance."
+            exit 1
+          fi
+          PREVIEW_ID=$(cat .tugboat_preview.txt)
+          echo "Preview ID: ${PREVIEW_ID}"
+          echo "PREVIEW_ID=$PREVIEW_ID" >> $GITHUB_ENV
+
+      # Make API calls
+      - name: Create Tugboat Preview
+        id: tugboat_pr_preview
+        if: ${{ inputs.action == 'create' }}
+        run: |
+          curl --fail \
+            -H "Authorization: Bearer ${{ secrets.TUGBOAT_API_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -X POST \
+            -d '{ "repo": "${{ secrets.TUGBOAT_REPOSITORY }}", "ref": "${{ inputs.pr_number }}", "name": "${{ inputs.pr_title }}", "type": "pullrequest" }' \
+            -o .tugboat_response.json \
+            https://api.tugboat.vfs.va.gov/v3/previews
+      - name: Rebuild Tugboat Preview
+        if: ${{ inputs.action == 'rebuild' }}
+        run: |
+          curl --fail \
+            -H "Authorization: Bearer ${{ secrets.TUGBOAT_API_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -X POST \
+            -d '{ "children": "false", "force": "false" }' \
+            https://api.tugboat.vfs.va.gov/v3/previews/${{ env.PREVIEW_ID }}/rebuild
+      - name: Delete Tugboat Preview
+        if: ${{ inputs.action == 'delete' }}
+        run: |
+          curl --fail \
+            -H "Authorization: Bearer ${{ secrets.TUGBOAT_API_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -X DELETE \
+            -d '{ "force": "false" }' \
+            https://api.tugboat.vfs.va.gov/v3/previews/${{ env.PREVIEW_ID }}
+
+      # Store Preview ID in cache on creation
+      - name: Extract Preview ID
+        if: ${{ inputs.action == 'create' }}
+        run: jq -r .preview .tugboat_response.json > .tugboat_preview.txt
+      - name: Confirm Preview ID
+        if: ${{ inputs.action == 'create' }}
+        run: cat .tugboat_preview.txt
+      - name: Delete Previous Preview ID
+        continue-on-error: true
+        uses: actions/github-script@d7906e4ad0b1822421a7e6a35d5ca353c962f410 # v6.4.1
+        with:
+          script: |
+            await github.rest.actions.deleteActionsCacheByKey({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              key: `${{ runner.os }}-tugboat-preview-id-pr-${{ inputs.pr_number }}`,
+            });
+      - name: Save Preview ID
+        uses: actions/cache/save@704facf57e6136b1bc63b828d79edcd491f0ee84 # v3.3.2
+        with:
+          path: .tugboat_preview.txt
+          key: ${{ runner.os }}-tugboat-preview-id-pr-${{ inputs.pr_number }}
+
+      # Cleanup
+      - name: Cleanup temporary file
+        run: rm .tugboat_preview.txt
