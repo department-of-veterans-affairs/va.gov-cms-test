@@ -12,7 +12,6 @@ jobs:
     name: Delete Tugboat Preview
     steps:
     - name: Dispatch Tugboat Preview Deletion
-      continue-on-error: true
       uses: actions/github-script@d7906e4ad0b1822421a7e6a35d5ca353c962f410 # v6.4.1
       with:
         script: |
