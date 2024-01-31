@@ -33,7 +33,7 @@ jobs:
       # Restore Preview ID for non-creation actions
       - name: Restore Preview ID
         if: ${{ inputs.action != 'create' }}
-        uses: actions/cache/restore@704facf57e6136b1bc63b828d79edcd491f0ee84 # v3.3.2
+        uses: actions/cache/restore@13aacd865c20de90d75de3b17ebe84f7a17d57d2 # v4.0.0
         with:
           path: .tugboat_preview.txt
           key: ${{ runner.os }}-tugboat-preview-id-pr-${{ inputs.pr_number }}
@@ -97,7 +97,7 @@ jobs:
               key: `${{ runner.os }}-tugboat-preview-id-pr-${{ inputs.pr_number }}`,
             });
       - name: Save Preview ID
-        uses: actions/cache/save@704facf57e6136b1bc63b828d79edcd491f0ee84 # v3.3.2
+        uses: actions/cache/save@13aacd865c20de90d75de3b17ebe84f7a17d57d2 # v4.0.0
         with:
           path: .tugboat_preview.txt
           key: ${{ runner.os }}-tugboat-preview-id-pr-${{ inputs.pr_number }}
