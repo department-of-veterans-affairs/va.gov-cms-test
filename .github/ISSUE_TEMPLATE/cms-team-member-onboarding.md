@@ -1,5 +1,5 @@
 ---
-name: CMS team and Sitewide Crew member onboarding
+name: CMS team member onboarding
 about: Create an issue for each new team member
 title: 'Onboarding: <insert_name>'
 labels: Onboarding
@@ -7,10 +7,10 @@ assignees: ''
 
 ---
 
-# Welcome to the VFS-CMS / Sitewide Team! 👋
+# Welcome to the VFS-CMS Team! 👋
 We're thrilled to have you join us on this journey! 🎆🎉🙌
 
-This team consists of three product teams: CMS team (VFS-CMS contract), and the Facilities and Public Websites teams (Sitewide contract). Our teams are cross-functional and consist of Product, Delivery/Scrummaster, UX (Research, Design, Content strategy), Backend engineering (full-stack/Drupal), and Front-end engineering.
+This team consists of three product teams: CMS team (VFS-CMS contract). Our team is cross-functional and consist of Product, Delivery/Scrummaster, UX (Research, Design, Content strategy), Backend engineering (full-stack/Drupal), and Front-end engineering.
 
 The VA's north star is to "continuously deliver high-quality digital experiences for the benefit of all Veterans and their families." From a CMS-perspective, our [vision](https://docs.google.com/presentation/d/14mK-4OMeEnR_-fgj62U4lUHBHg6htj4i4ucTA5DJFzg/edit#slide=id.g11ae1dc437e_0_1) is to craft a seamless editorial experience that empowers editors to create Veteran-centered content.
 
@@ -95,17 +95,17 @@ Github + Zenhub are the tools required for sprint boards, epics, estimates, and 
 **Sprint boards:**
 You can view team sprint boards using either the Github view with Zenhub browser extension enabled, or the Zenhub webapp view.
 * CMS team: [Github view](https://github.com/department-of-veterans-affairs/va.gov-cms/#workspaces/vagov-cms-team-5c0e7b864b5806bc2bfc2087/board), [Zenhub webapp view](https://app.zenhub.com/workspaces/vagov-cms-team-5c0e7b864b5806bc2bfc2087/board)
-* Facilities: [Github view](https://github.com/department-of-veterans-affairs/va.gov-cms/#workspaces/sitewide-facilities-639f5253e4b702a32376339e/board), [Zenhub webapp view](https://app.zenhub.com/workspaces/sitewide-facilities-639f5253e4b702a32376339e/board
 )
-* Public Websites: [Github view](https://github.com/department-of-veterans-affairs/va.gov-cms/#workspaces/public-websites-6171bf4bf43742001af18cc5/board), [Zenhub webapp view](https://app.zenhub.com/workspaces/public-websites-6171bf4bf43742001af18cc5/board)
+* Sitewide Facilities and Public Websites teams also run their sprints from the same repository, and any repo / workspace changes should be mindful of not impacting their workspaces / boards: 
+  * Facilities: [Github view](https://github.com/department-of-veterans-affairs/va.gov-cms/#workspaces/sitewide-facilities-639f5253e4b702a32376339e/board), [Zenhub webapp view](https://app.zenhub.com/workspaces/sitewide-facilities-639f5253e4b702a32376339e/board
+)
+  * Public Websites: [Github view](https://github.com/department-of-veterans-affairs/va.gov-cms/#workspaces/public-websites-6171bf4bf43742001af18cc5/board), [Zenhub webapp view](https://app.zenhub.com/workspaces/public-websites-6171bf4bf43742001af18cc5/board)
 
 ### Process & Principles
 - [ ] Read about our teams' [Agile / sprint best practices](https://github.com/department-of-veterans-affairs/va.gov-team/blob/master/platform/cms/onboarding/library/sprint-best-practices.md)
 - [ ] How do Agile 6 and our partners work together on this project? Discuss with your Delivery Manager.
 - [ ] Read your team's Charter:
     * [CMS]()
-    * [Facilities](https://docs.google.com/document/u/1/d/1eI1w9Bcj2rlmFtxkM6Dkn_c-Srszd88UxAQimSZkVqo/edit)
-    * [Public Websites](https://docs.google.com/document/d/1jiq90ffon5UxAqybiEncl8feqmXhEOChlijiDBOWUtc/edit)
 - [ ] Check your calendar for invitations to team ceremonies.
   - [ ] Scrums
   - [ ] Planning session
@@ -114,7 +114,7 @@ You can view team sprint boards using either the Github view with Zenhub browser
   - [ ] Retro
 
 ### People
-- [ ] Familiarize yourself with our team's shared calendars: [Sitewide Team calendar](https://calendar.google.com/calendar/u/1?cid=c2l0ZXdpZGUtdGVhbUBhZ2lsZTYuY29t) and [VFS-CMS team calendar] (https://calendar.google.com/calendar/u/1?cid=vfs-cms-team@agile6.com)
+- [ ] Familiarize yourself with our team's shared calendars: [VFS-CMS team calendar] (https://calendar.google.com/calendar/u/1?cid=vfs-cms-team@agile6.com)
     * Ask your DM to give you write access to your team calendar, if you have not already been invited
     * If you have time off planned, add to calendar as OOO
 - [ ] Let's start introducing you to the team and key stakeholders. If you're on a meeting where you don't know someone, feel free to kickstart an introduction. Everyone in the ecosystem is friendly and interested in connecting.
@@ -140,7 +140,7 @@ The goal for this week is to get you set up with the tools you need to be succes
   - [ ] Retro
 
 ### Context & History: What products do we support?
-- [ ] Review [History of sitewide product portfolio & teams mural](https://app.mural.co/t/vagov6717/m/vagov6717/1646745279937/9a5570c420939d84e875e8334fd73073e3a3971b?fromVisitorModal=true&sender=u0b235d03cbd64f7f93673243).
+- [ ] Review [History of CMS / Sitewide product portfolio & teams mural](https://app.mural.co/t/vagov6717/m/vagov6717/1646745279937/9a5570c420939d84e875e8334fd73073e3a3971b?fromVisitorModal=true&sender=u0b235d03cbd64f7f93673243).
     - [ ] Discuss with your Delivery Manager and Product Manager for more context on your team's products.
 - [ ] [Review the editor onboarding slides](https://github.com/department-of-veterans-affairs/va.gov-team/blob/master/platform/cms/onboarding/library/https___prod.cms.va.gov_sites_default_files_2021-07_Welcome%2520to%2520the%2520new%2520VA.gov%2520CMS.pdf).
 - [ ] Read the [product sheets](https://github.com/department-of-veterans-affairs/va.gov-team/raw/master/platform/cms/VA-CMS-Product-Sheets.pdf) (PDF download).
@@ -157,17 +157,16 @@ The goal for this week is to get you set up with the tools you need to be succes
 #### Slack for instant messaging
 - [ ] [Review Slack etiquette](https://slack.com/blog/collaboration/etiquette-tips-in-slack).
 - [ ] Update your profiles in Slack (in DSVA and your agency workspace): add a calendar link, profile picture, your role and team.
-    - [ ] Your Delivery Manager should add you to appropriate Slack user groups for the DSVA workspace (e.g. `@cms-team`, `@cms-helpdesk`, `@public-websites-team`, `@facilities-team`. Also `@cms-engineers-group` for eng.)
+    - [ ] Your Delivery Manager should add you to appropriate Slack user groups for the DSVA workspace (e.g. `@cms-team`, `@cms-helpdesk`. Also `@cms-engineers-group` for eng.)
 
 **Channels**
-- [ ] A6/agency workspace = `#proj-sitewide-vfs-cms-team`
- - [ ] DSVA workspace = `#sitewide-program`, and your team channel e.g. `#cms-team`, `#cms-platform`, `#sitewide-public-websites`, `#sitewide-facilities`
+ - [ ] DSVA workspace = `#sitewide-program`, and your team channel e.g. `#cms-team`, `#cms-platform`
  - [ ] [VA Slack Channel Overview](https://docs.google.com/spreadsheets/d/1_lZzectbSzs8zt4dvTFJTiPURxa0Kfp3xinYEuZdqq4/edit#gid=0) describes useful channels to be aware of / join. Note that many are going to be dependent on which workstream you're in (DevOps, Helpdesk, UX, etc.). Feel free to join whichever you think will aid you and your work.
 
 #### SOCKS - VA network proxy (after your Platform Orientation)
 The VA network is required in order to access Drupal CMS and other VA tools. Network access usually requires a VA ID card (also called a "PIV" or Smartcard). Until your paperwork is approved and you receive a PIV card, using the SOCKS proxy can provide earlier access to some of these tools. **You cannot be approved for SOCKS access until your eQip is sent and you receive a "transmittal notice" confirming receipt.** If you have received an eQip transmittal notice, but not a PIV, please complete the steps for SOCKS access. This is the first priority for week two, especially for engineers. (If your role doesn't demand immediate access to the CMS, you may be able to wait until you receive a PIV.)
 
-This can be a complex process. Post in #sitewide-program Slack channel if you need help from a current member - we're happy to help.
+This can be a complex process. Post in #sitewide-cms-platform Slack channel if you need help from a current member - we're happy to help.
   - [ ] Take a screenshot of your eQip transmittal notice.
   - [ ] [Request a Github personal access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token). You only need to do the "repo" panel in that form and leave the other panels as is. You'll need the output of this for your SOCKS request.
   - [ ] File a [SOCKS proxy request](https://depo-platform-documentation.scrollhelp.site/getting-started/Internal-tools-access-via-SOCKS-proxy.1821081710.html) and select the label for your team.  It may take a day or two for the SOCKS proxy request to be fulfilled before you can complete the rest of the SOCKS process.
@@ -208,11 +207,11 @@ By this point you should have enough context and access to be able to start cont
 
 ### Access & Delivery
 **Paperwork**
-- [ ] Complete any VA-assigned trainings in the TMS system. If the TMS learning modules malfunction, assign yourself the print version of the module. (Ask in #proj-sitewide-vfs-cms-team if you need help.)
+- [ ] Complete any VA-assigned trainings in the TMS system. If the TMS learning modules malfunction, assign yourself the print version of the module. (Ask if you need help.)
 - [ ] You'll receive an email confirming that you have been approved for remote access.
     - [ ] **Both**: You can contact Enterprise Service desk via provided instructions to set up your remote desktop access manually, if you need access prior to receiving your PIV card.
     - [ ] **If on Windows**: Windows users must use the Azure Virtual Desktop (AVD). [Instructions](https://gcc02.safelinks.protection.outlook.com/?url=https%3A%2F%2Fdigital.va.gov%2Femployee-resources%2Fremote-access%2Fazure-virtual-desktop%2F&data=05%7C01%7C%7Cdec2e51d4f3b472b1dec08db921d522a%7Ce95f1b23abaf45ee821db7ab251ab3bf%7C0%7C0%7C638264426849334591%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000%7C%7C%7C&sdata=2yQ9gfPbUzsJSICXG1TvFY8LJhsVKE%2FGB12%2Bs%2FPNrlY%3D&reserved=0). You'll need network access to reach that link, which you should receive instructions in email for how to achieve.
-    - [ ] **If on Mac / Linux**: Mac users will also use Azure Virtual Desktop (AVD) _eventually._ As of Aug 2023, if you are a new hire on Mac, you are a guinea pig. Do your best with these instructions, ask your DM for help if they don't work, and ask your DM to update this [issuetemplate](https://github.com/department-of-veterans-affairs/va.gov-cms/edit/main/.github/ISSUE_TEMPLATE/cms-team-and-sitewide-crew-member-onboarding.md) with correct notes after it's all sorted out. Mac users have 2 options:
+    - [ ] **If on Mac / Linux**: Mac users will also use Azure Virtual Desktop (AVD) _eventually._ As of Aug 2023, if you are a new hire on Mac, you are a guinea pig. Do your best with these instructions, ask your DM for help if they don't work, and ask your DM to update this [issuetemplate](https://github.com/department-of-veterans-affairs/va.gov-cms/edit/main/.github/ISSUE_TEMPLATE/cms-team-member-onboarding.md) with correct notes after it's all sorted out. Mac users have 2 options:
         - [ ] 1. Azure web client: https://client.wvd.microsoft.com/arm/webclient/, IF you have a PIV card. There is an Azure desktop client but it won’t work on a mac because the mac application doesn’t support PIV authentication. . (Try using Firefox and make sure pop-ups are allowed, at least for the MS domain if not globally (they are not allowed by default). Enter your VA email address. Connect your PIV card reader to your computer, and insert the card in the reader. Select ‘Sign in using an X.509 certificate’.
         - [ ] 2. Citrix Access Gateway (CAG): use your Enterprise Service desk credentials or PIV card to log onto CAG and request an exemption [here](https://gcc02.safelinks.protection.outlook.com/?url=https%3A%2F%2Fapps.gov.powerapps.us%2Fplay%2Fe%2Fdefault-e95f1b23-abaf-45ee-821d-b7ab251ab3bf%2Fa%2F5823591d-4113-4f49-ba75-ea95a5081b41%3FtenantId%3De95f1b23-abaf-45ee-821d-b7ab251ab3bf%26source%3Dportal&data=05%7C01%7C%7Cdec2e51d4f3b472b1dec08db921d522a%7Ce95f1b23abaf45ee821db7ab251ab3bf%7C0%7C0%7C638264426849490249%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000%7C%7C%7C&sdata=36fW8GZiUuh1AhaokCn47xqF41PolOoaT40f%2BfGsDBs%3D&reserved=0)
 - [ ] After your background check is complete, you will get an email to get your Personal Identify Verification (PIV) card. Contact your local VA office (where you got your fingerprints taken) for information about getting your [PIV card](https://www.oit.va.gov/programs/piv/how-to.cfm?).
@@ -270,7 +269,7 @@ Each repository includes READMEs to help with setup.
   - [ ] Test User Dashboard: https://tud.vfs.va.gov/ and [Test User Dashboard docs](https://depo-platform-documentation.scrollhelp.site/developer-docs/test-user-dashboard-guide). In lower environments, we are encouraged not to use our actual login credentials to test authed work. The TUD provides a set of test users you can use to login to various environments for testing.
   - [ ] [Datadog](https://depo-platform-documentation.scrollhelp.site/developer-docs/get-access-to-datadog) to access monitoring metrics (write licenses are limited, so only read-only might be available)
 - [ ] [GraphQL Explorer](https://staging.cms.va.gov/graphql/explorer) - GraphQL acts as the Drupal content API, for building queries that can be used in FE templates. The Explorer (on Staging) will allow you to test those queries.
-- [ ] Browse the [Topic Dives videos](https://github.com/department-of-veterans-affairs/va.gov-team/tree/master/teams/sitewide/topic-dives) - includes CMS content, and non-CMS topics for Facilities & Public Websites teams as well
+- [ ] Browse the [Topic Dives videos](https://github.com/department-of-veterans-affairs/va.gov-team/tree/master/teams/sitewide/topic-dives) - includes CMS content, and some non-CMS topics for Sitewide teams as well
 
 </details>
 
@@ -342,15 +341,13 @@ Your discipline lead will assist with onboarding tasks / calls.
    - You'll get an invite during Week 3-ish.
 - [ ] Attend design onboarding call 2: [Partners](https://docs.google.com/presentation/d/1__iyFNPB03u850nXDjG4uRgK0jmCL16e5PradD29jmk/edit)
    - You'll get an invite during Week 3-ish.
-- [ ] Reading (this is more for Public Websites and Facilities teams, but helpful context for everyone)
+- [ ] Reading 
    - [Collaboration Cycle](https://depo-platform-documentation.scrollhelp.site/collaboration-cycle/collaboration-cycle-kickoff)
    - [Research Overview](https://depo-platform-documentation.scrollhelp.site/research-design/research-overview)
    - [VA Design System](https://design.va.gov/)
 - [ ] Install tools and request access from your DM, if not already provided
-   - [ ] Sketch (for designers on Public Websites or Facilities)
+   - [ ] Figma
    - [ ] [Mural](https://app.mural.co/t/departmentofveteransaffairs9999) - when you have been assigned your VA email address, ask your DM to add you to Team folders in Mural. Without a VA email, other users can share the Visitor link to Murals so you can view them meantime.
-   - [ ] Figma (for designers on Sitewide CMS)
-   - [ ] Airtable (for Research / Content strategists)
    - [ ] Review and start getting acquainted with existing design systems.
 - [ ] Helpful Slack channels to join
    - #accessibility-ops
@@ -386,48 +383,10 @@ Your discipline lead will assist with onboarding tasks / calls.
 ## Onboarding for Delivery Managers
 - [ ] Request your onboarding buddy provide access to [CMS Support distro group](https://mim.va.gov/IdentityManagement/default.aspx) - must access on VA network (requires PIV card + CAG access)
 - [ ] Review Contract responsibilities doc for your contract:
-    * [Sitewide](https://docs.google.com/document/d/1IXyXzenfdVoSM7O5KklLsI1aBIdLM6PVQJbuIevdgiw/edit)
     * [VFS-CMS](https://docs.google.com/document/d/1rFEZapZUxRfTAxogad7jSyOdx1YIL_w5Rqh8KLps0aY/edit)
 - [ ] Review Sprint reporting runbook for your contract:
-    * [Sitewide](https://docs.google.com/document/d/1aI1QMXZMYRaqVj7QbqYF9FIQ7ittD4VXyYQWWMLJ5Ow/edit)
     * [VFS-CMS](https://docs.google.com/document/d/1YUWAVU6741qgVcE-07ZN14LdXyWCqVZX67fYCsgGL9c/edit)
 
 - [ ] Review other Delivery documents in [Google Drive](https://drive.google.com/drive/u/1/folders/1mFC5NCUkeQlGX2S8TIpD1om2V-5B0ikc)
 
 </details>
-
-
-### Team-specific onboarding (CMS, Facilities, Public Websites)
-Remove the sections that don't apply
-
-<details><summary>CMS Team Onboarding</summary>
-
-   ## Onboarding for CMS
-
-</details>
-
-<details><summary>Facilities Team Onboarding</summary>
-
-   ## Onboarding for Facilities
-   - [ ] Read the [Facilities team charter](https://docs.google.com/document/d/1eI1w9Bcj2rlmFtxkM6Dkn_c-Srszd88UxAQimSZkVqo/edit#)
-   - [ ] [Facilities product portfolio notes ](https://github.com/department-of-veterans-affairs/va.gov-team/tree/master/products/facilities)
-
-</details>
-
-<details><summary>Public Websites Team Onboarding</summary>
-
-   ## Onboarding for Public Websites
-   - [ ] Read the [Public Websites team charter](https://docs.google.com/document/d/1jiq90ffon5UxAqybiEncl8feqmXhEOChlijiDBOWUtc/edit#heading=h.tu2ayudos7uc)
-   - [ ] [Public Websites product portfolio documentation ](https://github.com/department-of-veterans-affairs/va.gov-team/tree/master/products/public-websites)
-
-</details>
-
-
-### Team
-Please check the team(s) that will do this work.
-
-- [ ] `CMS Team`
-- [ ] `Public Websites`
-- [ ] `Facilities`
-- [ ] `User support`
-- [ ] `Accelerated Publishing`
