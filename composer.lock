@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a68677969fd3fac87da26ea80bec1dc9",
+    "content-hash": "f7182318dbaad7b36db1360d9ccf62cc",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -7529,17 +7529,17 @@
         },
         {
             "name": "drupal/hook_event_dispatcher",
-            "version": "4.0.0-rc1",
+            "version": "4.0.1",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/hook_event_dispatcher.git",
-                "reference": "4.0.0-rc1"
+                "reference": "4.0.1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/hook_event_dispatcher-4.0.0-rc1.zip",
-                "reference": "4.0.0-rc1",
-                "shasum": "4e643c27f4c083eb30a1e2325163e65be47d7b81"
+                "url": "https://ftp.drupal.org/files/projects/hook_event_dispatcher-4.0.1.zip",
+                "reference": "4.0.1",
+                "shasum": "a170035796c1f72f820bca5642f5de0117d51524"
             },
             "require": {
                 "drupal/core": "^10",
@@ -7548,6 +7548,7 @@
             "require-dev": {
                 "drupal/core_event_dispatcher": "*",
                 "drupal/paragraphs": "^1.10",
+                "drupal/tracer": "^1.0",
                 "drupal/webform": "*",
                 "mglaman/phpstan-drupal": "^1.1",
                 "mockery/mockery": "^1.3",
@@ -7561,11 +7562,11 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "4.0.0-rc1",
-                    "datestamp": "1691676068",
+                    "version": "4.0.1",
+                    "datestamp": "1710429583",
                     "security-coverage": {
-                        "status": "not-covered",
-                        "message": "RC releases are not covered by Drupal security advisories."
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
                     }
                 }
             },
