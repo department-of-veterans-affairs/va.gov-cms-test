@@ -13,7 +13,7 @@ If you find any improvements to make to this documentation and you have push acc
 
 If you don't have push access, you can submit a pull request for review.
 
-Thanks
+Thanks,
 
 The VA.gov CMS Team
 
