@@ -1,0 +1,29 @@
+.tooltip-layout {
+  border: 1px solid var(--va-gray-cool-med);
+  border-radius: 2px;
+  min-width: 0;
+  padding: 10px 18px 18px;
+  position: relative;
+
+  h3 {
+    margin-top: 0;
+  }
+}
+
+.tooltip-toggle {
+  background-color: unset;
+  background-image: url('../images/icons/000000/questionmark-disc.svg');
+  background-size: cover;
+  border: 0;
+  height: 25px;
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  width: 25px;
+}
+
+.tooltip-layout {
+  [id^='add-tooltip-'] {
+    display: none;
+  }
+}

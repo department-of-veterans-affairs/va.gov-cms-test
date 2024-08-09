@@ -7,6 +7,10 @@ dependencies:
     - node.type.vba_facility
   module:
     - options
+    - tmgmt_content
+third_party_settings:
+  tmgmt_content:
+    excluded: false
 id: node.vba_facility.field_operating_status_facility
 field_name: field_operating_status_facility
 entity_type: node
@@ -14,7 +18,7 @@ bundle: vba_facility
 label: 'Operating status'
 description: ''
 required: true
-translatable: true
+translatable: false
 default_value:
   -
     value: normal

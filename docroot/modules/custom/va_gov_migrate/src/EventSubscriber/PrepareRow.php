@@ -3,9 +3,9 @@
 namespace Drupal\va_gov_migrate\EventSubscriber;
 
 use Drupal\migrate\MigrateSkipRowException;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Drupal\migrate_plus\Event\MigratePrepareRowEvent;
 use Drupal\migrate_plus\Event\MigrateEvents;
+use Drupal\migrate_plus\Event\MigratePrepareRowEvent;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
  * Add paragraphs to node after save.
@@ -32,8 +32,8 @@ class PrepareRow implements EventSubscriberInterface {
    */
   public function onMigratePrepareRow(MigratePrepareRowEvent $event) {
     // Fix encoding mess.
-    $event->getRow()->setSourceProperty('title', str_replace('�', "'", $event->getRow()->getSourceProperty('title')));
-    $event->getRow()->setSourceProperty('teaser', str_replace('�', "'", $event->getRow()->getSourceProperty('teaser')));
+    $event->getRow()->setSourceProperty('title', str_replace('�', "'", $event->getRow()->getSourceProperty('title') ?? ''));
+    $event->getRow()->setSourceProperty('teaser', str_replace('�', "'", $event->getRow()->getSourceProperty('teaser') ?? ''));
 
     // Skip files that don't fit specific migration.
     $file_format = $event->getRow()->getSourceProperty('file_format');

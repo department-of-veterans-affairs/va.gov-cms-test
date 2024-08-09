@@ -8,9 +8,10 @@ dependencies:
     - field.field.media.image.field_media_submission_guideline
     - field.field.media.image.field_owner
     - field.field.media.image.image
-    - image.style.3_2_medium_thumbnail
+    - image.style.full_content_width
     - media.type.image
   module:
+    - change_labels
     - field_group
     - image_widget_crop
     - markup
@@ -20,16 +21,16 @@ third_party_settings:
     group_governance:
       children:
         - field_owner
+      label: 'Section settings'
+      region: content
       parent_name: ''
       weight: 4
       format_type: fieldset
       format_settings:
-        id: ''
         classes: ''
+        id: ''
         description: ''
         required_fields: true
-      label: 'Section settings'
-      region: content
 _core:
   default_config_hash: kyoAHlZTGIuGTaQuBblGBk8EhfnVKOl19_0j5WbpQqM
 id: media.image.default
@@ -38,55 +39,71 @@ bundle: image
 mode: default
 content:
   field_description:
+    type: string_textarea_with_counter
     weight: 2
+    region: content
     settings:
       rows: 5
       placeholder: ''
       maxlength: 300
       counter_position: after
       js_prevent_submit: true
+      count_only_mode: false
       count_html_characters: true
       textcount_status_message: 'Characters Remaining: <span class="remaining_count">@remaining_count</span>'
     third_party_settings: {  }
-    type: string_textarea_with_counter
-    region: content
   field_media_submission_guideline:
-    weight: 0
-    settings: {  }
-    third_party_settings: {  }
     type: markup
+    weight: 0
     region: content
-  field_owner:
-    weight: 3
     settings: {  }
     third_party_settings: {  }
+  field_owner:
     type: options_select
+    weight: 3
     region: content
+    settings: {  }
+    third_party_settings: {  }
   image:
     type: image_widget_crop
     weight: 3
+    region: content
     settings:
-      show_crop_area: true
-      show_default_crop: true
-      preview_image_style: 3_2_medium_thumbnail
-      crop_preview_image_style: crop_thumbnail
       progress_indicator: throbber
-      crop_list: {  }
+      preview_image_style: full_content_width
+      crop_preview_image_style: crop_thumbnail
+      crop_list:
+        - '2_1'
+        - '2_3'
+        - '3_2'
+        - '7_2'
+        - freeform
+        - original
+        - square
       crop_types_required: {  }
       warn_multiple_usages: false
-    third_party_settings: {  }
-    region: content
+      show_crop_area: true
+      show_default_crop: true
+    third_party_settings:
+      change_labels:
+        remove_label: ''
   name:
     type: string_textfield
     weight: 1
+    region: content
     settings:
       size: 60
       placeholder: ''
     third_party_settings: {  }
+  translation:
+    weight: 10
     region: content
+    settings: {  }
+    third_party_settings: {  }
 hidden:
   created: true
   field_media_in_library: true
+  langcode: true
   moderation_state: true
   path: true
   status: true

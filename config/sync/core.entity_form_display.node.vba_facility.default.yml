@@ -3,139 +3,725 @@ langcode: en
 status: true
 dependencies:
   config:
+    - field.field.node.vba_facility.field_address
     - field.field.node.vba_facility.field_administration
+    - field.field.node.vba_facility.field_alert_type
+    - field.field.node.vba_facility.field_banner_content
+    - field.field.node.vba_facility.field_banner_title
+    - field.field.node.vba_facility.field_banner_types_description
+    - field.field.node.vba_facility.field_cc_benefit_office_hours_va
+    - field.field.node.vba_facility.field_cc_benefits_hotline
+    - field.field.node.vba_facility.field_cc_cant_find_benefits
+    - field.field.node.vba_facility.field_cc_get_updates_from_vba
+    - field.field.node.vba_facility.field_cc_meta_tags
+    - field.field.node.vba_facility.field_cc_national_spotlight_1
+    - field.field.node.vba_facility.field_cc_vba_facility_overview
+    - field.field.node.vba_facility.field_dismissible_option
     - field.field.node.vba_facility.field_facility_locator_api_id
+    - field.field.node.vba_facility.field_facility_vba_classificatio
+    - field.field.node.vba_facility.field_geolocation
+    - field.field.node.vba_facility.field_last_saved_by_an_editor
+    - field.field.node.vba_facility.field_local_spotlight
+    - field.field.node.vba_facility.field_media
+    - field.field.node.vba_facility.field_non_va_location_url
+    - field.field.node.vba_facility.field_non_va_official_name
+    - field.field.node.vba_facility.field_office
+    - field.field.node.vba_facility.field_office_hours
     - field.field.node.vba_facility.field_operating_status_facility
     - field.field.node.vba_facility.field_operating_status_more_info
+    - field.field.node.vba_facility.field_phone_number
+    - field.field.node.vba_facility.field_prepare_for_visit
+    - field.field.node.vba_facility.field_shared_vha_location
+    - field.field.node.vba_facility.field_show_banner
+    - field.field.node.vba_facility.field_table_of_contents
+    - field.field.node.vba_facility.field_timezone
     - node.type.vba_facility
-    - workflows.workflow.editorial
+    - workflows.workflow.restricted_archive
   module:
+    - address
+    - allowed_formats
+    - change_labels
     - content_moderation
+    - entity_field_fetch
     - field_group
+    - geofield
+    - limited_field_widgets
+    - link
+    - markup
+    - media_library
+    - office_hours
+    - paragraphs
+    - paragraphs_features
+    - telephone
     - textfield_counter
+    - tzfield
 third_party_settings:
   field_group:
-    group_facility_api:
-      children:
-        - title
-        - field_facility_locator_api_id
-      parent_name: ''
-      weight: 0
-      format_type: details
-      format_settings:
-        id: ''
-        classes: ''
-        description: ''
-        open: true
-        required_fields: false
-      label: 'Facility API'
-      region: content
     group_operating_status:
       children:
         - field_operating_status_facility
         - field_operating_status_more_info
-      parent_name: ''
-      weight: 1
-      format_type: fieldset
-      format_settings:
-        id: ''
-        classes: ''
-        description: ''
-        required_fields: true
       label: 'Operating status'
       region: content
+      parent_name: group_locations_and_contact_info
+      weight: 4
+      format_type: fieldset
+      format_settings:
+        classes: ''
+        show_empty_fields: true
+        id: operating-status
+        description: "This status will display on the facility's page and in VA’s facility locator tool."
+        required_fields: true
+        description_display: after
     group_governance:
       children:
         - field_administration
-      parent_name: ''
-      weight: 2
-      format_type: details_sidebar
-      format_settings:
-        id: ''
-        classes: ''
-        description: ''
-        open: true
-        required_fields: true
-        weight: -10
       label: 'Section settings'
       region: content
+      parent_name: ''
+      weight: 9
+      format_type: details_sidebar
+      format_settings:
+        classes: ''
+        id: ''
+        open: true
+        description: ''
+        required_fields: true
+        weight: -10
     group_editorial_workflow:
       children:
         - moderation_state
         - revision_log
-      parent_name: ''
-      weight: 3
-      format_type: fieldset
-      format_settings:
-        id: ''
-        classes: ''
-        description: ''
-        required_fields: true
+        - flag
       label: 'Editorial Workflow'
       region: content
+      parent_name: ''
+      weight: 11
+      format_type: fieldset
+      format_settings:
+        classes: ''
+        id: ''
+        description: ''
+        required_fields: true
+    group_locations_and_contact_info:
+      children:
+        - group_operating_status
+        - field_media
+        - group_facility_data
+      label: 'Location and contact information'
+      region: content
+      parent_name: ''
+      weight: 3
+      format_type: details
+      format_settings:
+        classes: external-content
+        show_empty_fields: false
+        id: locations-and-contact-info
+        open: true
+        description: ''
+        required_fields: true
+    group_facility_data:
+      children:
+        - field_phone_number
+        - field_address
+        - field_office_hours
+        - field_timezone
+        - group_benefit_office_hours_vary
+        - group_benefits_hotline
+        - field_facility_locator_api_id
+        - field_facility_vba_classificatio
+        - field_geolocation
+        - field_non_va_official_name
+        - field_non_va_location_url
+        - field_office
+        - field_shared_vha_location
+      label: 'Facility data'
+      region: content
+      parent_name: group_locations_and_contact_info
+      weight: 7
+      format_type: tooltip
+      format_settings:
+        show_label: '0'
+        tooltip_description: ''
+        description: ''
+        required_fields: '1'
+        id: external-content
+        classes: not-editable
+        show_empty_fields: 0
+        element: div
+        label_element: h3
+        attributes: ''
+    group_prepare_for_your_visit:
+      children:
+        - field_prepare_for_visit
+      label: 'Prepare for your visit'
+      region: content
+      parent_name: ''
+      weight: 4
+      format_type: details
+      format_settings:
+        classes: ''
+        show_empty_fields: true
+        id: prepare-for-your-visit
+        open: true
+        description: 'Add information to help visitors find the facility and make appointments. Include details on appointments, parking, public transportation, and what to bring. For more guidance, refer to the <a href="https://prod.cms.va.gov/help/veterans-benefits-administration-vba/prepare-for-your-visit" target="_blank">prepare for your visit Knowledge Base article (opens in a new window)</a>.'
+        required_fields: true
+    group_benefit_office_overview:
+      children:
+        - field_cc_vba_facility_overview
+      label: 'Benefit office overview'
+      region: content
+      parent_name: ''
+      weight: 2
+      format_type: tooltip
+      format_settings:
+        show_empty_fields: '1'
+        show_label: '1'
+        tooltip_description: "Why can’t I edit this?\r\nNational editors keep this content standardized to provide consistent messaging for facilities nationwide."
+        description: ''
+        required_fields: '1'
+        id: benefit-office-overview
+        classes: centralized
+        element: div
+        label_element: h3
+        attributes: ''
+    group_benefits_hotline:
+      children:
+        - field_cc_benefits_hotline
+      label: 'Benefits hotline'
+      region: content
+      parent_name: group_facility_data
+      weight: 15
+      format_type: tooltip
+      format_settings:
+        show_label: '1'
+        tooltip_description: "Why can’t I edit this?\r\nInternational editors keep this content standardized to provide consistent messaging for facilities nationwide."
+        description: ''
+        required_fields: '1'
+        id: ''
+        classes: centralized
+        show_empty_fields: 0
+        element: div
+        label_element: h3
+        attributes: ''
+    group_benefit_office_hours_vary:
+      children:
+        - field_cc_benefit_office_hours_va
+      label: 'Benefit office hours may vary'
+      region: content
+      parent_name: group_facility_data
+      weight: 14
+      format_type: tooltip
+      format_settings:
+        show_label: '1'
+        tooltip_description: "Why can’t I edit this? \r\nNational editors keep this content standardized to provide consistent messaging for facilities nationwide."
+        description: ''
+        required_fields: '1'
+        id: ''
+        classes: centralized
+        show_empty_fields: 0
+        element: div
+        label_element: h3
+        attributes: ''
+    group_national_spotlight:
+      children:
+        - field_cc_national_spotlight_1
+      label: 'National spotlight'
+      region: content
+      parent_name: group_spotlight_content
+      weight: 9
+      format_type: tooltip
+      format_settings:
+        show_label: '1'
+        tooltip_description: "Why can’t I edit this? \r\nThis content is standardized to provide consistent messaging for facilities nationwide."
+        description: ''
+        required_fields: '1'
+        id: ''
+        classes: centralized
+        show_empty_fields: 0
+        element: div
+        label_element: h3
+        attributes: ''
+    group_can_t_find_benefits:
+      children:
+        - field_cc_cant_find_benefits
+      label: "Can't find benefits"
+      region: content
+      parent_name: ''
+      weight: 7
+      format_type: tooltip
+      format_settings:
+        show_label: '0'
+        tooltip_description: "Why can’t I edit this? \r\nNational editors keep this content standardized to provide consistent messaging for facilities nationwide."
+        description: ''
+        required_fields: '1'
+        id: cant-find-service
+        classes: centralized
+        show_empty_fields: 0
+        element: div
+        label_element: h3
+        attributes: ''
+    group_get_updates_from_vba:
+      children:
+        - field_cc_get_updates_from_vba
+      label: 'Get updates from VBA'
+      region: content
+      parent_name: ''
+      weight: 8
+      format_type: tooltip
+      format_settings:
+        show_label: '1'
+        tooltip_description: "Why can’t I edit this? \r\nNational editors keep this content standardized to provide consistent messaging for facilities nationwide."
+        description: ''
+        required_fields: '1'
+        id: get-updates
+        classes: centralized
+        show_empty_fields: 0
+        element: div
+        label_element: h3
+        attributes: ''
+    group_banner:
+      children:
+        - field_show_banner
+        - field_banner_types_description
+        - field_alert_type
+        - field_dismissible_option
+        - field_banner_title
+        - field_banner_content
+      label: 'Banner alert'
+      region: content
+      parent_name: ''
+      weight: 1
+      format_type: detailswithimage
+      format_settings:
+        description: 'This optional segment allows you to add a banner alert to the VBA facility.'
+        open: '1'
+        visual_guide_file_name: ''
+        visual_guide_alt_text: ''
+        required_fields: '1'
+        id: banner-alert
+        classes: ''
+        show_empty_fields: 0
+    group_spotlight_content:
+      children:
+        - group_national_spotlight
+        - field_local_spotlight
+      label: 'Spotlight content'
+      region: content
+      parent_name: ''
+      weight: 5
+      format_type: details
+      format_settings:
+        classes: ''
+        show_empty_fields: false
+        id: spotlight-content
+        open: true
+        description: 'The VBA spotlight content area is designed to showcase items such as events, activities, or benefit news. For more guidance, refer to the <a href="https://prod.cms.va.gov/help/veterans-benefits-administration-vba/vba-spotlight-content" target="_blank">Knowledge Base article about spotlight content (opens in a new window)</a>.'
+        required_fields: true
+    group_meta_tags:
+      children:
+        - field_cc_meta_tags
+      label: 'Meta tags'
+      region: content
+      parent_name: ''
+      weight: 13
+      format_type: fieldset
+      format_settings:
+        classes: hidden
+        show_empty_fields: false
+        id: ''
+        description: ''
+        required_fields: false
+        description_display: after
+    group_facility_services:
+      children: {  }
+      label: 'Facility services'
+      region: content
+      parent_name: ''
+      weight: 6
+      format_type: tooltip
+      format_settings:
+        show_empty_fields: '1'
+        show_label: '1'
+        tooltip_description: ''
+        description: 'Adds a link to create a VBA Facility service. The actual content is overridden by createLinksFacilityServices() in va_gov_vba_facility/src/EventSubscriber/VbaFacilitySubscriber.php'
+        required_fields: '1'
+        id: facility-services
+        classes: 'not-editable centralized'
+        element: div
+        label_element: h3
+        attributes: ''
+    group_other_va_locations:
+      children: {  }
+      label: 'Other VA locations'
+      region: content
+      parent_name: ''
+      weight: 10
+      format_type: tooltip
+      format_settings:
+        show_empty_fields: '1'
+        show_label: '1'
+        tooltip_description: ''
+        description: 'Other nearby VA locations are generated automatically for this page.'
+        id: other-va-locations
+        classes: 'not-editable centralized'
+        element: div
+        label_element: h3
+        required_fields: 0
+        attributes: ''
+    group_facility_image:
+      children: {  }
+      label: 'Facility image'
+      region: hidden
+      parent_name: ''
+      weight: 14
+      format_type: fieldset
+      format_settings:
+        classes: ''
+        show_empty_fields: false
+        id: ''
+        description: '<p>Add an image that helps people recognize the facility. For best results, add an image cropped to a 3:2 aspect ratio. For accessibility, alternative text must also be added. Please refer to the <a href="https://prod.cms.va.gov/help/cms-basics/alternative-text-for-images" target="_blank">alt text Knowledge Base article (opens in a new window)</a> for more information.</p>'
+        required_fields: true
+        description_display: before
 id: node.vba_facility.default
 targetEntityType: node
 bundle: vba_facility
 mode: default
 content:
-  field_administration:
-    weight: 12
-    settings: {  }
-    third_party_settings: {  }
-    type: options_select
-    region: content
-  field_facility_locator_api_id:
-    weight: 2
-    settings:
-      size: 60
-      placeholder: ''
-    third_party_settings: {  }
-    type: string_textfield
-    region: content
-  field_operating_status_facility:
+  field_address:
+    type: address_default
     weight: 11
+    region: content
+    settings:
+      wrapper_type: fieldset
+    third_party_settings: {  }
+  field_administration:
+    type: options_select
+    weight: 12
+    region: content
     settings: {  }
     third_party_settings: {  }
+  field_alert_type:
     type: options_select
+    weight: 29
     region: content
-  field_operating_status_more_info:
-    weight: 12
+    settings: {  }
+    third_party_settings: {  }
+  field_banner_content:
+    type: text_textarea_with_counter
+    weight: 32
+    region: content
     settings:
       rows: 5
       placeholder: ''
       maxlength: 300
       counter_position: after
       js_prevent_submit: true
-      count_html_characters: true
+      count_only_mode: false
+      count_html_characters: false
       textcount_status_message: '<span class="remaining_count">@remaining_count</span> characters remaining'
-    third_party_settings: {  }
-    type: string_textarea_with_counter
-    region: content
-  moderation_state:
-    type: moderation_state_default
-    weight: 5
-    settings: {  }
-    region: content
-    third_party_settings: {  }
-  title:
+    third_party_settings:
+      allowed_formats:
+        hide_help: '1'
+        hide_guidelines: '1'
+  field_banner_title:
     type: string_textfield_with_counter
-    weight: 1
+    weight: 31
     region: content
     settings:
       size: 60
       placeholder: ''
-      maxlength: 150
-      counter_position: after
-      textcount_status_message: '<span class="remaining_count">@remaining_count</span> characters remaining'
       use_field_maxlength: false
-      js_prevent_submit: false
-      count_html_characters: false
+      maxlength: 100
+      counter_position: after
+      js_prevent_submit: true
+      count_only_mode: false
+      count_html_characters: true
+      textcount_status_message: '<span class="remaining_count">@remaining_count</span> characters remaining'
+    third_party_settings: {  }
+  field_banner_types_description:
+    type: markup
+    weight: 28
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_cc_benefit_office_hours_va:
+    type: entity_field_fetch_widget
+    weight: 13
+    region: content
+    settings:
+      show_link_to_source: '1'
+      show_source_updated_date: '1'
+      show_field_label: 0
+    third_party_settings: {  }
+  field_cc_benefits_hotline:
+    type: entity_field_fetch_widget
+    weight: 26
+    region: content
+    settings:
+      show_link_to_source: '1'
+      show_source_updated_date: '1'
+      show_field_label: 0
+    third_party_settings: {  }
+  field_cc_cant_find_benefits:
+    type: entity_field_fetch_widget
+    weight: 11
+    region: content
+    settings:
+      show_link_to_source: '1'
+      show_source_updated_date: '1'
+      show_field_label: 0
+    third_party_settings: {  }
+  field_cc_get_updates_from_vba:
+    type: entity_field_fetch_widget
+    weight: 11
+    region: content
+    settings:
+      show_link_to_source: '1'
+      show_source_updated_date: '1'
+      show_field_label: 0
+    third_party_settings: {  }
+  field_cc_meta_tags:
+    type: entity_field_fetch_widget
+    weight: 0
+    region: content
+    settings:
+      show_field_label: '1'
+      show_link_to_source: 0
+      show_source_updated_date: 0
+    third_party_settings: {  }
+  field_cc_national_spotlight_1:
+    type: entity_field_fetch_widget
+    weight: 1
+    region: content
+    settings:
+      show_link_to_source: '1'
+      show_source_updated_date: '1'
+      show_field_label: 0
+    third_party_settings: {  }
+  field_cc_vba_facility_overview:
+    type: entity_field_fetch_widget
+    weight: 2
+    region: content
+    settings:
+      show_link_to_source: '1'
+      show_source_updated_date: '1'
+      show_field_label: 0
+    third_party_settings: {  }
+  field_dismissible_option:
+    type: options_buttons
+    weight: 30
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_facility_locator_api_id:
+    type: string_textfield
+    weight: 16
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  field_facility_vba_classificatio:
+    type: options_select
+    weight: 17
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_geolocation:
+    type: geofield_latlon
+    weight: 18
+    region: content
+    settings:
+      html5_geolocation: false
+    third_party_settings: {  }
+  field_last_saved_by_an_editor:
+    type: datetime_timestamp
+    weight: 12
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_local_spotlight:
+    type: paragraphs
+    weight: 10
+    region: content
+    settings:
+      title: spotlight
+      title_plural: spotlights
+      edit_mode: open
+      closed_mode: summary
+      autocollapse: none
+      closed_mode_threshold: 0
+      add_mode: dropdown
+      form_display_mode: default
+      default_paragraph_type: featured_content
+      features:
+        add_above: '0'
+        collapse_edit_all: collapse_edit_all
+        duplicate: duplicate
+    third_party_settings:
+      paragraphs_features:
+        add_in_between: false
+        add_in_between_link_count: 3
+        delete_confirmation: false
+        show_drag_and_drop: true
+      change_labels:
+        add_another: ''
+  field_location_services:
+    type: entity_reference_paragraphs
+    weight: 5
+    region: content
+    settings:
+      title: Paragraph
+      title_plural: Paragraphs
+      edit_mode: closed
+      add_mode: button
+      form_display_mode: default
+      default_paragraph_type: _none
+    third_party_settings:
+      limited_field_widgets:
+        limit_values: '0'
+      change_labels:
+        add_another: ''
+  field_media:
+    type: media_library_widget
+    weight: 6
+    region: content
+    settings:
+      media_types: {  }
+    third_party_settings: {  }
+  field_non_va_location_url:
+    type: link_default
+    weight: 20
+    region: content
+    settings:
+      placeholder_url: ''
+      placeholder_title: ''
+    third_party_settings: {  }
+  field_non_va_official_name:
+    type: string_textfield
+    weight: 19
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  field_office:
+    type: options_select
+    weight: 21
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_office_hours:
+    type: office_hours_default
+    weight: 12
+    region: content
+    settings:
+      collapsed: false
+    third_party_settings: {  }
+  field_operating_status_facility:
+    type: options_buttons
+    weight: 11
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_operating_status_more_info:
+    type: string_textarea_with_counter
+    weight: 12
+    region: content
+    settings:
+      rows: 5
+      placeholder: ''
+      maxlength: 300
+      counter_position: after
+      js_prevent_submit: true
+      count_only_mode: false
+      count_html_characters: true
+      textcount_status_message: '<span class="remaining_count">@remaining_count</span> characters remaining'
+    third_party_settings: {  }
+  field_phone_number:
+    type: telephone_default
+    weight: 10
+    region: content
+    settings:
+      placeholder: ''
+    third_party_settings: {  }
+  field_prepare_for_visit:
+    type: paragraphs
+    weight: 27
+    region: content
+    settings:
+      title: accordion
+      title_plural: accordions
+      edit_mode: closed
+      closed_mode: summary
+      autocollapse: none
+      closed_mode_threshold: 0
+      add_mode: button
+      form_display_mode: default
+      default_paragraph_type: _none
+      features:
+        add_above: '0'
+        collapse_edit_all: collapse_edit_all
+        duplicate: '0'
+    third_party_settings:
+      paragraphs_features:
+        add_in_between: false
+        add_in_between_link_count: 3
+        delete_confirmation: false
+        show_drag_and_drop: true
+      limited_field_widgets:
+        limit_values: '0'
+      change_labels:
+        add_another: ''
+  field_shared_vha_location:
+    type: entity_reference_autocomplete
+    weight: 22
+    region: content
+    settings:
+      match_operator: CONTAINS
+      match_limit: 10
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  field_show_banner:
+    type: boolean_checkbox
+    weight: 27
+    region: content
+    settings:
+      display_label: true
+    third_party_settings: {  }
+  field_table_of_contents:
+    type: markup
+    weight: 0
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_timezone:
+    type: tzfield_default
+    weight: 13
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  flag:
+    weight: 6
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  moderation_state:
+    type: moderation_state_default
+    weight: 5
+    region: content
+    settings: {  }
     third_party_settings: {  }
 hidden:
   created: true
+  field_intro_text: true
+  langcode: true
   path: true
   promote: true
   status: true
   sticky: true
+  title: true
   uid: true
   url_redirects: true

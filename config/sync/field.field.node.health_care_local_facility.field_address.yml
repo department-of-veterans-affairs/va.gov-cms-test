@@ -14,7 +14,7 @@ bundle: health_care_local_facility
 label: Address
 description: ''
 required: false
-translatable: true
+translatable: false
 default_value: {  }
 default_value_callback: ''
 settings:
@@ -31,6 +31,8 @@ settings:
     addressLine1:
       override: optional
     addressLine2:
+      override: hidden
+    addressLine3:
       override: hidden
     postalCode:
       override: optional

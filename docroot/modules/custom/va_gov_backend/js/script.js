@@ -30,7 +30,7 @@
       if (context.querySelectorAll(".admin-help-email-tpl").length) {
         var emailLinks = context.querySelectorAll(".admin-help-email-tpl");
 
-        var facilityID = context.querySelector(".field--name-field-facility-locator-api-id .field__item") ? context.querySelector(".field--name-field-facility-locator-api-id .field__item").textContent : context.querySelector(".form-item-field-facility-locator-api-id-0-value input").value;
+        var facilityID = context.querySelector(".field--name-field-facility-locator-api-id .field__item") ? context.querySelector(".field--name-field-facility-locator-api-id .field__item").textContent : context.querySelector("#edit-field-facility-locator-api-id-0-value").value;
 
         var facilityName = context.querySelector(".breadcrumb li:last-child") !== null ? context.querySelector(".breadcrumb li:last-child").textContent.trim() : "";
 
@@ -40,7 +40,7 @@
         });
 
         var adminRoles = ["content_admin", "administrator"];
-        var targetTypes = ["health_care_local_facility", "vet_center"];
+        var targetTypes = ["health_care_local_facility", "vba_facility", "nca_facility"];
 
         if (drupalSettings.gtm_data.contentType && targetTypes.some(function (item) {
           return drupalSettings.gtm_data.contentType.includes(item);
@@ -74,10 +74,6 @@
           targetFieldGroup.insertBefore(legend, targetFieldGroup.firstChild);
 
           targetFieldGroup.appendChild(facilityDataFieldGroup);
-
-          var topOfPage = context.querySelector("#top-of-page-information .tooltip-layout");
-          var topOfPageHelp = context.getElementById("top-get-help-email");
-          topOfPage.insertBefore(topOfPageHelp, topOfPage.firstChild);
         }
       }
     }

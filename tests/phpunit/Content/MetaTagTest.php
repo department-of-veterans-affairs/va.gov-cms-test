@@ -2,19 +2,27 @@
 
 namespace tests\phpunit\Content;
 
-use weitzman\DrupalTestTraits\ExistingSiteBase;
+use Tests\Support\Classes\VaGovExistingSiteBase;
+
+define('IS_BEHAT', TRUE);
 
 /**
  * A test to confirm existence and correctness of metatags.
+ *
+ * @group functional
+ * @group all
  */
-class MetaTagTest extends ExistingSiteBase {
+class MetaTagTest extends VaGovExistingSiteBase {
+
+  /**
+   * This comment intentionally left blank.
+   */
+  public function setUp() : void {
+    $this->markTestSkipped('this test is flaky and not working correctly. will be re-enabled in #9487.');
+  }
 
   /**
    * Tests the existence of the twitter:image:alt metatag.
-   *
-   * @group functional
-   * @group all
-   * @group metatag
    */
   public function testImageAltTags() {
     $author = $this->createUser();

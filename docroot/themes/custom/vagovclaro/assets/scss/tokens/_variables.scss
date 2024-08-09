@@ -1,0 +1,15 @@
+:root {
+  /*
+   * Variables originally defined in core/themes/claro (or other modules), overridden here with design system variables.
+   */
+  --font-family: var(--font-family-sans);
+
+  --color-divider: var(--va-gray-med);
+
+  --tabs-hover-bg-color: var(--va-blue-light);
+
+  --table-row--dragging-bg-color: var(--va-gold-lighter);
+  --table-row--last-dragged-bg-color: var(--va-gold-lightest);
+
+  --jui-dialog-title-bg-color: var(--va-blue-darker);
+}

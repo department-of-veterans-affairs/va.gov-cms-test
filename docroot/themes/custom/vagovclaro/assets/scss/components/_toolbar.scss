@@ -1,0 +1,234 @@
+/* Workarounds for toolbar flickering issues on longer page loads. */
+body.toolbar-fixed {
+  /* Set top padding to avoid content "jumping" down. */
+  padding-top: 79px;
+}
+
+#toolbar-bar {
+  /* Set toolbar background color to avoid flicker on prod. See settings.prod.php */
+  background-color: #082142;
+  left: 0;
+  /* Set fixed position on toolbar avoid flicker. */
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 1001;
+}
+
+// replace druplicon with VA icon in the toolbar
+.toolbar-icon-9 .toolbar-icon-admin-toolbar-tools-help::before,
+.toolbar-icon-9 .toolbar-icon-admin-toolbar-tools-help:active::before,
+.toolbar-icon-9 .toolbar-icon-admin-toolbar-tools-help.active::before {
+  background-image: url('../images/toolbar-logo.png');
+}
+
+.toolbar-icon-10 .toolbar-icon-admin-toolbar-tools-help::before,
+.toolbar-icon-10 .toolbar-icon-admin-toolbar-tools-help:active::before,
+.toolbar-icon-10 .toolbar-icon-admin-toolbar-tools-help.active::before {
+  background-image: url('../images/toolbar-logo.png');
+}
+
+.cms-prod,
+.cms-local {
+  // Consistent states for top-level toolbar items
+  @mixin top-toolbar-item($icon) {
+    &:hover:active,
+    &:hover,
+    &:focus {
+      color: var(--va-blue-dark) !important;
+    }
+
+    &:focus {
+      box-shadow: var(--focus-box-shadow);
+      outline: var(--focus-outline);
+    }
+
+    &:active {
+      color: var(--color-white) !important;
+    }
+
+    &::before {
+      background-image: url('../images/icons/ffffff/#{$icon}.svg');
+    }
+
+    &:hover::before,
+    &:hover:active::before,
+    &:hover:focus::before,
+    &:focus::before,
+    &.is-active:hover::before {
+      background-image: url('../images/icons/004795/#{$icon}.svg');
+    }
+
+    &:active::before,
+    &.is-active::before {
+      background-image: url('../images/icons/ffffff/#{$icon}.svg');
+    }
+  }
+
+  .toolbar-bar {
+    display: flex;
+
+    .toolbar-icon {
+      // Manage
+      &-menu {
+        @include top-toolbar-item('hamburger');
+      }
+
+      // Sections
+      &-toolbar-menu-sections {
+        @include top-toolbar-item('sections');
+      }
+
+      // Knowledge Base
+      &-help {
+        @include top-toolbar-item('questionmark-disc');
+      }
+
+      // User
+      &-user {
+        @include top-toolbar-item('person');
+      }
+
+      // Edit
+      &-edit {
+        @include top-toolbar-item('pencil');
+
+        // this element is a <button> instead of <a>, add bg color for consistency
+        &:hover {
+          background-color: var(--va-blue-lighter);
+        }
+      }
+    }
+
+    // Special treatment for the tab showing the indicator.
+    .toolbar-tab {
+      &.branch-toolbar-tab {
+        margin-left: -26px;
+      }
+
+      &.environment-toolbar-tab {
+        margin-left: auto;
+      }
+
+      .toolbar-icon-environment-label {
+        cursor: auto; // Remove the pointer cursor.
+        padding-left: 1.333em; // No icon.
+
+        // Remove hover behaviors.
+        &:hover {
+          background-image: none;
+          text-decoration: none;
+        }
+      }
+    }
+  }
+}
+
+.cms-staging,
+.cms-tugboat {
+  // Consistent states for top-level toolbar items
+  @mixin top-toolbar-item($icon) {
+    &:hover:active,
+    &:hover,
+    &:focus {
+      color: var(--va-blue-dark) !important;
+    }
+
+    &:focus {
+      box-shadow: var(--focus-box-shadow);
+      outline: var(--focus-outline);
+    }
+
+    &:active {
+      color: var(--color-white) !important;
+    }
+
+    &::before {
+      background-image: url('../images/icons/212121/#{$icon}.svg');
+    }
+
+    &:hover::before,
+    &:hover:active::before,
+    &:hover:focus::before,
+    &.is-active:hover::before {
+      background-image: url('../images/icons/004795/#{$icon}.svg');
+    }
+
+    &:focus::before,
+    &:active::before,
+    &.is-active::before {
+      background-image: url('../images/icons/212121/#{$icon}.svg');
+    }
+  }
+
+  .toolbar-bar {
+    display: flex;
+
+    .toolbar-icon {
+      // Manage
+      &-menu {
+        @include top-toolbar-item('hamburger');
+      }
+
+      // Sections
+      &-toolbar-menu-sections {
+        @include top-toolbar-item('sections');
+      }
+
+      // Knowledge Base
+      &-help {
+        @include top-toolbar-item('questionmark-disc');
+      }
+
+      // User
+      &-user {
+        @include top-toolbar-item('person');
+      }
+
+      // Edit
+      &-edit {
+        @include top-toolbar-item('pencil');
+
+        // this element is a <button> instead of <a>, add bg color for consistency
+        &:hover {
+          background-color: var(--va-blue-lighter);
+        }
+      }
+    }
+
+    // Special treatment for the tab showing the indicator.
+    .toolbar-tab {
+      &.branch-toolbar-tab {
+        margin-left: -26px;
+      }
+
+      &.environment-toolbar-tab {
+        margin-left: auto;
+      }
+
+      .toolbar-icon-environment-label {
+        cursor: auto; // Remove the pointer cursor.
+        padding-left: 1.333em; // No icon.
+
+        // Remove hover behaviors.
+        &:hover {
+          background-image: none;
+          text-decoration: none;
+        }
+      }
+    }
+  }
+}
+
+.toolbar-tray .button--primary {
+  color: var(--color-white);
+  margin: 5px 10px;
+}
+
+/* Admin menus with route:<nolink> links should look OK */
+.toolbar-tray span.toolbar-icon {
+  color: var(--va-gray-med);
+  cursor: pointer;
+  display: block;
+  padding: 1em 1.333em;
+}

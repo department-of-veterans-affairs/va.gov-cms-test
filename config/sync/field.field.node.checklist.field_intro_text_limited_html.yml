@@ -8,11 +8,6 @@ dependencies:
   module:
     - allowed_formats
     - text
-third_party_settings:
-  allowed_formats:
-    rich_text_limited: rich_text_limited
-    rich_text: '0'
-    plain_text: '0'
 id: node.checklist.field_intro_text_limited_html
 field_name: field_intro_text_limited_html
 entity_type: node
@@ -20,8 +15,10 @@ bundle: checklist
 label: 'Page introduction'
 description: 'Add an introduction that helps visitors understand if information on the page is relevant to them.'
 required: false
-translatable: true
+translatable: false
 default_value: {  }
 default_value_callback: ''
-settings: {  }
+settings:
+  allowed_formats:
+    - rich_text_limited
 field_type: text_long

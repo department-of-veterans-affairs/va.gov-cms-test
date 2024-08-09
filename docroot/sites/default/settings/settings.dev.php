@@ -4,6 +4,8 @@
 
 include dirname(__FILE__) . '/settings.brd_common.php';
 
+$settings['va_gov_environment']['environment'] = 'dev';
+
 $settings['jenkins_build_job_path'] = '/job/builds/job/content-build-content-only-vagov' . $settings['jenkins_build_env'];
 $settings['jenkins_build_job_params'] = '/buildWithParameters?deploy=true';
 $settings['jenkins_build_job_url'] = $settings['jenkins_build_job_host'] . $settings['jenkins_build_job_path'] . $settings['jenkins_build_job_params'];
@@ -28,6 +30,7 @@ $config['environment_indicator.indicator']['fg_color'] = '#ffffff';
 $config['environment_indicator.indicator']['name'] = 'Development';
 
 $webhost_on_cli = 'https://dev.cms.va.gov';
+$settings['webhost'] = $webhost_on_cli;
 
 $settings['trusted_host_patterns'] = [
     // For ALB/ELB Healthchecks.
@@ -37,7 +40,12 @@ $settings['trusted_host_patterns'] = [
     'dev.cms.va.gov',
     'test.dev.cms.va.gov',
     '.*\.us-gov-west-1\.elb\.amazonaws\.com',
+    'va-gov-cms.ddev.site',
 ];
 
 $settings['va_gov_frontend_url'] = 'https://dev.va.gov';
 $settings['va_gov_frontend_build_type'] = 'brd';
+$settings['github_actions_deploy_env'] = 'dev';
+
+// Public asset S3 location
+$public_asset_s3_base_url = "https://dsva-vagov-staging-cms-files.s3.us-gov-west-1.amazonaws.com";

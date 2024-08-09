@@ -50,9 +50,8 @@
           ? context.querySelector(
               ".field--name-field-facility-locator-api-id .field__item"
             ).textContent
-          : context.querySelector(
-              ".form-item-field-facility-locator-api-id-0-value input"
-            ).value;
+          : context.querySelector("#edit-field-facility-locator-api-id-0-value")
+              .value;
 
         // Last crumb will always be the title.
         const facilityName =
@@ -77,7 +76,11 @@
         });
 
         const adminRoles = ["content_admin", "administrator"];
-        const targetTypes = ["health_care_local_facility", "vet_center"];
+        const targetTypes = [
+          "health_care_local_facility",
+          "vba_facility",
+          "nca_facility",
+        ];
         // If we are on a target type and user isn't admin, add a title,
         // and label to fieldgroup.
         if (
@@ -126,12 +129,6 @@
           targetFieldGroup.insertBefore(legend, targetFieldGroup.firstChild);
           // Plug our wrapper into the tooltip div.
           targetFieldGroup.appendChild(facilityDataFieldGroup);
-          // Move our description above the Top of Page Legend.
-          const topOfPage = context.querySelector(
-            "#top-of-page-information .tooltip-layout"
-          );
-          const topOfPageHelp = context.getElementById("top-get-help-email");
-          topOfPage.insertBefore(topOfPageHelp, topOfPage.firstChild);
         }
       }
     },

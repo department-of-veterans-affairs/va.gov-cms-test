@@ -43,8 +43,8 @@ class EnvironmentDiscovery {
    */
   public function isBRD() : bool {
     // @codingStandardsIgnoreEnd
-    $jenkins_build_environment = Settings::get('jenkins_build_env');
-    return !empty($jenkins_build_environment) &&
+    $gha_deploy_environment = Settings::get('github_actions_deploy_env');
+    return !empty($gha_deploy_environment) &&
       $this->getBuildTypeKey() === 'brd' &&
       !$this->isCli();
   }
@@ -67,7 +67,7 @@ class EnvironmentDiscovery {
    *   Is this on Local?
    */
   public function isLocal() : bool {
-    return $this->getBuildTypeKey() === 'lando';
+    return $this->getBuildTypeKey() === 'local';
   }
 
   /**
@@ -120,29 +120,24 @@ class EnvironmentDiscovery {
   }
 
   /**
-   * Should the front end build be triggered?
+   * Should the front end build be triggered from a content edit?
    *
    * @return bool
    *   Whether the front end build should be triggered.
    *
    * @throws \Drupal\Component\Plugin\Exception\PluginException
    */
-  public function shouldTriggerFrontendBuild() : bool {
-    return $this->getEnvironment()->shouldTriggerFrontendBuild();
+  public function contentEditsShouldTriggerFrontendBuild() : bool {
+    return $this->getEnvironment()->contentEditsShouldTriggerFrontendBuild();
   }
 
   /**
    * Trigger a front end content build.
    *
-   * @param string $front_end_git_ref
-   *   Front end git reference to build (branch name or PR number)
-   * @param bool $full_rebuild
-   *   Trigger a full rebuild of the content.
-   *
    * @throws \Drupal\Component\Plugin\Exception\PluginException
    */
-  public function triggerFrontendBuild(string $front_end_git_ref = NULL, bool $full_rebuild = FALSE) : void {
-    $this->getEnvironment()->triggerFrontendBuild($front_end_git_ref, $full_rebuild);
+  public function triggerFrontendBuild() : void {
+    $this->getEnvironment()->triggerFrontendBuild();
   }
 
   /**
@@ -156,13 +151,15 @@ class EnvironmentDiscovery {
   }
 
   /**
-   * Returns the Build Trigger Form class for the current environment.
+   * Determine whether or not build log and frontend version are displayed.
    *
-   * @return string
-   *   Class name.
+   * This mainly affects the content release form at /admin/content/deploy.
+   *
+   * @return bool
+   *   TRUE if build details should be displayed.
    */
-  public function getBuildTriggerFormClass() : string {
-    return $this->getEnvironment()->getBuildTriggerFormClass();
+  public function shouldDisplayBuildDetails() : bool {
+    return $this->getEnvironment()->shouldDisplayBuildDetails();
   }
 
 }

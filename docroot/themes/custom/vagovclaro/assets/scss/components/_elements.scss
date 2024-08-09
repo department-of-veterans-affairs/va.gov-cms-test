@@ -1,0 +1,329 @@
+.fieldset__legend {
+  @include va-subsection-label;
+  color: var(--color-text);
+}
+
+.claro-details__summary {
+  @include va-subsection-label;
+  color: var(--color-text);
+
+  &::before {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3e%3cpath d='M5.21 1.314L3.79 2.723l5.302 5.353-5.303 5.354 1.422 1.408 6.697-6.762z' fill='%23212121'/%3e%3c/svg%3e");
+  }
+}
+
+.claro-details__summary:hover::before,
+.claro-details__summary:hover:focus::before,
+.claro-details[open] > .claro-details__summary:focus::before,
+.claro-details[open] > .claro-details__summary--accordion::before,
+.claro-details[open] > .claro-details__summary--accordion-item::before,
+.claro-details[open] > .claro-details__summary--vertical-tabs-item::before {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3e%3cpath d='M5.21 1.314L3.79 2.723l5.302 5.353-5.303 5.354 1.422 1.408 6.697-6.762z' fill='%230071bb'/%3e%3c/svg%3e");
+}
+
+
+// classes for consistent styles on various help-texts around the cms
+.form-item__description,
+.fieldset__description,
+.claro-details__description,
+.claro-details__summary-summary,
+.field--widget-markup,
+.textfield_counter_counter,
+.description,
+#block-vagovclaro-help,
+#top-get-help-email {
+  @include va-helptext;
+  color: var(--va-gray-darkest);
+}
+
+#appointments h2,
+#service-locations h2,
+#block-vagovclaro-help h2,
+.field--widget-markup h3 {
+  @include va-section-heading;
+  color: var(--color-text);
+  margin: 0 0 var(--spacing-xs) 0;
+}
+
+// this is printed on vet center forms...
+#top-get-help-email + p {
+  @include va-subsection-heading;
+  margin: var(--spacing-m) 0;
+}
+
+.label,
+.form-item__label,
+.fieldset__label {
+  @include va-label;
+  margin-bottom: var(--spacing-xs);
+}
+
+// multi-paragraphs fields with table headers
+h4.label,
+h4.form-item__label {
+  @include va-subsection-label;
+  margin: var(--spacing-xs) 0;
+}
+
+.claro-details__wrapper,
+.form-item {
+  margin-top: 0;
+}
+
+.form-item__label,
+.form-item__description {
+  margin-bottom: var(--spacing-xxs);
+  margin-top: 0;
+}
+
+.fieldset__description {
+  margin-bottom: var(--space-m);
+  margin-top: 0;
+}
+
+p {
+  margin: 0 0 var(--spacing-s) 0;
+}
+
+a:hover {
+  background-color: var(--va-blue-lighter);
+}
+
+.cc-suffix-text {
+  margin-bottom: var(--space-l);
+}
+
+.entities-list .item-container > input {
+  display: inline-block;
+  margin: var(--space-s) var(--space-xs) var(--space-s) 0;
+}
+
+
+// help text on a non-white background needs more contrast
+.claro-details__wrapper--accordion-item .form-item__description {
+  color: var(--va-gray-darkest);
+}
+
+th {
+  .label {
+    margin-bottom: 0;
+  }
+
+  .form-item__description {
+    color: var(--va-gray-darkest);
+    margin: 0 var(--spacing-xxs) 0 0;
+  }
+
+  .paragraphs-actions .button--extrasmall {
+    margin-top: 0;
+  }
+}
+
+.table--widget-entity_reference_browser_table_widget {
+  .moderation-status {
+    font-weight: 400;
+    text-transform: uppercase;
+  }
+}
+
+.draggable-table th {
+  border-bottom: 1px solid var(--va-gray-cool-med);
+}
+
+.taxonomy-term-preview {
+  background-color: unset;
+}
+
+#block-entitymetadisplay {
+  border: 1px solid var(--va-gray-cool-med);
+  border-radius: 2px;
+  margin-bottom: var(--spacing-m);
+  padding: var(--spacing-s);
+}
+
+.field--name-field-last-saved-by-an-editor {
+  border: 1px solid var(--va-gray-cool-med);
+  border-radius: 2px;
+  margin-bottom: var(--spacing-m);
+  margin-top: var(--spacing-m);
+  padding: var(--spacing-s);
+}
+
+.ief-entity-table {
+  th:last-child {
+    font-size: 0;
+  }
+}
+
+p.vc-help-text {
+  line-height: 1.5;
+
+  a {
+    text-decoration: underline;
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+}
+
+.visual-layout-svg {
+  padding: 30px 30px 55px 0;
+}
+
+.item-list {
+  .qa-list {
+    margin-left: 0;
+
+    li {
+      list-style: none;
+      margin-left: 0;
+      padding: 10px 0 0;
+    }
+  }
+}
+
+// modal updates
+.ui-widget,
+.ui-widget input,
+.ui-widget select,
+.ui-widget textarea,
+.ui-widget button {
+  font-family: var(--font-family-sans);
+}
+
+.ui-widget button:hover {
+  font-weight: 700;
+}
+
+// linkit results should be scrollable
+.ui-autocomplete {
+  overflow: auto;
+}
+
+.linkit-result-line--title {
+  color: var(--color-text);
+}
+
+.linkit-result-line:hover .linkit-result-line--title {
+  color: var(--color-white);
+}
+
+.filter-wrapper {
+  margin: var(--spacing-xxs) 0 0 0;
+}
+
+// question mark icon for text formats
+.filter-help {
+  margin-right: var(--space-l);
+  position: relative;
+}
+
+.filter-help a::after {
+  background: transparent url('../../../../../core/misc/help.png');
+  content: '';
+  display: block;
+  height: 16px;
+  position: absolute;
+  right: -20px;
+  top: 4px;
+  width: 16px;
+}
+
+.breadcrumb__link {
+  color: var(--va-blue-dark);
+  text-decoration: underline;
+  transition-duration: 0.3s;
+  transition-property: color,background-color,border-color;
+  transition-timing-function: ease-in-out;
+
+  &:focus,
+  &:hover {
+    background-color: var(--va-blue-lighter);
+    color: var(--va-blue-darker);
+    text-decoration: none;
+  }
+
+  &:focus {
+    box-shadow: var(--focus-box-shadow);
+    outline: var(--focus-outline);
+  }
+}
+
+.no-wrap {
+  white-space: nowrap;
+}
+
+.entities-list.sortable .item-container:hover {
+  opacity: 1; // entity browser module sets 0.6 for some reason, looks funky
+}
+
+.form-element--type-select {
+  min-width: 70px;
+}
+
+.inline-guidance-trigger-text {
+  background: transparent;
+  border: unset;
+  color: var(--va-blue-dark);
+  cursor: pointer;
+  position: relative;
+  text-decoration: dotted underline;
+
+  &:hover {
+    background-color: var(--va-blue-lighter);
+    text-decoration: none;
+  }
+
+  &::after {
+    background: transparent url('../images/icons/004795/carrot.svg') no-repeat center center;
+    content: '';
+    display: block;
+    height: 16px;
+    position: absolute;
+    right: -20px;
+    top: 3px;
+    width: 16px;
+  }
+
+  &[aria-expanded='true']::after {
+    transform: rotate(180deg);
+  }
+}
+
+.inline-guidance-text {
+  border-left: 3px solid var(--va-blue-bright-med);
+  margin: 20px 0;
+  padding: 0 20px;
+
+  &.hide {
+    display: none;
+  }
+
+  &.show {
+    display: block;
+  }
+}
+
+.entity-meta__header {
+  .entity-meta__last-saved-by-editor {
+    margin-bottom: 0;
+    margin-top: 20px;
+  }
+
+  .entity-meta__last-saved {
+    margin-bottom: 0;
+  }
+
+  p.helper-text {
+    font-size: 14px;
+  }
+
+  p.helper-text-saved {
+    margin-bottom: 0;
+  }
+
+  .entity-meta__author {
+    margin-top: 0;
+  }
+}

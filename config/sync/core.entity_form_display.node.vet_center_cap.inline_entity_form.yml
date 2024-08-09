@@ -8,12 +8,15 @@ dependencies:
     - field.field.node.vet_center_cap.field_administration
     - field.field.node.vet_center_cap.field_facility_locator_api_id
     - field.field.node.vet_center_cap.field_geographical_identifier
+    - field.field.node.vet_center_cap.field_geolocation
+    - field.field.node.vet_center_cap.field_last_saved_by_an_editor
     - field.field.node.vet_center_cap.field_media
     - field.field.node.vet_center_cap.field_office
     - field.field.node.vet_center_cap.field_office_hours
     - field.field.node.vet_center_cap.field_operating_status_facility
     - field.field.node.vet_center_cap.field_operating_status_more_info
     - field.field.node.vet_center_cap.field_table_of_contents
+    - field.field.node.vet_center_cap.field_timezone
     - field.field.node.vet_center_cap.field_vetcenter_cap_hours_opt_in
     - node.type.vet_center_cap
   module:
@@ -22,62 +25,62 @@ third_party_settings:
   field_group:
     group_governance:
       children: {  }
+      label: 'Section settings'
+      region: hidden
       parent_name: ''
       weight: 16
       format_type: details_sidebar
-      region: hidden
       format_settings:
-        id: ''
         classes: ''
-        description: ''
+        id: ''
         open: true
+        description: ''
         required_fields: true
         weight: 0
-      label: 'Section settings'
     group_health_service_and_facilit:
       children:
         - field_regional_health_service
+      label: 'Health service and facility basic info'
+      region: hidden
       parent_name: ''
       weight: 13
       format_type: details
-      region: hidden
       format_settings:
-        id: ''
         classes: ''
-        description: 'This should generally not be changed after the content is created.'
+        id: ''
         open: false
+        description: 'This should generally not be changed after the content is created.'
         required_fields: true
-      label: 'Health service and facility basic info'
     group_ed:
       children:
         - moderation_state
+      label: 'Editorial workflow'
+      region: hidden
       parent_name: ''
       weight: 15
       format_type: fieldset
-      region: hidden
       format_settings:
-        id: ''
         classes: ''
+        id: ''
         description: ''
         required_fields: true
-      label: 'Editorial workflow'
     group_basic_location_data:
       children:
         - field_address
         - field_facility_hours
         - field_media
         - field_vet_center_cap_locatation
+      label: 'Basic location data'
+      region: hidden
       parent_name: ''
       weight: 14
       format_type: details
-      region: hidden
       format_settings:
-        id: ''
         classes: ''
-        description: ''
+        id: ''
         open: false
+        description: ''
         required_fields: true
-      label: 'Basic location data'
 id: node.vet_center_cap.inline_entity_form
 targetEntityType: node
 bundle: vet_center_cap
@@ -94,13 +97,17 @@ hidden:
   field_address: true
   field_facility_locator_api_id: true
   field_geographical_identifier: true
+  field_geolocation: true
+  field_last_saved_by_an_editor: true
   field_media: true
   field_office: true
   field_office_hours: true
   field_operating_status_facility: true
   field_operating_status_more_info: true
   field_table_of_contents: true
+  field_timezone: true
   field_vetcenter_cap_hours_opt_in: true
+  langcode: true
   moderation_state: true
   path: true
   promote: true

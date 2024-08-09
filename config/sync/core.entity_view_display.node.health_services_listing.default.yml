@@ -8,6 +8,7 @@ dependencies:
     - field.field.node.health_services_listing.field_enforce_unique_combo
     - field.field.node.health_services_listing.field_featured_content_healthser
     - field.field.node.health_services_listing.field_intro_text
+    - field.field.node.health_services_listing.field_last_saved_by_an_editor
     - field.field.node.health_services_listing.field_meta_tags
     - field.field.node.health_services_listing.field_office
     - node.type.health_services_listing
@@ -21,41 +22,41 @@ third_party_settings:
     group_content:
       children:
         - field_intro_text
+      label: Content
       parent_name: ''
+      region: content
       weight: 1
       format_type: fieldset
       format_settings:
-        id: ''
         classes: ''
+        id: ''
         description: ''
-      label: Content
-      region: content
     group_relationships:
       children:
         - field_administration
         - field_office
+      label: Relationships
       parent_name: ''
-      weight: 7
+      region: hidden
+      weight: 9
       format_type: fieldset
       format_settings:
-        id: ''
         classes: ''
+        id: ''
         description: ''
-      label: Relationships
-      region: hidden
     group_meta:
       children:
         - field_description
         - field_meta_title
+      label: Meta
       parent_name: ''
+      region: content
       weight: 0
       format_type: fieldset
       format_settings:
-        id: ''
         classes: ''
+        id: ''
         description: ''
-      label: Meta
-      region: content
 id: node.health_services_listing.default
 targetEntityType: node
 bundle: health_services_listing
@@ -63,39 +64,42 @@ mode: default
 content:
   field_description:
     type: string
-    weight: 0
-    region: content
     label: above
     settings:
       link_to_entity: false
     third_party_settings: {  }
+    weight: 0
+    region: content
   field_enforce_unique_combo:
-    weight: 8
+    type: allow_only_one
     label: above
     settings: {  }
     third_party_settings: {  }
-    type: allow_only_one
+    weight: 3
     region: content
   field_featured_content_healthser:
-    weight: 2
+    type: entity_reference_revisions_entity_view
     label: above
     settings:
       view_mode: default
       link: ''
     third_party_settings: {  }
-    type: entity_reference_revisions_entity_view
+    weight: 2
     region: content
   field_intro_text:
-    weight: 7
+    type: basic_string
     label: above
     settings: {  }
     third_party_settings: {  }
-    type: basic_string
+    weight: 7
     region: content
 hidden:
+  breadcrumbs: true
   content_moderation_control: true
   field_administration: true
+  field_last_saved_by_an_editor: true
   field_meta_tags: true
   field_office: true
+  langcode: true
   links: true
   search_api_excerpt: true

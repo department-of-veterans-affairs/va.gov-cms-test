@@ -1,9 +1,28 @@
 services:
   va_gov_backend.entity_event_subscriber:
     class: Drupal\va_gov_backend\EventSubscriber\EntityEventSubscriber
-    arguments: ['@va_gov_user.user_perms']
+    arguments: ['@va_gov_user.user_perms', '@entity_type.manager']
     tags:
-      - {name: event_subscriber }
+      - { name: event_subscriber }
+  va_gov_backend.table_audit_views_event_subscriber:
+    class: Drupal\va_gov_backend\EventSubscriber\TableAuditViewsEventSubscriber
+    arguments: ['@renderer', '@va_gov_backend.va_gov_url']
+    tags:
+      - { name: event_subscriber }
+  va_gov_backend.orphan_report_views_event_subscriber:
+    class: Drupal\va_gov_backend\EventSubscriber\OrphansReportViewsEventSubscriber
+    arguments: ['@renderer', '@va_gov_backend.va_gov_url', '@entity_reference_revisions.orphan_purger', '@entity_type.manager']
+    tags:
+      - { name: event_subscriber }
+  va_gov_backend.theme_suggestions:
+    class: Drupal\va_gov_backend\EventSubscriber\ThemeEventSubscriber
+    tags:
+      - { name: event_subscriber }
+  va_gov_backend.last_editor_save_event_subscriber:
+      class: Drupal\va_gov_backend\EventSubscriber\LastEditorSaveEventSubscriber
+      arguments: ['@string_translation', '@entity_type.manager', '@date.formatter']
+      tags:
+        - { name: event_subscriber }
   va_gov_backend.exclusion_types:
     class: Drupal\va_gov_backend\Service\ExclusionTypes
     arguments: ['@config.factory']
@@ -11,6 +30,20 @@ services:
     class: Drupal\va_gov_backend\Routing\RouteSubscriber
     tags:
       - { name: event_subscriber }
+  va_gov_backend.va_gov_tooltip_textfield:
+    class: Drupal\va_gov_backend\Plugin\Field\FieldWidget\TooltipTextFieldFormatter.php
+    arguments: ['@string_translation']
   va_gov_backend.va_gov_url:
     class: Drupal\va_gov_backend\Service\VaGovUrl
     arguments: ['@http_client', '@settings', '@va_gov.build_trigger.environment_discovery']
+  va_gov_backend.datadog:
+    class: Drupal\va_gov_backend\Service\Datadog
+    arguments: ['@http_client', '@settings']
+  va_gov_backend.datadog_context_provider:
+    class: Drupal\va_gov_backend\Service\DatadogContextProvider
+  va_gov_backend.metrics:
+    class: Drupal\va_gov_backend\Service\Metrics
+    arguments: ['@prometheus_exporter.metrics_collector_manager', '@settings', '@va_gov_backend.datadog']
+  monolog.processor.va_gov_datadog_apm:
+    class: Drupal\va_gov_backend\Logger\Processor\DatadogApmProcessor
+    arguments: ['@va_gov_backend.datadog_context_provider']

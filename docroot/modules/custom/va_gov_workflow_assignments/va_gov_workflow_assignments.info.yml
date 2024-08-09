@@ -4,4 +4,5 @@ package: 'Custom'
 type: module
 dependencies:
   - va_gov_backend
-core_version_requirement: ^8 || ^9
+  - va_gov_lovell
+core_version_requirement: ^9 || ^10

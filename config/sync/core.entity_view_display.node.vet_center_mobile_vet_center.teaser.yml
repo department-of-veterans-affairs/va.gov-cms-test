@@ -7,11 +7,13 @@ dependencies:
     - field.field.node.vet_center_mobile_vet_center.field_address
     - field.field.node.vet_center_mobile_vet_center.field_administration
     - field.field.node.vet_center_mobile_vet_center.field_facility_locator_api_id
+    - field.field.node.vet_center_mobile_vet_center.field_last_saved_by_an_editor
     - field.field.node.vet_center_mobile_vet_center.field_media
     - field.field.node.vet_center_mobile_vet_center.field_office
     - field.field.node.vet_center_mobile_vet_center.field_office_hours
     - field.field.node.vet_center_mobile_vet_center.field_phone_number
     - field.field.node.vet_center_mobile_vet_center.field_table_of_contents
+    - field.field.node.vet_center_mobile_vet_center.field_timezone
     - node.type.vet_center_mobile_vet_center
   module:
     - user
@@ -21,22 +23,44 @@ bundle: vet_center_mobile_vet_center
 mode: teaser
 content:
   content_moderation_control:
-    weight: -20
     settings: {  }
     third_party_settings: {  }
+    weight: -20
+    region: content
+  flag_changed_name:
+    settings: {  }
+    third_party_settings: {  }
+    weight: 10
+    region: content
+  flag_new:
+    settings: {  }
+    third_party_settings: {  }
+    weight: 10
+    region: content
+  flag_removed_from_source:
+    settings: {  }
+    third_party_settings: {  }
+    weight: 10
     region: content
   links:
-    weight: 100
     settings: {  }
     third_party_settings: {  }
+    weight: 100
     region: content
 hidden:
+  breadcrumbs: true
   field_address: true
   field_administration: true
   field_facility_locator_api_id: true
+  field_last_saved_by_an_editor: true
   field_media: true
   field_office: true
   field_office_hours: true
   field_phone_number: true
   field_table_of_contents: true
+  field_timezone: true
+  flag_awaiting_csv: true
+  flag_awaiting_editor: true
+  flag_awaiting_redirect: true
+  langcode: true
   search_api_excerpt: true

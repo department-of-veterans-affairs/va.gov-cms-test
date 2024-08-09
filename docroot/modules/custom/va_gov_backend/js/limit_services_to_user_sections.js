@@ -6,11 +6,15 @@
 **/
 
 (function (Drupal) {
+  var myFacility = "";
+
   var adminField = document.getElementById("edit-field-administration");
+
   var facilityFieldOptions = document.querySelectorAll("#edit-field-facility-location option");
   var systemFieldOptions = document.querySelectorAll("#edit-field-regional-health-service option");
   var facilityField = document.getElementById("edit-field-facility-location");
   var systemField = document.getElementById("edit-field-regional-health-service");
+
   var winnower = function winnower() {
     var pathType = drupalSettings.path.currentPath.split("/")[1];
 
@@ -25,25 +29,30 @@
 
     var adminMatcher = adminFieldText.replace(/(^-+)/g, "");
 
-    facilityFieldOptions.forEach(function (i) {
-      i.classList.remove("hidden-option");
-      if (!i.text.includes(adminMatcher)) {
+    function hideSeekShow(domElement, textMatch) {
+      domElement.forEach(function (i) {
         i.classList.add("hidden-option");
-      }
-    });
+        if (i.text.includes(textMatch)) {
+          i.classList.remove("hidden-option");
+        }
+      });
+    }
 
-    systemFieldOptions.forEach(function (i) {
-      i.classList.remove("hidden-option");
-      if (!i.text.includes(adminMatcher)) {
-        i.classList.add("hidden-option");
-      }
-    });
+    hideSeekShow(facilityFieldOptions, adminMatcher);
+    hideSeekShow(systemFieldOptions, adminMatcher);
   };
 
   Drupal.behaviors.vaGovLimitServiceOptions = {
     attach: function attach() {
-      winnower();
+      if (myFacility === "" || window.onload) {
+        winnower();
+      }
       adminField.addEventListener("change", winnower);
+      if (facilityField !== null) {
+        facilityField.addEventListener("change", function setText() {
+          myFacility = facilityField.options[facilityField.selectedIndex].text;
+        });
+      }
     }
   };
 })(Drupal);

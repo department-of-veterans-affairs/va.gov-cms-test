@@ -4,12 +4,15 @@ namespace tests\phpunit\Content;
 
 use Drupal\node\NodeInterface;
 use Drupal\paragraphs\Entity\Paragraph;
-use weitzman\DrupalTestTraits\ExistingSiteBase;
+use Tests\Support\Classes\VaGovExistingSiteBase;
 
 /**
  * A test to confirm that alerts and situation updates are queued.
+ *
+ * @group functional
+ * @group all
  */
-class BulletinQueueTest extends ExistingSiteBase {
+class BulletinQueueTest extends VaGovExistingSiteBase {
 
   /**
    * Govdelivery bulletins queue.
@@ -28,9 +31,8 @@ class BulletinQueueTest extends ExistingSiteBase {
   /**
    * Wipe the queue clean so we can get reliable counts.
    */
-  protected function setUp() {
+  public function setUp() : void {
     parent::setUp();
-
     $this->deleteQueue();
   }
 
@@ -81,7 +83,7 @@ class BulletinQueueTest extends ExistingSiteBase {
       'field_alert_type' => 'warning',
       'field_body' => 'This is a test created by phpUnit.  Please disregard.',
       'field_banner_alert_vamcs' => [
-        'target_id' => 1010,
+        'target_id' => 2370,
       ],
       'status' => 1,
     ];

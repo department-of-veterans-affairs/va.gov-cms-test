@@ -10,6 +10,8 @@ dependencies:
     - field.field.node.vamc_system_register_for_care.field_cc_top_of_page_content
     - field.field.node.vamc_system_register_for_care.field_enforce_unique_combo
     - field.field.node.vamc_system_register_for_care.field_enforce_unique_combo_offic
+    - field.field.node.vamc_system_register_for_care.field_last_saved_by_an_editor
+    - field.field.node.vamc_system_register_for_care.field_non_clinical_services
     - field.field.node.vamc_system_register_for_care.field_office
     - field.field.node.vamc_system_register_for_care.field_service_name_and_descripti
     - node.type.vamc_system_register_for_care
@@ -21,22 +23,26 @@ bundle: vamc_system_register_for_care
 mode: teaser
 content:
   content_moderation_control:
-    weight: -20
     settings: {  }
     third_party_settings: {  }
+    weight: -20
     region: content
   links:
-    weight: 100
     settings: {  }
     third_party_settings: {  }
+    weight: 100
     region: content
 hidden:
+  breadcrumbs: true
   field_administration: true
   field_cc_bottom_of_page_content: true
   field_cc_related_links: true
   field_cc_top_of_page_content: true
   field_enforce_unique_combo: true
   field_enforce_unique_combo_offic: true
+  field_last_saved_by_an_editor: true
+  field_non_clinical_services: true
   field_office: true
   field_service_name_and_descripti: true
+  langcode: true
   search_api_excerpt: true

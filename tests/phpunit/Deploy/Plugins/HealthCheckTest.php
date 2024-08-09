@@ -2,17 +2,20 @@
 
 namespace test\phpunit\Deploy\Plugins;
 
-use Drupal\Tests\UnitTestCase;
 use Drupal\va_gov_backend\Deploy\Plugin\HealthCheck;
 use Drupal\va_gov_backend\Deploy\SuccessHTTPException;
 use Symfony\Component\HttpFoundation\Request;
+use Tests\Support\Classes\VaGovUnitTestBase;
 
 /**
  * Test for Deploy mode health check plugin.
  *
+ * @group unit
+ * @group all
+ *
  * @covers \Drupal\va_gov_backend\Deploy\Plugin\HealthCheck
  */
-class HealthCheckTest extends UnitTestCase {
+class HealthCheckTest extends VaGovUnitTestBase {
 
   /**
    * Test the Healthcheck plugin.

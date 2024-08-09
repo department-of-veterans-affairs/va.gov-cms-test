@@ -2,16 +2,22 @@
 
 namespace Drupal\va_gov_backend\EventSubscriber;
 
-use Drupal\node\NodeInterface;
+use Drupal\Core\Config\Entity\ConfigEntityType;
+use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
+use Drupal\core_event_dispatcher\EntityHookEvents;
 use Drupal\core_event_dispatcher\Event\Entity\EntityPresaveEvent;
+use Drupal\core_event_dispatcher\Event\Entity\EntityTypeBuildEvent;
 use Drupal\core_event_dispatcher\Event\Form\FormIdAlterEvent;
-use Drupal\hook_event_dispatcher\HookEventDispatcherInterface;
+use Drupal\field_event_dispatcher\Event\Field\WidgetSingleElementFormAlterEvent;
+use Drupal\field_event_dispatcher\FieldHookEvents;
+use Drupal\node\NodeInterface;
+use Drupal\va_gov_backend\Access\BlockContentTypeAccessControlHandler;
 use Drupal\va_gov_user\Service\UserPermsService;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
- * VA.gov VAMC Entity Event Subscriber.
+ * VA.gov Generic Entity Event Subscriber. Do only multi-product stuff here.
  */
 class EntityEventSubscriber implements EventSubscriberInterface {
 
@@ -25,15 +31,39 @@ class EntityEventSubscriber implements EventSubscriberInterface {
   protected $userPermsService;
 
   /**
+   * The entity manager.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeManager
+   *  The entity manager.
+   */
+  private $entityTypeManager;
+
+  /**
    * Constructs the EventSubscriber object.
    *
    * @param \Drupal\va_gov_user\Service\UserPermsService $user_perms_service
    *   The current user perms service.
+   * @param \Drupal\Core\Entity\EntityTypeManager $entity_type_manager
+   *   The entity type manager service.
    */
   public function __construct(
-    UserPermsService $user_perms_service
+    UserPermsService $user_perms_service,
+    EntityTypeManager $entity_type_manager,
   ) {
     $this->userPermsService = $user_perms_service;
+    $this->entityTypeManager = $entity_type_manager;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function getSubscribedEvents(): array {
+    return [
+      'hook_event_dispatcher.form_node_centralized_content_edit_form.alter' => 'alterCentralizedContentNodeForm',
+      EntityHookEvents::ENTITY_PRE_SAVE => 'entityPresave',
+      EntityHookEvents::ENTITY_TYPE_BUILD => 'entityTypeBuild',
+      FieldHookEvents::WIDGET_SINGLE_ELEMENT_FORM_ALTER => 'formWidgetAlter',
+    ];
   }
 
   /**
@@ -50,6 +80,35 @@ class EntityEventSubscriber implements EventSubscriberInterface {
   }
 
   /**
+   * Alteration to entity type build info.
+   *
+   * @param \Drupal\core_event_dispatcher\Event\Entity\EntityTypeBuildEvent $event
+   *   The Entity build event object.
+   */
+  public function entityTypeBuild(EntityTypeBuildEvent $event) {
+    $this->overrideBlockContentTypeAccessHandler($event);
+  }
+
+  /**
+   * Overrides Block Content Type access handler.
+   *
+   * @param \Drupal\core_event_dispatcher\Event\Entity\EntityTypeBuildEvent $event
+   *   The event.
+   */
+  public function overrideBlockContentTypeAccessHandler(EntityTypeBuildEvent $event) {
+    // Override the access control handler for block content type (config)
+    // entities. Core split the 'view' and 'view label' access operations to
+    // allow for modules to have more granular control over the content type
+    // label. The Core user module is an example of a module that makes use of
+    // the separate 'view label' operation, but the Core custom_block module is
+    // not.
+    $entityTypes = &$event->getEntityTypes();
+    if (!empty($entityTypes['block_content_type']) && $entityTypes['block_content_type'] instanceof ConfigEntityType) {
+      $entityTypes['block_content_type']->setAccessClass(BlockContentTypeAccessControlHandler::class);
+    }
+  }
+
+  /**
    * Trim any preceding and trailing whitespace on node titles.
    *
    * @param \Drupal\node\NodeInterface $node
@@ -61,62 +120,6 @@ class EntityEventSubscriber implements EventSubscriberInterface {
     $title = preg_replace('/^\s+/', '', $title);
     $title = preg_replace('/\s+$/', '', $title);
     $node->setTitle($title);
-  }
-
-  /**
-   * Form alterations for staff profile content type.
-   *
-   * @param \Drupal\core_event_dispatcher\Event\Form\FormIdAlterEvent $event
-   *   The event.
-   */
-  public function alterstaffProfileNodeForm(FormIdAlterEvent $event): void {
-    $this->addStateManagementToBioFields($event);
-  }
-
-  /**
-   * Add states management to bio fields to determine visibility based on bool.
-   *
-   * @param \Drupal\core_event_dispatcher\Event\Form\FormIdAlterEvent $event
-   *   The event.
-   */
-  public function addStateManagementToBioFields(FormIdAlterEvent $event) {
-    $form = &$event->getForm();
-    $form['#submit'][] = $this->addStateManagementToBioFieldsSubmitHandler($event);
-    $form['#attached']['library'][] = 'va_gov_backend/set_body_to_required';
-    $selector = ':input[name="field_complete_biography_create[value]"]';
-    $form['field_intro_text']['widget'][0]['value']['#states'] = [
-      'required' => [
-          [$selector => ['checked' => TRUE]],
-      ],
-      'visible' => [
-            [$selector => ['checked' => TRUE]],
-      ],
-    ];
-    $form['field_body']['#states'] = [
-      'visible' => [
-          [$selector => ['checked' => TRUE]],
-      ],
-    ];
-    $form['field_complete_biography']['#states'] = [
-      'visible' => [
-          [$selector => ['checked' => TRUE]],
-      ],
-    ];
-  }
-
-  /**
-   * Submit handler removes field body req when bio toggle is set to FALSE.
-   *
-   * @param \Drupal\core_event_dispatcher\Event\Form\FormIdAlterEvent $event
-   *   The event.
-   */
-  public function addStateManagementToBioFieldsSubmitHandler(FormIdAlterEvent $event) {
-    $form = &$event->getForm();
-    $form_state = $event->getFormState();
-    $bio_display = !empty($form_state->getUserInput()['field_complete_biography_create']['value']) ? TRUE : FALSE;
-    if (!$bio_display) {
-      $form['field_body']['widget'][0]['#required'] = FALSE;
-    }
   }
 
   /**
@@ -209,7 +212,6 @@ class EntityEventSubscriber implements EventSubscriberInterface {
       else {
         unset($form['field_product']);
       }
-
       // For non-admin replace applied to field with static content
       // generated from field value and disable editing.
       if (!empty($form['field_applied_to']['widget'][0]['value']['#default_value'])) {
@@ -229,15 +231,26 @@ class EntityEventSubscriber implements EventSubscriberInterface {
   }
 
   /**
-   * {@inheritdoc}
+   * Widget form alter Event call.
+   *
+   * @param \Drupal\field_event_dispatcher\Event\Field\WidgetSingleElementFormAlterEvent $event
+   *   The event.
    */
-  public static function getSubscribedEvents(): array {
-    return [
-      HookEventDispatcherInterface::ENTITY_PRE_SAVE => 'entityPresave',
-      'hook_event_dispatcher.form_node_person_profile_form.alter' => 'alterStaffProfileNodeForm',
-      'hook_event_dispatcher.form_node_person_profile_edit_form.alter' => 'alterStaffProfileNodeForm',
-      'hook_event_dispatcher.form_node_centralized_content_edit_form.alter' => 'alterCentralizedContentNodeForm',
-    ];
+  public function formWidgetAlter(WidgetSingleElementFormAlterEvent $event): void {
+    $form = &$event->getElement();
+    $this->removeCollapseButton($form);
+  }
+
+  /**
+   * Remove collapse button on button paragraphs widget forms.
+   *
+   * @param array $form
+   *   The form.
+   */
+  public function removeCollapseButton(array &$form) {
+    if (!empty($form['#paragraph_type']) && $form['#paragraph_type'] === 'button') {
+      unset($form['top']['actions']['actions']['collapse_button']);
+    }
   }
 
 }

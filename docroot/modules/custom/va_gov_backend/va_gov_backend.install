@@ -36,6 +36,7 @@ function va_gov_backend_update_8002() {
     $storage_handler = \Drupal::entityTypeManager()->getStorage("node");
     $va_bene_title_result = \Drupal::entityQuery('node')
       ->condition('title', $item, '=')
+      ->accessCheck(FALSE)
       ->execute();
     $entities = $storage_handler->loadMultiple($va_bene_title_result);
     if ($item === 'Benefit Materials') {
@@ -56,9 +57,6 @@ function va_gov_backend_update_8002() {
   ]);
   $node->save();
   $nid = (int) $node->id();
-
-  // Load the MenuLinkManager.
-  $menu_handler = \Drupal::service('plugin.manager.menu.link');
 
   $outreach_landing_page = MenuLinkContent::create([
     'title' => 'Outreach and events',
@@ -127,14 +125,14 @@ function va_gov_backend_update_8002() {
 
   // Change our ef to new node.
   $connection = \Drupal::database();
-  $swap = $connection->update('node__field_office')
+  $connection->update('node__field_office')
     ->fields([
       'field_office_target_id' => $nid,
     ])
     ->condition('field_office_target_id', $swap_key)
     ->execute();
 
-  $swap_revision = $connection->update('node_revision__field_office')
+  $connection->update('node_revision__field_office')
     ->fields([
       'field_office_target_id' => $nid,
     ])
@@ -423,4 +421,26 @@ function va_gov_backend_update_8010() {
     Drupal::logger('va_gov_backend')->log('info', "The table '%table' had %count workflow values changed from 'content_admin' to 'editorial'", $vars);
   }
   return "content_moderation_state_field_data and content_moderation_state_field_revision updated to workflow editor.";
+}
+
+/**
+ * Remove field_facility_service_hours from service location paragraph.
+ */
+function va_gov_backend_update_8011() {
+  $field = FieldConfig::loadByName('paragraph', 'service_location', 'field_facility_service_hours');
+  if ($field) {
+    /** @var Drupal\field\FieldConfigInterface $field */
+    $field->delete();
+    Drupal::logger('va_gov_backend')->log(LogLevel::INFO, 'Deleted field_facility_service_hours from service_location.');
+  }
+}
+
+/**
+ * Remove table paragraph 50034, it was a malformed remnant from clone cleanup.
+ */
+function va_gov_backend_update_8012() {
+  $storage = \Drupal::entityTypeManager()->getStorage('paragraph');
+  /** @var \Drupal\paragraphs\ParagraphInterface $table */
+  $table = $storage->load('50034');
+  $table->delete();
 }

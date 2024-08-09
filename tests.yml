@@ -5,282 +5,30 @@ version: '3'
 
 dotenv: ['.env']
 
+output: 'group'
+
 tasks:
 
-  # Any changes to test names or additions or removals must be updated in set-all-tests-pending as well for the Pending status to work.
+  # Any changes to test names or additions or removals must be updated in
+  # .github/workflows/set-tugboat-tests-pending.yml as well for the
+  # test to be required effectively.
 
-  va/tests/accessibility:
-    desc: accessibility test with cypress-axe for 508 compliance
-    cmds:
-      - |
-        cat <<EOF | bash
-          : "${SKIP_REPORTING:=0}"
-          : "${RETURN_EXIT_CODE:=0}"
-          set -o pipefail
-          output="\$(mktemp -d)/output"
-          mkfifo \$output
-          (cat \$output&)
-          result="\$(composer va:test:accessibility 2>&1 | tee \$output)"
-          exit_code=\$?
-          if [ "$SKIP_REPORTING" -ne 1 ]; then
-            if [ "\$exit_code" -eq 0 ]; then
-              github-status-updater -action=update_state -state=success -context='{{ .TASK }}' -description='Success'
-            else
-              github-status-updater -action=update_state -state=failure -context='{{ .TASK }}' -description='Failed'
-            fi
-          fi
-          if [ "$RETURN_EXIT_CODE" -ne 0 ]; then
-            exit "\$exit_code";
-          fi
-        EOF
-
-  va/tests/behat:
-    desc: Behat Tests
-    cmds:
-      - |
-        cat <<EOF | bash
-          : "${SKIP_REPORTING:=0}"
-          : "${RETURN_EXIT_CODE:=0}"
-          set -o pipefail
-          output="\$(mktemp -d)/output"
-          mkfifo \$output
-          (cat \$output&)
-          cd tests/behat
-          result="\$(behat --strict --colors 2>&1 | tee \$output)"
-          exit_code=\$?
-          if [ "$SKIP_REPORTING" -ne 1 ]; then
-            if [ "\$exit_code" -eq 0 ]; then
-              github-status-updater -action=update_state -state=success -context='{{ .TASK }}' -description='Success'
-            else
-              github-status-updater -action=update_state -state=failure -context='{{ .TASK }}' -description='Failed'
-            fi
-          fi
-          if [ "$RETURN_EXIT_CODE" -ne 0 ]; then
-            exit "\$exit_code";
-          fi
-        EOF
-
-  va/tests/behavioral:
-    desc: behavioral tests with cypress
-    cmds:
-      - |
-        cat <<EOF | bash
-          : "${SKIP_REPORTING:=0}"
-          : "${RETURN_EXIT_CODE:=0}"
-          set -o pipefail
-          output="\$(mktemp -d)/output"
-          mkfifo \$output
-          (cat \$output&)
-          result="\$(composer va:test:behavioral 2>&1 | tee \$output)"
-          exit_code=\$?
-          if [ "$SKIP_REPORTING" -ne 1 ]; then
-            if [ "\$exit_code" -eq 0 ]; then
-              github-status-updater -action=update_state -state=success -context='{{ .TASK }}' -description='Success'
-            else
-              github-status-updater -action=update_state -state=failure -context='{{ .TASK }}' -description='Failed'
-            fi
-          fi
-          if [ "$RETURN_EXIT_CODE" -ne 0 ]; then
-            exit "\$exit_code";
-          fi
-        EOF
-
-  va/tests/check-cer:
-    desc: Ensure cer fields exist
-    cmds:
-      - |
-        cat <<EOF | bash
-          : "${SKIP_REPORTING:=0}"
-          : "${RETURN_EXIT_CODE:=0}"
-          set -o pipefail
-          output="\$(mktemp -d)/output"
-          mkfifo \$output
-          (cat \$output&)
-          result="{{ .TASK }}:<br/><br/>\$(./tests/scripts/check-cer.sh 2>&1 | tee \$output)"
-          exit_code=\$?
-          if [ "$SKIP_REPORTING" -ne 1 ]; then
-            if [ "\$exit_code" -eq 0 ]; then
-              github-status-updater -action=update_state -state=success -context='{{ .TASK }}' -description='Success'
-            else
-              github-status-updater -action=update_state -state=failure -context='{{ .TASK }}' -description='Failed'
-              [ "\${GITHUB_COMMENT_TYPE}" == "pr" ] && github-commenter -delete-comment-regex="{{ .TASK }}" -comment="\${result}"
-            fi
-          fi
-          if [ "$RETURN_EXIT_CODE" -ne 0 ]; then
-            exit "\$exit_code";
-          fi
-        EOF
-
-  va/tests/phplint:
-    desc: PHP Lint
-    cmds:
-      - |
-        cat <<EOF | bash
-          : "${SKIP_REPORTING:=0}"
-          : "${RETURN_EXIT_CODE:=0}"
-          exit_code=0
-          result="{{ .TASK }}<br/><br/>"
-          trap '{ (( exit_code |=\$? )); result+="\$output_text<br/>"; }' ERR
-          output_text=\$(find docroot/modules/custom docroot/themes -name '*.inc' -print0 | xargs -0 -n1 php -l 2>&1)
-          output_text=\$(find docroot/modules/custom docroot/themes -name '*.php' -print0 | xargs -0 -n1 php -l 2>&1)
-          output_text=\$(find docroot/modules/custom docroot/themes -name '*.module' -print0 | xargs -0 -n1 php -l 2>&1)
-          output_text=\$(find docroot/modules/custom docroot/themes -name '*.install' -print0 | xargs -0 -n1 php -l 2>&1)
-          trap - ERR
-          if [ "$SKIP_REPORTING" -ne 1 ]; then
-            if [ "\$exit_code" -eq 0 ]; then
-              github-status-updater -action=update_state -state=success -context='{{ .TASK }}' -description='Success'
-            else
-              github-status-updater -action=update_state -state=failure -context='{{ .TASK }}' -description='Failed'
-              [ "\${GITHUB_COMMENT_TYPE}" == "pr" ] && github-commenter -delete-comment-regex="{{ .TASK }}" -comment="\${result}"
-            fi
-          fi
-          if [ "$RETURN_EXIT_CODE" -ne 0 ]; then
-            exit "\$exit_code";
-          fi
-        EOF
-
-  va/tests/phpunit:
-    desc: PHPUnit
-    cmds:
-      - |
-        cat <<EOF | bash
-          : "${SKIP_REPORTING:=0}"
-          : "${RETURN_EXIT_CODE:=0}"
-          set -o pipefail
-          output="\$(mktemp -d)/output"
-          mkfifo \$output
-          (cat \$output&)
-          result="\$(phpunit --exclude-group disabled tests/phpunit --colors=always 2>&1 | tee \$output)"
-          exit_code=\$?
-          if [ "$SKIP_REPORTING" -ne 1 ]; then
-            if [ "\$exit_code" -eq 0 ]; then
-              github-status-updater -action=update_state -state=success -context='{{ .TASK }}' -description='Success'
-            else
-              github-status-updater -action=update_state -state=failure -context='{{ .TASK }}' -description='Failed'
-            fi
-          fi
-          if [ "$RETURN_EXIT_CODE" -ne 0 ]; then
-            exit "\$exit_code";
-          fi
-        EOF
-
-  va/tests/revision-log:
-    desc: Ensure revision log field is present
-    cmds:
-      - |
-        cat <<EOF | bash
-          : "${SKIP_REPORTING:=0}"
-          : "${RETURN_EXIT_CODE:=0}"
-          set -o pipefail
-          output="\$(mktemp -d)/output"
-          mkfifo \$output
-          (cat \$output&)
-          result="\$(./tests/scripts/check-revision-logs.sh 2>&1 | tee \$output)"
-          exit_code=\$?
-          if [ "$SKIP_REPORTING" -ne 1 ]; then
-            if [ "\$exit_code" -eq 0 ]; then
-              github-status-updater -action=update_state -state=success -context='{{ .TASK }}' -description='Success'
-            else
-              github-status-updater -action=update_state -state=failure -context='{{ .TASK }}' -description='Failed'
-            fi
-          fi
-          if [ "$RETURN_EXIT_CODE" -ne 0 ]; then
-            exit "\$exit_code";
-          fi
-        EOF
-
-  va/tests/status-error:
-    desc: Check for Drupal status errors
-    cmds:
-      - |
-        cat <<EOF | bash
-          : "${SKIP_REPORTING:=0}"
-          : "${RETURN_EXIT_CODE:=0}"
-          set -o pipefail
-          output="\$(mktemp -d)/output"
-          mkfifo \$output
-          (cat \$output&)
-          lines=\$(drush $DRUSH_ALIAS core-requirements --format=list --ignore='update_core,update_contrib,"update status"' --severity=2 2>&1 | tee \$output)
-          line_count=\$(grep -c "\S" <<< \$lines)
-          if [ "$SKIP_REPORTING" -ne 1 ]; then
-            if [ "\$line_count" -eq 0 ]; then
-              github-status-updater -action=update_state -state=success -context='{{ .TASK }}' -description='Success: No Drupal status requirement errors were found.'
-            else
-              github-status-updater -action=update_state -state=failure -context='{{ .TASK }}' -description="Failed: \${line_count} Drupal status requirements found."
-              [ "\${GITHUB_COMMENT_TYPE}" == "pr" ] && github-commenter -delete-comment-regex="{{ .TASK }}" -comment="{{ .TASK }}:<br /><br /><pre>\$(drush $DRUSH_ALIAS core-requirements --severity=2)</pre>"
-            fi
-          fi
-          if [ "$RETURN_EXIT_CODE" -ne 0 ]; then
-            exit "\$line_count";
-          fi
-        EOF
-
-  va/web/build:
-    desc: Build VA.gov Front-end
-    cmds:
-      - |
-        cat <<EOF | bash
-          : "${SKIP_REPORTING:=0}"
-          : "${RETURN_EXIT_CODE:=0}"
-          set -o pipefail
-          output="\$(mktemp -d)/output"
-          mkfifo \$output
-          (cat \$output&)
-          result="\$(./tests/scripts/build-web.sh 2>&1 | tee \$output)"
-          exit_code=\$?
-          if [ "$SKIP_REPORTING" -ne 1 ]; then
-            if [ "\$exit_code" -eq 0 ]; then
-              github-status-updater -action=update_state -state=success -context='{{ .TASK }}' -description='Success'
-            else
-              github-status-updater -action=update_state -state=failure -context='{{ .TASK }}' -description='Failed'
-            fi
-          fi
-          if [ "$RETURN_EXIT_CODE" -ne 0 ]; then
-            exit "\$exit_code";
-          fi
-        EOF
-
-  set-check-status:
-    cmds:
-      - |
-        if [ "$SKIP_REPORTING" -ne 1 ]; then
-          github-status-updater -action=update_state -state="{{ .STATUS }}" -context="{{ .CONTEXT }}" -description="{{ .DESCRIPTION }}"
-        fi
-
-  set-all-tests-pending:
-    cmds:
+  # The following is necessary to ensure that the tests are set to "pending"
+  # when the staging post-deploy tests start. If the tests are not all set to
+  # pending, then there is a chance that the auto deploy Jenkins job will check
+  # and only see the status of the tests that have completed so far, and so see
+  # a "success" status, and then auto deploy. This is a problem because the
+  # tests that have not yet completed may fail, and so the auto deploy will
+  # deploy a broken site.
+  set-deploy-tests-pending:
+    deps:
 
       # Any changes to test names or additions or removals above must be updated here as well for the Pending status to work.
-
       - task: set-check-status
         vars:
           STATUS: pending
-          CONTEXT: va/tests/accessibility
-          DESCRIPTION: 'Accessibility'
-
-      - task: set-check-status
-        vars:
-          STATUS: pending
-          CONTEXT: va/tests/behat
-          DESCRIPTION: 'Behat'
-
-      - task: set-check-status
-        vars:
-          STATUS: pending
-          CONTEXT: va/tests/behavioral
-          DESCRIPTION: 'Behavioral'
-
-      - task: set-check-status
-        vars:
-          STATUS: pending
-          CONTEXT: va/tests/check-cer
-          DESCRIPTION: 'Ensure cer fields exist'
-
-      - task: set-check-status
-        vars:
-          STATUS: pending
-          CONTEXT: va/tests/phplint
-          DESCRIPTION: 'PHPLint'
+          CONTEXT: va/tests/cypress
+          DESCRIPTION: 'Cypress Accessibility/Behavioral'
 
       - task: set-check-status
         vars:
@@ -291,30 +39,53 @@ tasks:
       - task: set-check-status
         vars:
           STATUS: pending
-          CONTEXT: va/tests/revision-log
-          DESCRIPTION: 'Revision Log'
+          CONTEXT: va/tests/status-error
+          DESCRIPTION: 'Check for Drupal status errors'
 
       - task: set-check-status
         vars:
           STATUS: pending
-          CONTEXT: va/tests/status-error
-          DESCRIPTION: 'Check for Drupal status errors'
+          CONTEXT: va/tests/content-build-gql
+          DESCRIPTION: 'Ensure that the content build graphql queries succeed'
+
+  va/tests/cypress:
+    desc: Accessibility and Behavioral tests with Cypress
+    # See also `composer va:test:cypress-parallel` in composer.json
+    # For local (e.g. DDEV) use, invoke `composer va:test:cypress`.
+    # For interactive use, invoke `composer va:test:cypress-interactive`.
+    cmds:
+      - ./tests/scripts/ci-wrapper.sh cypress 'va:test:cypress-parallel'
+
+  va/tests/phpunit:
+    desc: PHPUnit
+    # See also `composer va:test:phpunit-functional` in composer.json
+    cmds:
+      - ./tests/scripts/ci-wrapper.sh phpunit 'va:test:phpunit-functional'
+
+  va/tests/status-error:
+    desc: Check for Drupal status errors
+    # See also `composer va:test:status-error-ci` in composer.json
+    # For local (e.g. DDEV) use, invoke `composer va:test:status-error`.
+    cmds:
+      - ./tests/scripts/ci-wrapper.sh status-error 'va:test:status-error-ci'
+
+  va/tests/content-build-gql:
+    desc: Ensure that the content build graphql queries succeed
+    # See also `composer va:test:content-build-gql` in composer.json
+    cmds:
+      - ./tests/scripts/ci-wrapper.sh content-build-gql 'va:test:content-build-gql'
+
+  set-check-status:
+    cmds:
+      - |
+        if [ "$SKIP_REPORTING" -ne 1 ]; then
+          github-status-updater -action=update_state -state="{{ .STATUS }}" -context="{{ .CONTEXT }}" -description="{{ .DESCRIPTION }}"
+        fi
 
   default:
-    cmds:
-      - task: set-all-tests-pending
-      - task: va/web/build
-      - task: va/tests
-
-  va/tests:
     desc:
-    cmds:
-      - task: va/tests/accessibility
-      - task: va/tests/behat
-      - task: va/tests/behavioral
-      - task: va/tests/check-cer
-      - task: va/tests/phplint
-      - task: va/tests/phpunit
-      - task: va/tests/revision-log
-      - task: va/tests/status-error
-
+    deps:
+      - va/tests/cypress
+      - va/tests/phpunit
+      - va/tests/content-build-gql
+      - va/tests/status-error

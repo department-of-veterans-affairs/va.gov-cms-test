@@ -8,7 +8,6 @@ dependencies:
     - field.field.node.campaign_landing_page.field_administration
     - field.field.node.campaign_landing_page.field_benefit_categories
     - field.field.node.campaign_landing_page.field_clp_audience
-    - field.field.node.campaign_landing_page.field_clp_connect_with_us
     - field.field.node.campaign_landing_page.field_clp_events_header
     - field.field.node.campaign_landing_page.field_clp_events_panel
     - field.field.node.campaign_landing_page.field_clp_events_references
@@ -20,6 +19,7 @@ dependencies:
     - field.field.node.campaign_landing_page.field_clp_resources_header
     - field.field.node.campaign_landing_page.field_clp_resources_intro_text
     - field.field.node.campaign_landing_page.field_clp_resources_panel
+    - field.field.node.campaign_landing_page.field_clp_reusable_q_a
     - field.field.node.campaign_landing_page.field_clp_spotlight_cta
     - field.field.node.campaign_landing_page.field_clp_spotlight_header
     - field.field.node.campaign_landing_page.field_clp_spotlight_intro_text
@@ -39,8 +39,10 @@ dependencies:
     - field.field.node.campaign_landing_page.field_clp_why_this_matters
     - field.field.node.campaign_landing_page.field_hero_blurb
     - field.field.node.campaign_landing_page.field_hero_image
+    - field.field.node.campaign_landing_page.field_last_saved_by_an_editor
     - field.field.node.campaign_landing_page.field_media
     - field.field.node.campaign_landing_page.field_primary_call_to_action
+    - field.field.node.campaign_landing_page.field_related_office
     - field.field.node.campaign_landing_page.field_secondary_call_to_action
     - node.type.campaign_landing_page
     - workflows.workflow.editorial
@@ -54,6 +56,7 @@ dependencies:
     - linkit
     - media_library
     - paragraphs
+    - paragraphs_features
     - path
     - textfield_counter
 third_party_settings:
@@ -61,60 +64,61 @@ third_party_settings:
     group_governance:
       children:
         - field_administration
-      parent_name: ''
-      weight: 12
-      format_type: details_sidebar
-      region: content
-      format_settings:
-        description: ''
-        open: true
-        weight: -10
-        required_fields: true
-        id: ''
-        classes: ''
       label: 'Section settings'
+      region: content
+      parent_name: ''
+      weight: 11
+      format_type: details_sidebar
+      format_settings:
+        classes: ''
+        id: ''
+        open: true
+        description: ''
+        required_fields: true
+        weight: -10
     group_editorial_workflow:
       children:
         - moderation_state
         - revision_log
-      parent_name: ''
-      weight: 13
-      format_type: fieldset
-      format_settings:
-        id: ''
-        classes: ''
-        description: ''
-        required_fields: true
       label: 'Editorial workflow'
       region: content
+      parent_name: ''
+      weight: 12
+      format_type: fieldset
+      format_settings:
+        classes: ''
+        id: ''
+        description: ''
+        required_fields: true
     group_hero_banner:
       children:
         - title
         - field_hero_blurb
         - field_primary_call_to_action
         - field_hero_image
+      label: 'Hero banner'
+      region: content
       parent_name: ''
       weight: 0
       format_type: detailswithimage
-      region: content
       format_settings:
-        description: 'The hero banner attracts attention, announces the campaign''s main message, and adds visual interest.'
+        description: "The hero banner attracts attention, announces the campaign's main message, and adds visual interest."
         open: '1'
         visual_guide_file_name: hero-banner-guide.svg
         visual_guide_alt_text: 'Basic visual layout of the hero banner page segment.'
         required_fields: '1'
         id: ''
         classes: field-group-details
-      label: 'Hero banner'
     group_why_this_matters:
       children:
         - field_clp_why_this_matters
         - field_clp_audience
         - field_secondary_call_to_action
+      label: 'Why this matters'
+      region: content
       parent_name: ''
       weight: 1
       format_type: detailswithimage
-      region: content
       format_settings:
         description: 'Why this matters to you calls out the most impactful information about your campaign. If people read nothing else on the page, what should they know?'
         visual_guide_file_name: why-this-matters-guide.svg
@@ -123,16 +127,16 @@ third_party_settings:
         id: ''
         classes: field-group-details
         open: 0
-      label: 'Why this matters'
     group_what_you_can_do:
       children:
         - field_clp_what_you_can_do_header
         - field_clp_what_you_can_do_intro
         - field_clp_what_you_can_do_promos
+      label: 'What you can do'
+      region: content
       parent_name: ''
       weight: 2
       format_type: detailswithimage
-      region: content
       format_settings:
         description: 'What you can do focuses on actions or steps that site visitors can or should take. In this segment you''ll use "promos," content formatted as small image and text teasers that engage attention and inspire further action.'
         visual_guide_file_name: what-you-can-do-guide.svg
@@ -141,14 +145,14 @@ third_party_settings:
         id: ''
         classes: field-group-details
         open: 0
-      label: 'What you can do'
     group_va_benefits:
       children:
         - field_benefit_categories
+      label: 'VA Benefits'
+      region: content
       parent_name: ''
       weight: 10
       format_type: detailswithimage
-      region: content
       format_settings:
         description: 'Benefits connect site visitors with benefits information related to the campaign. Each block appears as a link to a benefits landing page with and teaser text.'
         visual_guide_file_name: related-benefits-guide.svg
@@ -157,7 +161,6 @@ third_party_settings:
         id: ''
         classes: field-group-details
         open: 0
-      label: 'VA Benefits'
     group_spotlight:
       children:
         - field_clp_spotlight_panel
@@ -165,38 +168,38 @@ third_party_settings:
         - field_clp_spotlight_intro_text
         - field_clp_spotlight_cta
         - field_clp_spotlight_link_teasers
+      label: Spotlight
+      region: content
       parent_name: ''
       weight: 4
       format_type: detailswithimage
-      region: content
       format_settings:
-        description: 'This optional segment allows you to add additional content relevant to your campaign''s audience.'
+        description: "This optional segment allows you to add additional content relevant to your campaign's audience."
         visual_guide_file_name: spotlight-guide.svg
         visual_guide_alt_text: 'Basic visual layout of the spotlight page segment.'
         required_fields: '1'
         id: ''
         classes: ''
         open: 0
-      label: Spotlight
     group_video:
       children:
         - field_clp_video_panel
         - field_clp_video_panel_header
         - field_media
         - field_clp_video_panel_more_video
+      label: Video
+      region: content
       parent_name: ''
       weight: 3
       format_type: detailswithimage
-      region: content
       format_settings:
-        description: 'This optional segment allows you to include video content related to the campaign''s message.'
+        description: "This optional segment allows you to include video content related to the campaign's message."
         visual_guide_file_name: video-guide.svg
         visual_guide_alt_text: 'Basic visual layout of the video page segment.'
         required_fields: '1'
         id: ''
         classes: ''
         open: 0
-      label: Video
     group_stories:
       children:
         - field_clp_stories_panel
@@ -204,19 +207,19 @@ third_party_settings:
         - field_clp_stories_intro
         - field_clp_stories_teasers
         - field_clp_stories_cta
+      label: Stories
+      region: content
       parent_name: ''
       weight: 5
       format_type: detailswithimage
-      region: content
       format_settings:
-        description: 'This optional segment features a link and teaser text for up to two stories that support the campaign''s main message. You can feature existing stories, or create a new story.'
+        description: "This optional segment features a link and teaser text for up to two stories that support the campaign's main message. You can feature existing stories, or create a new story."
         visual_guide_file_name: stories-guide.svg
         visual_guide_alt_text: 'Basic visual layout of the stories page segment.'
         required_fields: '1'
         id: ''
         classes: ''
         open: 0
-      label: Stories
     group_downloadable_resources:
       children:
         - field_clp_resources_panel
@@ -224,10 +227,11 @@ third_party_settings:
         - field_clp_resources_intro_text
         - field_clp_resources
         - field_clp_resources_cta
+      label: 'Downloadable resources'
+      region: content
       parent_name: ''
       weight: 6
       format_type: detailswithimage
-      region: content
       format_settings:
         description: 'This optional segment allows you to provide downloadable PDF resources such as fact sheets, reports, studies, or white papers.'
         visual_guide_file_name: downloadable-resources-guide.svg
@@ -236,16 +240,15 @@ third_party_settings:
         id: ''
         classes: ''
         open: 0
-      label: 'Downloadable resources'
     group_events:
       children:
         - field_clp_events_panel
         - field_clp_events_header
         - field_clp_events_references
-      parent_name: ''
-      weight: 8
       label: Events
       region: content
+      parent_name: ''
+      weight: 7
       format_type: detailswithimage
       format_settings:
         description: 'This optional segment allows you to feature events related to the campaign.'
@@ -259,27 +262,29 @@ third_party_settings:
       children:
         - field_clp_faq_panel
         - field_clp_faq_paragraphs
+        - field_clp_reusable_q_a
         - field_clp_faq_cta
+      label: FAQs
+      region: content
       parent_name: ''
       weight: 8
       format_type: detailswithimage
-      region: content
       format_settings:
-        description: 'This optional segment allows you to add reusable question and answer content related to the campaign''s message.'
+        description: "This optional segment allows you to add question and answer content related to the campaign's message. Choose between creating a page-specific Q&A or adding a reusable Q&A. "
         visual_guide_file_name: faqs-guide.svg
         visual_guide_alt_text: 'Basic visual layout of the faqs page segment.'
         required_fields: '1'
         id: ''
         classes: ''
         open: 0
-      label: FAQs
     group_connect_with_us:
       children:
-        - field_clp_connect_with_us
+        - field_related_office
+      label: 'Connect with us'
+      region: content
       parent_name: ''
       weight: 9
       format_type: detailswithimage
-      region: content
       format_settings:
         description: 'This optional segment allows you to add a set of social media and contact links for the VA administration responsible for the campaign.'
         visual_guide_file_name: connect-guide.svg
@@ -288,20 +293,21 @@ third_party_settings:
         id: ''
         classes: ''
         open: 0
-      label: 'Connect with us'
 id: node.campaign_landing_page.default
 targetEntityType: node
 bundle: campaign_landing_page
 mode: default
 content:
   field_administration:
+    type: options_select
     weight: 11
+    region: content
     settings: {  }
     third_party_settings: {  }
-    type: options_select
-    region: content
   field_benefit_categories:
+    type: entity_reference_browser_table_widget
     weight: 42
+    region: content
     settings:
       entity_browser: lc_benefit_hubs
       field_widget_display: label
@@ -311,54 +317,51 @@ content:
       field_widget_replace: 0
       open: 0
       field_widget_display_settings: {  }
+      additional_fields:
+        options: null
     third_party_settings:
       limited_field_widgets:
         limit_values: '2'
-    type: entity_reference_browser_table_widget
-    region: content
   field_clp_audience:
+    type: entity_browser_entity_reference
     weight: 3
+    region: content
     settings:
       entity_browser: audiences_checkboxes
       field_widget_display: label
-      field_widget_remove: true
-      selection_mode: selection_append
       field_widget_edit: false
+      field_widget_remove: true
       field_widget_replace: false
       open: false
       field_widget_display_settings: {  }
+      selection_mode: selection_append
     third_party_settings: {  }
-    type: entity_browser_entity_reference
-    region: content
-  field_clp_connect_with_us:
-    weight: 39
-    settings: {  }
-    third_party_settings: {  }
-    type: options_select
-    region: content
   field_clp_events_header:
+    type: string_textfield_with_counter
     weight: 27
+    region: content
     settings:
       size: 70
       placeholder: ''
+      use_field_maxlength: false
       maxlength: 70
       counter_position: after
       js_prevent_submit: true
-      count_html_characters: true
+      count_only_mode: false
+      count_html_characters: false
       textcount_status_message: '<span class="remaining_count">@remaining_count</span> characters remaining'
-      use_field_maxlength: false
     third_party_settings: {  }
-    type: string_textfield_with_counter
-    region: content
   field_clp_events_panel:
+    type: boolean_checkbox
     weight: 26
     region: content
-    type: boolean_checkbox
     settings:
       display_label: true
     third_party_settings: {  }
   field_clp_events_references:
+    type: entity_reference_browser_table_widget
     weight: 29
+    region: content
     settings:
       entity_browser: events_browser
       field_widget_display: rendered_entity
@@ -369,12 +372,13 @@ content:
       selection_mode: selection_append
       field_widget_edit: 0
       field_widget_replace: 0
+      additional_fields:
+        options: null
     third_party_settings: {  }
-    type: entity_reference_browser_table_widget
-    region: content
   field_clp_faq_cta:
     type: paragraphs
-    weight: 40
+    weight: 42
+    region: content
     settings:
       title: Paragraph
       title_plural: Paragraphs
@@ -390,17 +394,17 @@ content:
         collapse_edit_all: collapse_edit_all
         duplicate: duplicate
     third_party_settings: {  }
-    region: content
   field_clp_faq_panel:
-    weight: 36
+    type: boolean_checkbox
+    weight: 39
+    region: content
     settings:
       display_label: true
     third_party_settings: {  }
-    type: boolean_checkbox
-    region: content
   field_clp_faq_paragraphs:
     type: paragraphs
-    weight: 37
+    weight: 40
+    region: content
     settings:
       title: Paragraph
       title_plural: Paragraphs
@@ -418,29 +422,31 @@ content:
     third_party_settings:
       limited_field_widgets:
         limit_values: '10'
-    region: content
   field_clp_resources:
     type: inline_entity_form_complex_table_view_mode
     weight: 34
+    region: content
     settings:
       form_mode: default
-      revision: true
       override_labels: true
       label_singular: 'Downloadable resource'
       label_plural: 'Downloadable resources'
       allow_new: true
       allow_existing: true
       match_operator: CONTAINS
+      allow_duplicate: false
       collapsible: false
       collapsed: false
-      allow_duplicate: false
+      revision: true
+      removed_reference: optional
+      allow_system_delete: false
     third_party_settings:
       entity_browser_entity_form:
         entity_browser_id: downloadable_resources
-    region: content
   field_clp_resources_cta:
     type: paragraphs
     weight: 35
+    region: content
     settings:
       title: Paragraph
       title_plural: Paragraphs
@@ -456,89 +462,121 @@ content:
         collapse_edit_all: collapse_edit_all
         duplicate: duplicate
     third_party_settings: {  }
-    region: content
   field_clp_resources_header:
+    type: string_textfield_with_counter
     weight: 31
+    region: content
     settings:
       size: 70
       placeholder: ''
+      use_field_maxlength: false
       maxlength: 70
       counter_position: after
       js_prevent_submit: true
-      count_html_characters: true
+      count_only_mode: false
+      count_html_characters: false
       textcount_status_message: '<span class="remaining_count">@remaining_count</span> characters remaining'
-      use_field_maxlength: false
     third_party_settings: {  }
-    type: string_textfield_with_counter
-    region: content
   field_clp_resources_intro_text:
+    type: string_textarea_with_counter
     weight: 33
+    region: content
     settings:
       rows: 5
       placeholder: ''
       maxlength: 350
       counter_position: after
       js_prevent_submit: true
-      count_html_characters: true
+      count_only_mode: false
+      count_html_characters: false
       textcount_status_message: "Maximum <span class=\"maxlength_count\">@maxlength</span> characters, but 120 characters is recommended. <span class=\"current_count\">@current_length</span> characters, <span class=\"remaining_count\">@remaining_count</span> characters remaining\r\n"
     third_party_settings: {  }
-    type: string_textarea_with_counter
-    region: content
   field_clp_resources_panel:
+    type: boolean_checkbox
     weight: 30
+    region: content
     settings:
       display_label: true
     third_party_settings: {  }
-    type: boolean_checkbox
+  field_clp_reusable_q_a:
+    type: paragraphs
+    weight: 41
     region: content
+    settings:
+      title: Paragraph
+      title_plural: Paragraphs
+      edit_mode: open
+      closed_mode: summary
+      autocollapse: none
+      closed_mode_threshold: 0
+      add_mode: button
+      form_display_mode: default
+      default_paragraph_type: _none
+      features:
+        add_above: '0'
+        collapse_edit_all: collapse_edit_all
+        duplicate: duplicate
+    third_party_settings:
+      paragraphs_features:
+        add_in_between: false
+        add_in_between_link_count: 3
+        delete_confirmation: false
+        show_drag_and_drop: true
+      limited_field_widgets:
+        limit_values: '0'
+      change_labels:
+        add_another: ''
   field_clp_spotlight_cta:
     type: paragraphs
     weight: 16
+    region: content
     settings:
       title: Story
       title_plural: Stories
       edit_mode: open
-      add_mode: button
-      form_display_mode: default
-      default_paragraph_type: _none
       closed_mode: summary
       autocollapse: none
       closed_mode_threshold: 0
+      add_mode: button
+      form_display_mode: default
+      default_paragraph_type: _none
       features:
         collapse_edit_all: collapse_edit_all
         duplicate: duplicate
     third_party_settings: {  }
-    region: content
   field_clp_spotlight_header:
+    type: string_textfield_with_counter
     weight: 14
     region: content
-    type: string_textfield_with_counter
     settings:
+      size: 60
+      placeholder: ''
       use_field_maxlength: false
       maxlength: 0
       counter_position: after
       js_prevent_submit: true
+      count_only_mode: false
       count_html_characters: true
       textcount_status_message: 'Maxlength: <span class="maxlength_count">@maxlength</span><br />Used: <span class="current_count">@current_length</span><br />Remaining: <span class="remaining_count">@remaining_count</span>'
-      size: 60
-      placeholder: ''
     third_party_settings: {  }
   field_clp_spotlight_intro_text:
+    type: string_textarea_with_counter
     weight: 15
+    region: content
     settings:
       rows: 5
       placeholder: ''
       maxlength: 350
       counter_position: after
       js_prevent_submit: true
-      count_html_characters: true
+      count_only_mode: false
+      count_html_characters: false
       textcount_status_message: '<span class="remaining_count">@remaining_count</span> characters remaining'
     third_party_settings: {  }
-    type: string_textarea_with_counter
-    region: content
   field_clp_spotlight_link_teasers:
     type: paragraphs
     weight: 17
+    region: content
     settings:
       title: Paragraph
       title_plural: Paragraphs
@@ -556,61 +594,63 @@ content:
     third_party_settings:
       limited_field_widgets:
         limit_values: '3'
-    region: content
   field_clp_spotlight_panel:
+    type: boolean_checkbox
     weight: 12
+    region: content
     settings:
       display_label: true
     third_party_settings: {  }
-    type: boolean_checkbox
-    region: content
   field_clp_stories_cta:
+    type: linkit
     weight: 7
+    region: content
     settings:
       placeholder_url: ''
       placeholder_title: ''
       linkit_profile: default
       linkit_auto_link_text: false
     third_party_settings: {  }
-    type: linkit
-    region: content
   field_clp_stories_header:
+    type: string_textfield_with_counter
     weight: 4
+    region: content
     settings:
       size: 70
       placeholder: ''
+      use_field_maxlength: false
       maxlength: 70
       counter_position: after
       js_prevent_submit: true
-      count_html_characters: true
+      count_only_mode: false
+      count_html_characters: false
       textcount_status_message: '<span class="remaining_count">@remaining_count</span> characters remaining.'
-      use_field_maxlength: false
     third_party_settings: {  }
-    type: string_textfield_with_counter
-    region: content
   field_clp_stories_intro:
+    type: string_textarea_with_counter
     weight: 5
+    region: content
     settings:
       rows: 5
       placeholder: ''
       maxlength: 350
       counter_position: after
       js_prevent_submit: true
-      count_html_characters: true
+      count_only_mode: false
+      count_html_characters: false
       textcount_status_message: 'Maximum <span class="maxlength_count">@maxlength</span> characters, but 120 characters is recommended. <br /> <span class="current_count">@current_length</span> characters,<br /><span class="remaining_count">@remaining_count</span> characters remaining.'
     third_party_settings: {  }
-    type: string_textarea_with_counter
-    region: content
   field_clp_stories_panel:
+    type: boolean_checkbox
     weight: 2
     region: content
-    type: boolean_checkbox
     settings:
       display_label: true
     third_party_settings: {  }
   field_clp_stories_teasers:
     type: entity_reference_paragraphs
     weight: 6
+    region: content
     settings:
       title: stories
       title_plural: stories
@@ -619,16 +659,17 @@ content:
       form_display_mode: default
       default_paragraph_type: _none
     third_party_settings: {  }
-    region: content
   field_clp_video_panel:
+    type: boolean_checkbox
     weight: 4
+    region: content
     settings:
       display_label: true
     third_party_settings: {  }
-    type: boolean_checkbox
-    region: content
   field_clp_video_panel_header:
+    type: string_textfield_with_counter
     weight: 5
+    region: content
     settings:
       size: 70
       placeholder: ''
@@ -636,14 +677,14 @@ content:
       maxlength: 0
       counter_position: after
       js_prevent_submit: true
-      count_html_characters: true
+      count_only_mode: false
+      count_html_characters: false
       textcount_status_message: '<span class="remaining_count">@remaining_count</span> characters remaining'
     third_party_settings: {  }
-    type: string_textfield_with_counter
-    region: content
   field_clp_video_panel_more_video:
     type: paragraphs
     weight: 7
+    region: content
     settings:
       title: Paragraph
       title_plural: Paragraphs
@@ -657,9 +698,10 @@ content:
       features:
         add_above: '0'
     third_party_settings: {  }
-    region: content
   field_clp_what_you_can_do_header:
+    type: string_textfield_with_counter
     weight: 4
+    region: content
     settings:
       size: 70
       placeholder: ''
@@ -667,58 +709,63 @@ content:
       maxlength: 0
       counter_position: after
       js_prevent_submit: true
-      count_html_characters: true
+      count_only_mode: false
+      count_html_characters: false
       textcount_status_message: 'Characters remaining: <span class="remaining_count">@remaining_count</span>'
     third_party_settings: {  }
-    type: string_textfield_with_counter
-    region: content
   field_clp_what_you_can_do_intro:
+    type: string_textarea_with_counter
     weight: 6
+    region: content
     settings:
       rows: 5
       placeholder: ''
       maxlength: 300
       counter_position: after
       js_prevent_submit: true
-      count_html_characters: true
+      count_only_mode: false
+      count_html_characters: false
       textcount_status_message: '<span class="remaining_count">@remaining_count</span> characters remaining'
     third_party_settings: {  }
-    type: string_textarea_with_counter
-    region: content
   field_clp_what_you_can_do_promos:
+    type: inline_entity_form_complex_table_view_mode
     weight: 7
+    region: content
     settings:
       form_mode: default
-      revision: true
       override_labels: true
       label_singular: Promo
       label_plural: Promos
       allow_new: true
       allow_existing: true
       match_operator: CONTAINS
+      allow_duplicate: false
       collapsible: false
       collapsed: false
-      allow_duplicate: false
+      revision: true
+      removed_reference: optional
+      allow_system_delete: false
     third_party_settings:
       entity_browser_entity_form:
         entity_browser_id: promo_blocks_browser
-    type: inline_entity_form_complex_table_view_mode
-    region: content
   field_clp_why_this_matters:
+    type: string_textarea_with_counter
     weight: 2
+    region: content
     settings:
       rows: 5
       placeholder: ''
       maxlength: 350
       counter_position: after
       js_prevent_submit: true
-      count_html_characters: true
+      count_only_mode: false
+      count_html_characters: false
       textcount_status_message: '<span class="remaining_count">@remaining_count</span> characters remaining'
     third_party_settings: {  }
-    type: string_textarea_with_counter
-    region: content
   field_hero_blurb:
+    type: string_textfield_with_counter
     weight: 4
+    region: content
     settings:
       size: 70
       placeholder: ''
@@ -726,28 +773,34 @@ content:
       maxlength: 0
       counter_position: after
       js_prevent_submit: true
-      count_html_characters: true
+      count_only_mode: false
+      count_html_characters: false
       textcount_status_message: '<span class="remaining_count">@remaining_count</span> characters remaining'
     third_party_settings: {  }
-    type: string_textfield_with_counter
-    region: content
   field_hero_image:
     type: media_library_widget
     weight: 6
+    region: content
     settings:
       media_types: {  }
     third_party_settings: {  }
+  field_last_saved_by_an_editor:
+    type: datetime_timestamp
+    weight: 46
     region: content
+    settings: {  }
+    third_party_settings: {  }
   field_media:
+    type: media_library_widget
     weight: 6
+    region: content
     settings:
       media_types: {  }
     third_party_settings: {  }
-    type: media_library_widget
-    region: content
   field_primary_call_to_action:
     type: paragraphs
     weight: 5
+    region: content
     settings:
       title: Paragraph
       title_plural: Paragraphs
@@ -757,16 +810,27 @@ content:
       closed_mode_threshold: 0
       add_mode: button
       form_display_mode: default
-      default_paragraph_type: _none
+      default_paragraph_type: button
       features:
         add_above: '0'
-        collapse_edit_all: collapse_edit_all
-        duplicate: duplicate
-    third_party_settings: {  }
+        collapse_edit_all: '0'
+        duplicate: '0'
+    third_party_settings:
+      paragraphs_features:
+        add_in_between: false
+        delete_confirmation: false
+        show_drag_and_drop: false
+        split_text: false
+  field_related_office:
+    type: options_select
+    weight: 45
     region: content
+    settings: {  }
+    third_party_settings: {  }
   field_secondary_call_to_action:
     type: paragraphs
     weight: 4
+    region: content
     settings:
       title: Paragraph
       title_plural: Paragraphs
@@ -779,28 +843,32 @@ content:
       default_paragraph_type: _none
       features:
         add_above: '0'
-        collapse_edit_all: collapse_edit_all
-        duplicate: duplicate
-    third_party_settings: {  }
-    region: content
+        collapse_edit_all: '0'
+        duplicate: '0'
+    third_party_settings:
+      paragraphs_features:
+        add_in_between: false
+        delete_confirmation: false
+        show_drag_and_drop: false
+        split_text: false
   moderation_state:
     type: moderation_state_default
     weight: 7
-    settings: {  }
     region: content
+    settings: {  }
     third_party_settings: {  }
   path:
     type: path
-    weight: 15
+    weight: 14
     region: content
     settings: {  }
     third_party_settings: {  }
   status:
     type: boolean_checkbox
+    weight: 13
+    region: content
     settings:
       display_label: true
-    weight: 14
-    region: content
     third_party_settings: {  }
   title:
     type: string_textfield_with_counter
@@ -809,15 +877,17 @@ content:
     settings:
       size: 70
       placeholder: ''
+      use_field_maxlength: false
       maxlength: 70
       counter_position: after
       js_prevent_submit: true
-      count_html_characters: true
+      count_only_mode: false
+      count_html_characters: false
       textcount_status_message: '<span class="remaining_count">@remaining_count</span> characters remaining'
-      use_field_maxlength: false
     third_party_settings: {  }
 hidden:
   created: true
+  langcode: true
   promote: true
   sticky: true
   uid: true

@@ -10,13 +10,13 @@ type: 'canonical_entities:node'
 pattern: '[node:field_office:entity:title]/[node:title]'
 selection_criteria:
   6c7d92a9-2742-4b43-b63f-35848442a1df:
-    id: node_type
-    bundles:
-      vet_center_mobile_vet_center: vet_center_mobile_vet_center
+    id: 'entity_bundle:node'
     negate: false
+    uuid: 6c7d92a9-2742-4b43-b63f-35848442a1df
     context_mapping:
       node: node
-    uuid: 6c7d92a9-2742-4b43-b63f-35848442a1df
+    bundles:
+      vet_center_mobile_vet_center: vet_center_mobile_vet_center
 selection_logic: and
 weight: -5
 relationships: {  }

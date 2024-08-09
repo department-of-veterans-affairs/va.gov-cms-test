@@ -5,9 +5,13 @@
  * Install file for Va Gov DB.
  */
 
+use Drupal\Core\Database\Database;
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Utility\UpdateException;
+use Drupal\field\Entity\FieldConfig;
 use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\node\Entity\Node;
+use Drupal\redirect\Entity\Redirect;
 use Psr\Log\LogLevel;
 
 /**
@@ -21,6 +25,12 @@ use Psr\Log\LogLevel;
  * @return string
  *   A message about what requested modules were uninstalled.
  *
+ *   This is no longer needed for simple module disables. It is still
+ *   appropriate when order matters, if multiple uninstalls have a weighting
+ *   problem. So may never be fully removed.
+ *
+ * @see https://github.com/department-of-veterans-affairs/va.gov-cms/pull/10650#issuecomment-1240819457
+ *
  * @throws Drupal\Core\Utility\UpdateException
  */
 function _va_gov_db_uninstall_modules(array $modules, $uninstall_dependents = TRUE) {
@@ -32,7 +42,34 @@ function _va_gov_db_uninstall_modules(array $modules, $uninstall_dependents = TR
   else {
     // Something went wrong. Throw exception.
     throw new UpdateException(
-      t("Failed to uninstall the requested modules: @modules", ['@modules' => $modules_list])
+      "Failed to uninstall the requested modules: " . implode(',', $modules_list)
+    );
+  }
+}
+
+/**
+ * Installs requested modules.
+ *
+ * @param array $modules
+ *   An array of module machine names to install.
+ * @param bool $install_dependents
+ *   TRUE if dependent modules should also be installed, FALSE otherwise.
+ *
+ * @return string
+ *   A message about what requested modules were uninstalled.
+ *
+ * @throws Drupal\Core\Utility\UpdateException
+ */
+function _va_gov_db_install_modules(array $modules, $install_dependents = TRUE) {
+  $success = \Drupal::service('module_installer')->install($modules, $install_dependents);
+  $modules_list = implode(', ', $modules);
+  if ($success) {
+    return "Installed the following modules: $modules_list";
+  }
+  else {
+    // Something went wrong. Throw exception.
+    throw new UpdateException(
+      "Failed to install the requested modules: " . implode(',', $modules_list)
     );
   }
 }
@@ -87,6 +124,155 @@ function _va_gov_db_change_text_field_max_length($field_name, $new_length) {
     );
   }
   return "Updated field $field_name to the new size of $new_length Be sure to update vagov/config/sync/field.storage.node.{$field_name}.yml to match.";
+}
+
+/**
+ * Renames a taxonomy term.
+ *
+ * @param string $oldname
+ *   The original name of the taxonomy term.
+ * @param string $newname
+ *   The new name of the taxonomy term.
+ * @param string|null $vocabulary_name
+ *   The machine name of the vocabulary to search.  NULL results in all vocab.
+ *
+ * @return string
+ *   A string of messages of what happened, separated with carriage returns.
+ */
+function _va_gov_rename_vocab_term($oldname, $newname, $vocabulary_name = NULL) {
+  $messages = '';
+  $vars = [
+    ':oldname' => $oldname,
+    ':newname' => $newname,
+  ];
+  $terms = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties([
+    'name' => $oldname,
+    'vid' => $vocabulary_name,
+  ]);
+  if (empty($terms)) {
+    $vars[':vocabulary'] = $vocabulary_name;
+    $message = t("Found no term ':oldname' in vocabulary ':vocabulary'.", $vars);
+    // This is not serious enough to throw an exception, because it may already
+    // have been renamed by hand.  Just warn and move on.
+    \Drupal::logger('va_gov_db')->warning($message);
+    $messages .= $message . PHP_EOL;
+  }
+  else {
+    foreach ($terms as $term) {
+      /** @var Drupal\taxonomy\TermInterface $term */
+      $term->setName($newname);
+      $term->save();
+      $vars[':tid'] = $term->id();
+      $vars[':vocabulary'] = $term->bundle();
+      $message = t("Vocabulary::vocabulary Term::tid was renamed from ':oldname' to ':newname'.", $vars);
+      \Drupal::logger('va_gov_db')->info($message);
+      $messages .= $message . PHP_EOL;
+    }
+  }
+
+  return $messages;
+}
+
+/**
+ * Creates a redirect and logs it.
+ *
+ * @param string $old_path
+ *   The original path (source) of the redirect.
+ * @param Drupal\Core\Entity\EntityInterface $entity
+ *   The entity to redirect to.
+ *
+ * @return string
+ *   A message to be returned.
+ */
+function _va_gov_db_create_redirect($old_path, EntityInterface $entity) {
+  $old_path = trim($old_path, '/');
+  $message = '';
+  Redirect::create([
+    'redirect_source' => $old_path,
+    'redirect_redirect' => "internal:/{$entity->toUrl()->getInternalPath()}",
+    'language' => 'en',
+    'status_code' => '301',
+  ])->save();
+  $message = t("Redirect created from :old to :new.", [
+    ':old' => "/{$old_path}",
+    ':new' => "/{$entity->toUrl()->getInternalPath()}}",
+  ]);
+  \Drupal::logger('va_gov_db')->info($message);
+
+  return $message . PHP_EOL;
+}
+
+/**
+ * Creates a redirect and logs it.
+ *
+ * @param string $old_path
+ *   The original path (source) of the redirect.
+ * @param string $new_path
+ *   The new path (target) of the redirect.
+ *
+ * @return string
+ *   A message to be returned.
+ */
+function _va_gov_db_create_redirect_by_path($old_path, $new_path) {
+  $old_path = trim($old_path, '/');
+  $new_path = trim($new_path, '/');
+  $message = '';
+  Redirect::create([
+    'redirect_source' => $old_path,
+    'redirect_redirect' => "internal:/{$new_path}",
+    'language' => 'en',
+    'status_code' => '301',
+  ])->save();
+  $message = t("Redirect created from :old to :new.", [
+    ':old' => "/{$old_path}",
+    ':new' => "/{$new_path}",
+  ]);
+  \Drupal::logger('va_gov_db')->info($message);
+
+  return $message . PHP_EOL;
+}
+
+/**
+ * Publishes latest node revision.
+ *
+ * @param array $nids
+ *   An array of node ids to publish.
+ *
+ * @return string
+ *   A message of confirmation of node titles published.
+ *
+ * @throws Drupal\Core\Utility\UpdateException
+ */
+function _va_gov_db_publish_nodes(array $nids) {
+  $nodes_published = [];
+  foreach ($nids as $nid) {
+    // Get latest revision ID.
+    $node_storage = \Drupal::entityTypeManager()
+      ->getStorage('node');
+    $latest_vid = $node_storage->getLatestRevisionId($nid);
+    if (empty($latest_vid)) {
+      throw new UpdateException("Failed to find nid: {$nid}");
+    }
+    // Load latest revision.
+    /** @var \Drupal\node\Entity\Node $latest_vid_loaded */
+    $latest_vid_loaded = \Drupal::entityTypeManager()
+      ->getStorage('node')
+      ->loadRevision($latest_vid);
+    // Create a new revision and publish.
+    $latest_vid_loaded->status = 1;
+    $latest_vid_loaded->revision_log = t("Automatically published by code update.");
+    $latest_vid_loaded->set('moderation_state', "published");
+    $latest_vid_loaded->setNewRevision();
+    $latest_vid_loaded->isDefaultRevision(TRUE);
+    $latest_vid_loaded->setRevisionUserId(1317);
+    $latest_vid_loaded->setOwnerId(1317);
+    $latest_vid_loaded->setRevisionCreationTime(time());
+    $latest_vid_loaded->save();
+    $nodes_published[] = "{$nid} - {$latest_vid_loaded->getTitle()}";
+
+  }
+  $nids_list = implode(', ', $nodes_published);
+  return "Published these nodes: {$nids_list}";
 }
 
 /**
@@ -253,6 +439,7 @@ function va_gov_db_update_8015(&$sandbox) {
   if (empty($sandbox['total'])) {
     $sandbox['nids_process'] = \Drupal::entityQuery('node')
       ->condition('type', 'page')
+      ->accessCheck(FALSE)
       ->execute();
     $sandbox['total'] = count($sandbox['nids_process']);
     $sandbox['current'] = 0;
@@ -343,7 +530,6 @@ function va_gov_db_update_8019(&$sandbox) {
  * Clear Drupal status report mis-matched entity/field errors.
  */
 function va_gov_db_update_8020() {
-  $messages = [];
 
   $missing_entity_types = [
     'environment_indicator',
@@ -454,6 +640,7 @@ function va_gov_db_update_8026(&$sandbox) {
   if (empty($sandbox['total'])) {
     $sandbox['nids_process'] = \Drupal::entityQuery('node')
       ->condition('type', 'vet_center')
+      ->accessCheck(FALSE)
       ->execute();
     $sandbox['total'] = count($sandbox['nids_process']);
     $sandbox['current'] = 0;
@@ -513,9 +700,10 @@ function va_gov_db_update_8027(&$sandbox) {
   $key_value = \Drupal::keyValue('pathauto_state.node');
   $nids = \Drupal::entityQuery('node')
     ->condition('type', 'health_care_region_detail_page')
+    ->accessCheck(FALSE)
     ->execute();
   $count = 0;
-  foreach ($nids as $key => $nid) {
+  foreach ($nids as $nid) {
     if ($key_value->get($nid) == 0) {
       $key_value->set($nid, 1);
       $count++;
@@ -573,9 +761,10 @@ function va_gov_db_update_8030(&$sandbox) {
   $key_value = \Drupal::keyValue('pathauto_state.node');
   $nids = \Drupal::entityQuery('node')
     ->condition('type', 'leadership_listing')
+    ->accessCheck(FALSE)
     ->execute();
   $count = 0;
-  foreach ($nids as $key => $nid) {
+  foreach ($nids as $nid) {
     if ($key_value->get($nid) == 0) {
       $key_value->set($nid, 1);
       $count++;
@@ -591,7 +780,7 @@ function va_gov_db_update_8030(&$sandbox) {
  */
 function va_gov_db_update_8031(&$sandbox) {
   // Get all of our existing vc locations listings.
-  $vc_list_nids = \Drupal::entityQuery('node')->condition('type', 'vet_center_locations_list')->execute();
+  $vc_list_nids = \Drupal::entityQuery('node')->condition('type', 'vet_center_locations_list')->accessCheck(FALSE)->execute();
   $vc_list_nodes = Node::loadMultiple($vc_list_nids);
   $vcs_with_lists_ids = [];
   // Get their vc associations.
@@ -600,7 +789,7 @@ function va_gov_db_update_8031(&$sandbox) {
   }
 
   // Get all of the vet centers.
-  $vc_nids = \Drupal::entityQuery('node')->condition('type', 'vet_center')->execute();
+  $vc_nids = \Drupal::entityQuery('node')->condition('type', 'vet_center')->accessCheck(FALSE)->execute();
   $vc_nodes = Node::loadMultiple($vc_nids);
   $vcs_ids = [];
   $vc_term_loader = \Drupal::entityTypeManager()->getStorage('taxonomy_term');
@@ -645,4 +834,335 @@ function va_gov_db_update_8032(&$sandbox) {
   $messages = _va_gov_db_uninstall_modules(['va_gov_user_guide']);
 
   return $messages;
+}
+
+/**
+ * Rename four key section names.
+ */
+function va_gov_db_update_8033(&$sandbox) {
+  $messages = '';
+  $section_terms = [
+    'National Cemetery Administration' => 'NCA',
+    'Veterans Affairs' => 'VACO',
+    'Veterans Benefits Administration' => 'VBA',
+    'Veterans Health Administration' => 'VHA',
+  ];
+  foreach ($section_terms as $oldname => $newname) {
+    $messages .= _va_gov_rename_vocab_term($oldname, $newname, 'administration');
+  }
+
+  return $messages;
+}
+
+/**
+ * Add redirects for restructured facility views.
+ */
+function va_gov_db_update_8034(&$sandbox) {
+  $messages = '';
+  $redirects = [
+    'admin/content/facility-status' => 'admin/content/facilities/facility-status',
+    'admin/content/audit/vamc-system-service-audit' => 'admin/content/facilities/vamc-system-service-audit',
+    'admin/content/audit/vamc-ehr' => 'admin/content/facilities/vamc-systems',
+  ];
+  foreach ($redirects as $oldpath => $newpath) {
+    $messages .= _va_gov_db_create_redirect_by_path($oldpath, $newpath);
+  }
+
+  return $messages;
+}
+
+/**
+ * Uninstall Entity Embed module.
+ */
+function va_gov_db_update_9002(&$sandbox) {
+  $messages = _va_gov_db_uninstall_modules(['entity_embed']);
+
+  return $messages;
+}
+
+/**
+ * Set field_error_message text_format value on paragraph 4102.
+ */
+function va_gov_db_update_9003() {
+
+  \Drupal::database()
+    ->update('paragraph__field_error_message')
+    ->condition('entity_id', 4102)
+    ->fields([
+      'field_error_message_format' => 'rich_text',
+    ])
+    ->execute();
+  \Drupal::logger('va_gov_db')->info('Update field_error_message to full_html');
+
+  \Drupal::database()
+    ->update('paragraph_revision__field_error_message')
+    ->condition('entity_id', 4102)
+    ->fields([
+      'field_error_message_format' => 'rich_text',
+    ])
+    ->execute();
+  \Drupal::logger('va_gov_db')->info('Update field_error_message revision to full_html');
+
+  return 'Set field_error_message text_format value on paragraph 4102.';
+
+}
+
+/**
+ * Add redirects for VHA services taxonomy view.
+ */
+function va_gov_db_update_9004(&$sandbox) {
+  $messages = '';
+  $redirects = [
+    '/vha-health-services' => '/va-services',
+  ];
+  foreach ($redirects as $oldpath => $newpath) {
+    $messages .= _va_gov_db_create_redirect_by_path($oldpath, $newpath);
+  }
+
+  return $messages;
+}
+
+/**
+ * Uninstall next  and related modules.
+ */
+function va_gov_db_update_9005(&$sandbox) {
+  $modules = [
+    'decoupled_router',
+    'next_jsonapi',
+    'next',
+    'simple_oauth',
+    'subrequests',
+  ];
+
+  $messages = _va_gov_db_uninstall_modules($modules);
+
+  return $messages;
+}
+
+/**
+ * Remove field_facility_hours from facilities.
+ */
+function va_gov_db_update_9006() {
+  $field = FieldConfig::loadByName('node', 'health_care_local_facility', 'field_facility_hours');
+  if ($field) {
+    /** @var Drupal\field\FieldConfigInterface $field */
+    $field->delete();
+  }
+
+  return 'Removed field_facility_hours from facilities.';
+}
+
+/**
+ * Remove field_meta_title.
+ */
+function va_gov_db_update_9007() {
+  $field = FieldConfig::loadByName('node', 'page', 'field_meta_title');
+  if ($field) {
+    /** @var Drupal\field\FieldConfigInterface $field */
+    $field->delete();
+  }
+
+  $field2 = FieldConfig::loadByName('node', 'landing_page', 'field_meta_title');
+  if ($field2) {
+    /** @var Drupal\field\FieldConfigInterface $field */
+    $field->delete();
+  }
+
+  $field3 = FieldConfig::loadByName('node', 'basic_landing_page', 'field_meta_title');
+  if ($field3) {
+    /** @var Drupal\field\FieldConfigInterface $field */
+    $field->delete();
+  }
+
+  $field4 = FieldConfig::loadByName('node', 'office', 'field_meta_title');
+  if ($field4) {
+    /** @var Drupal\field\FieldConfigInterface $field */
+    $field->delete();
+  }
+
+  $field5 = FieldConfig::loadByName('node', 'publication_listing', 'field_meta_title');
+  if ($field5) {
+    /** @var Drupal\field\FieldConfigInterface $field */
+    $field->delete();
+  }
+
+  return 'Removed field_meta_title from Benefits hubs (detail and landing), Landing pages, Offices and Publication Listing nodes.';
+}
+
+/**
+ * Resave billing pages to capture EFF paragraph text.
+ */
+function va_gov_db_update_9008(&$sandbox) {
+  // Grab our nodes and set the count.
+  if (empty($sandbox['total'])) {
+    $sandbox['nids_process'] = \Drupal::entityQuery('node')
+      ->condition('type', 'vamc_system_billing_insurance')
+      ->accessCheck(FALSE)
+      ->execute();
+    $sandbox['total'] = count($sandbox['nids_process']);
+    $sandbox['current'] = 0;
+  }
+
+  // Run through a batch of 25.
+  $i = 0;
+  $nids = '';
+  foreach ($sandbox['nids_process'] as $revision => $nid) {
+    if ($i == 25) {
+      break;
+    }
+    $node = Node::load($nid);
+    // Set the top of page eff value.
+    $node->field_cc_above_top_of_page->value = "0";
+    // Make this change a new revision.
+    $node->setNewRevision(TRUE);
+    // Set revision author to uid 1317.
+    $node->setRevisionUserId(1317);
+    $node->setChangedTime(time());
+    $node->isDefaultRevision(TRUE);
+    $node->setRevisionCreationTime(time());
+    $node->setOwnerId(1317);
+    // Set revision log message.
+    $node->setRevisionLogMessage('Add centralized copay content.');
+    $node->save();
+    unset($sandbox['nids_process'][$revision]);
+    $i++;
+
+    $nids .= $nid . ', ';
+    $sandbox['current']++;
+  }
+
+  // Tell drupal we processed some nodes.
+  Drupal::logger('va_gov_db')
+    ->log(LogLevel::INFO, 'Billing nodes %current nodes saved to update copay text. Nodes processed: %nids', [
+      '%current' => $sandbox['current'],
+      '%nids' => $nids,
+    ]);
+
+  // Determine when to stop batching.
+  $sandbox['#finished'] = ($sandbox['current'] / $sandbox['total']);
+  // Log the all finsished notice.
+  if ($sandbox['#finished'] == 1) {
+    Drupal::logger('va_gov_db')->log(LogLevel::INFO, 'RE-saving all %count Billing nodes completed by va_gov_db_update_9007.', [
+      '%count' => $sandbox['total'],
+    ]);
+    return "Process complete.";
+  }
+
+  return "Processing billing nodes...";
+}
+
+/**
+ * Remove field_hours_for_copay_inquiries_ from billing.
+ */
+function va_gov_db_update_9009() {
+  $field = FieldConfig::loadByName('node', 'vamc_system_billing_insurance', 'field_hours_for_copay_inquiries_');
+  if ($field) {
+    /** @var Drupal\field\FieldConfigInterface $field */
+    $field->delete();
+  }
+
+  return 'Removed field_hours_for_copay_inquiries_ from billing.';
+}
+
+/**
+ * Create redirect for flagged content.
+ */
+function va_gov_db_update_9010(&$sandbox) {
+  return _va_gov_db_create_redirect_by_path('/admin/content/flagged', '/admin/content/facilities/flagged');
+}
+
+/**
+ * Create redirects for rich text search View displays.
+ */
+function va_gov_db_update_9011(&$sandbox) {
+  $mesages = _va_gov_db_create_redirect_by_path('/admin/content/audit/rich-text-field-audit.csv', '/admin/content/audit/search/export');
+  $mesages .= _va_gov_db_create_redirect_by_path('/admin/content/audit/rich-text-field-audit', '/admin/content/audit/search');
+  return $mesages;
+}
+
+/**
+ * Remove a number of old tables from the database.
+ */
+function va_gov_db_update_9012(&$sandbox) {
+  $logger = \Drupal::logger('va_gov_db_update_9012');
+  $schema = \Drupal::database()->schema();
+  $tables = $schema->findTables("old_%");
+  $table_names = array_keys($tables);
+  $count = count($tables);
+  $logger->info("Found $count tables: " . json_encode($table_names));
+  foreach ($table_names as $table_name) {
+    $removed = $schema->dropTable($table_name);
+    if ($removed) {
+      $logger->info("Table $table_name successfully dropped.");
+    }
+    else {
+      $logger->warning("Table $table_name not found.");
+    }
+  }
+  $tables = $schema->findTables("old_%");
+  $table_names = array_keys($tables);
+  $count = count($tables);
+  if (!$count) {
+    $logger->info("Successfully removed all old tables.");
+  }
+  else {
+    $logger->warning("Found $count tables after update: " . json_encode($table_names));
+  }
+}
+
+/**
+ * Toggle content_model_documentation off so config import can fully reinstall.
+ */
+function va_gov_db_update_9013(&$sandbox) {
+  $messages = '';
+  $schema = Database::getConnection()->schema();
+
+  // Because the content_model_documentation module now has a content type,
+  // the module needs to be uninstalled and then re-installed.  The problem is
+  // the cleanup tries to remove content type fields that do not exist and
+  // throws a fatal error.  So we have to create fake tables with the right
+  // fields so the cleanup on module uninstall can proceed.
+  $table = [
+    'fields' => [
+      'id' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'size' => 'normal',
+        'default' => '0',
+      ],
+      'vid' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'size' => 'normal',
+        'default' => '0',
+      ],
+    ],
+  ];
+  if (!$schema->tableExists('cm_document')) {
+    $schema->createTable('cm_document', $table);
+    $messages .= "Added cm_document table to prevent uninstall from erroring.\n";
+  }
+  if (!$schema->tableExists('cm_document_field_data')) {
+    $schema->createTable('cm_document_field_data', $table);
+    $messages .= "Added cm_document_field_data table to prevent uninstall from erroring.\n";
+  }
+  $messages .= _va_gov_db_uninstall_modules(['content_model_documentation']);
+
+  return $messages;
+}
+
+/**
+ * Publish latest revision of KB related to required revision log messages.
+ */
+function va_gov_db_update_9014(&$sandbox) {
+  return _va_gov_db_publish_nodes([35029]);
+}
+
+/**
+ * Enable the `va_gov_github` module.
+ */
+function va_gov_db_update_9015(&$sandbox) {
+  _va_gov_db_install_modules([
+    'va_gov_github',
+  ]);
 }

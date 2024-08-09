@@ -9,6 +9,8 @@ dependencies:
     - field.field.node.vamc_system_register_for_care.field_cc_top_of_page_content
     - field.field.node.vamc_system_register_for_care.field_enforce_unique_combo
     - field.field.node.vamc_system_register_for_care.field_enforce_unique_combo_offic
+    - field.field.node.vamc_system_register_for_care.field_last_saved_by_an_editor
+    - field.field.node.vamc_system_register_for_care.field_non_clinical_services
     - field.field.node.vamc_system_register_for_care.field_office
     - field.field.node.vamc_system_register_for_care.field_service_name_and_descripti
     - node.type.vamc_system_register_for_care
@@ -16,17 +18,18 @@ dependencies:
     - entity_field_fetch
     - field_group
     - user
+    - viewfield
 third_party_settings:
   field_group:
     group_national_content:
       children:
-        - field_cc_top_of_page_content
-        - field_cc_related_links
         - field_cc_bottom_of_page_content
+        - field_cc_related_links
+      label: 'National content'
       parent_name: ''
-      weight: 1
-      format_type: tooltip
       region: content
+      weight: 3
+      format_type: tooltip
       format_settings:
         show_empty_fields: 0
         id: ''
@@ -36,10 +39,29 @@ third_party_settings:
         label_element: h3
         attributes: ''
         description: ''
-        tooltip_description: 'This part of the page describes register for care content across all VA medical centers. Edits can only be made by the Veterans Health Administration (VHA). '
+        tooltip_description: 'Why can’t I edit this? VHA keeps this content standardized so that all VA medical centers have consistent messaging.'
         open: false
         required_fields: false
-      label: 'National content'
+    group_national_top_of_page_conte:
+      children:
+        - field_cc_top_of_page_content
+      label: 'National top of page content'
+      parent_name: ''
+      region: content
+      weight: 1
+      format_type: tooltip
+      format_settings:
+        show_empty_fields: 0
+        id: ''
+        classes: centralized
+        element: div
+        show_label: '0'
+        label_element: h3
+        attributes: ''
+        description: ''
+        tooltip_description: 'Why can’t I edit this? VHA keeps this content standardized so that all VA medical centers have consistent messaging.'
+        open: false
+        required_fields: false
 id: node.vamc_system_register_for_care.default
 targetEntityType: node
 bundle: vamc_system_register_for_care
@@ -47,42 +69,48 @@ mode: default
 content:
   field_cc_bottom_of_page_content:
     type: entity_field_fetch
-    weight: 7
-    region: content
-    label: above
+    label: hidden
     settings: {  }
     third_party_settings: {  }
+    weight: 8
+    region: content
   field_cc_related_links:
     type: entity_field_fetch
-    weight: 6
-    region: content
-    label: above
+    label: hidden
     settings: {  }
     third_party_settings: {  }
+    weight: 9
+    region: content
   field_cc_top_of_page_content:
     type: entity_field_fetch
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
     weight: 5
     region: content
-    label: above
-    settings: {  }
-    third_party_settings: {  }
-  field_service_name_and_descripti:
-    weight: 8
-    label: above
+  field_non_clinical_services:
+    type: viewfield_default
+    label: hidden
     settings:
-      link: true
+      view_title: above
+      always_build_output: true
+      empty_view_title: above
     third_party_settings: {  }
-    type: entity_reference_label
+    weight: 2
     region: content
   links:
-    weight: 0
-    region: content
     settings: {  }
     third_party_settings: {  }
+    weight: 0
+    region: content
 hidden:
+  breadcrumbs: true
   content_moderation_control: true
   field_administration: true
   field_enforce_unique_combo: true
   field_enforce_unique_combo_offic: true
+  field_last_saved_by_an_editor: true
   field_office: true
+  field_service_name_and_descripti: true
+  langcode: true
   search_api_excerpt: true

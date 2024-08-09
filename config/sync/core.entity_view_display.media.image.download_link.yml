@@ -21,11 +21,11 @@ mode: download_link
 content:
   image:
     type: image_url
-    weight: 0
     label: hidden
     settings:
       image_style: ''
     third_party_settings: {  }
+    weight: 0
     region: content
 hidden:
   created: true
@@ -33,6 +33,7 @@ hidden:
   field_media_in_library: true
   field_media_submission_guideline: true
   field_owner: true
+  langcode: true
   name: true
   search_api_excerpt: true
   thumbnail: true

@@ -1,4 +1,4 @@
-# CMS-login
+# CMS Login
 
 More info at https://github.com/department-of-veterans-affairs/va.gov-team-sensitive/blob/master/platform/cms/cms-sso-saml-iam-login-braindump.md
 
@@ -30,3 +30,25 @@ Please see the [CMS knowledge base](https://prod.cms.va.gov/help/cms-basics/how-
 
 ## Sample SSOi Response
 ![Sample simplesaml response](images/ssoi-response.png)
+
+## How do I...?
+
+### Enable "Login With PIV" in DDEV?
+
+The "Login With PIV" interface is enabled conditionally based on `simplesamlphp_auth` settings.
+
+To enable the "Login With PIV" interface in local development, do one of the following:
+
+- Change the below setting in `docroot/sites/default/settings/settings.local.php` to `TRUE`:
+
+```php
+$config['simplesamlphp_auth.settings']['activate'] = TRUE;
+```
+
+- Set `activate` to `true` in `config/local/simplesamlphp_auth.settings.yml`, then run `ddev drush cim`.
+
+Regardless of which approach you choose, be careful not to commit these changes!
+
+----
+
+[Table of Contents](../README.md)

@@ -15,33 +15,38 @@ bundle: list_of_links
 mode: default
 content:
   field_link:
-    weight: 2
+    type: linkit
+    weight: 3
+    region: content
     settings:
       placeholder_url: ''
       placeholder_title: ''
       linkit_profile: default
       linkit_auto_link_text: true
     third_party_settings: {  }
-    type: linkit
-    region: content
   field_links:
-    weight: 1
+    type: linkit
+    weight: 2
+    region: content
     settings:
       placeholder_url: ''
       placeholder_title: ''
       linkit_profile: default
       linkit_auto_link_text: true
     third_party_settings: {  }
-    type: linkit
-    region: content
   field_section_header:
+    type: string_textfield
     weight: 0
+    region: content
     settings:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-    type: string_textfield
+  translation:
+    weight: 4
     region: content
+    settings: {  }
+    third_party_settings: {  }
 hidden:
   created: true
   status: true

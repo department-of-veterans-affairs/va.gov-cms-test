@@ -2,18 +2,19 @@
 
 namespace tests\phpunit\Security;
 
-use weitzman\DrupalTestTraits\ExistingSiteBase;
+use Tests\Support\Classes\VaGovExistingSiteBase;
 
 /**
  * A test to check access to graphql data.
+ *
+ * @group functional
+ * @group security
+ * @group all
  */
-class GraphQLTest extends ExistingSiteBase {
+class GraphQLTest extends VaGovExistingSiteBase {
 
   /**
    * A test method to check access to GraphQL service.
-   *
-   * @group security
-   * @group all
    */
   public function testGraphqlAccess() {
     $router = $this->container->get('router');

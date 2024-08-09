@@ -7,6 +7,7 @@ dependencies:
     - field.field.node.va_form.field_administration
     - field.field.node.va_form.field_alert
     - field.field.node.va_form.field_benefit_categories
+    - field.field.node.va_form.field_last_saved_by_an_editor
     - field.field.node.va_form.field_meta_tags
     - field.field.node.va_form.field_va_form_administration
     - field.field.node.va_form.field_va_form_deleted
@@ -24,6 +25,7 @@ dependencies:
     - field.field.node.va_form.field_va_form_tool_intro
     - field.field.node.va_form.field_va_form_tool_url
     - field.field.node.va_form.field_va_form_type
+    - field.field.node.va_form.field_va_form_upload
     - field.field.node.va_form.field_va_form_url
     - field.field.node.va_form.field_va_form_usage
     - node.type.va_form
@@ -35,15 +37,17 @@ bundle: va_form
 mode: teaser
 content:
   links:
-    weight: 100
     settings: {  }
     third_party_settings: {  }
+    weight: 0
     region: content
 hidden:
+  breadcrumbs: true
   content_moderation_control: true
   field_administration: true
   field_alert: true
   field_benefit_categories: true
+  field_last_saved_by_an_editor: true
   field_meta_tags: true
   field_va_form_administration: true
   field_va_form_deleted: true
@@ -61,6 +65,12 @@ hidden:
   field_va_form_tool_intro: true
   field_va_form_tool_url: true
   field_va_form_type: true
+  field_va_form_upload: true
   field_va_form_url: true
   field_va_form_usage: true
+  flag_changed_filename: true
+  flag_changed_title: true
+  flag_deleted: true
+  flag_new_form: true
+  langcode: true
   search_api_excerpt: true

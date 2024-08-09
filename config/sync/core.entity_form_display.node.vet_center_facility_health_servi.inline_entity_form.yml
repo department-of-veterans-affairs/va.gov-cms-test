@@ -7,12 +7,12 @@ dependencies:
     - field.field.node.vet_center_facility_health_servi.field_administration
     - field.field.node.vet_center_facility_health_servi.field_body
     - field.field.node.vet_center_facility_health_servi.field_enforce_unique_combo
+    - field.field.node.vet_center_facility_health_servi.field_last_saved_by_an_editor
     - field.field.node.vet_center_facility_health_servi.field_office
     - field.field.node.vet_center_facility_health_servi.field_service_name_and_descripti
     - node.type.vet_center_facility_health_servi
-    - workflows.workflow.editorial
   module:
-    - content_moderation
+    - allowed_formats
     - field_group
     - text
 third_party_settings:
@@ -20,67 +20,63 @@ third_party_settings:
     group_editorial_workflow:
       children:
         - moderation_state
-        - revision_log
+      label: 'Editorial workflow'
+      region: hidden
       parent_name: ''
       weight: 5
       format_type: fieldset
-      region: content
       format_settings:
-        id: ''
         classes: ''
+        id: ''
         description: ''
         required_fields: true
-      label: 'Editorial workflow'
     group_governance:
       children: {  }
-      parent_name: ''
-      weight: 7
-      format_type: details_sidebar
+      label: 'Section settings'
       region: hidden
+      parent_name: ''
+      weight: 14
+      format_type: details_sidebar
       format_settings:
-        id: ''
         classes: ''
-        description: ''
+        id: ''
         open: true
+        description: ''
         required_fields: true
         weight: 0
-      label: 'Section settings'
 id: node.vet_center_facility_health_servi.inline_entity_form
 targetEntityType: node
 bundle: vet_center_facility_health_servi
 mode: inline_entity_form
 content:
   field_administration:
+    type: options_select
     weight: 2
+    region: content
     settings: {  }
     third_party_settings: {  }
-    type: options_select
-    region: content
   field_body:
+    type: text_textarea
     weight: 4
+    region: content
     settings:
       rows: 5
       placeholder: ''
-    third_party_settings: {  }
-    type: text_textarea
-    region: content
+    third_party_settings:
+      allowed_formats:
+        hide_help: '1'
+        hide_guidelines: '1'
   field_office:
+    type: options_select
     weight: 1
+    region: content
     settings: {  }
     third_party_settings: {  }
-    type: options_select
-    region: content
   field_service_name_and_descripti:
-    weight: 3
-    settings: {  }
-    third_party_settings: {  }
     type: options_select
+    weight: 3
     region: content
-  moderation_state:
-    type: moderation_state_default
-    weight: 1
     settings: {  }
-    region: content
     third_party_settings: {  }
   title:
     type: string_textfield
@@ -93,6 +89,9 @@ content:
 hidden:
   created: true
   field_enforce_unique_combo: true
+  field_last_saved_by_an_editor: true
+  langcode: true
+  moderation_state: true
   path: true
   promote: true
   status: true

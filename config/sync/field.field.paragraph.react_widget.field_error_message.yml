@@ -8,11 +8,6 @@ dependencies:
   module:
     - allowed_formats
     - text
-third_party_settings:
-  allowed_formats:
-    rich_text: rich_text
-    rich_text_limited: '0'
-    plain_text: '0'
 id: paragraph.react_widget.field_error_message
 field_name: field_error_message
 entity_type: paragraph
@@ -20,11 +15,13 @@ bundle: react_widget
 label: 'Error Message'
 description: 'The message to display in an error box if the react widget fails to load.'
 required: false
-translatable: false
+translatable: true
 default_value:
   -
     value: '<strong>We’re sorry. Something went wrong when we tried to load your saved application.</strong><br/>Please try refreshing your browser in a few minutes.'
     format: rich_text
 default_value_callback: ''
-settings: {  }
+settings:
+  allowed_formats:
+    - rich_text
 field_type: text

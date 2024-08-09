@@ -2,9 +2,9 @@
 
 namespace Drupal\va_gov_post_api\Form;
 
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Psr\Log\LogLevel;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -66,26 +66,25 @@ class VaGovFacilityForceQueueForm extends FormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    // Queries to get total number of nodes for each type for reference.
-    $health_care_local_facility = \Drupal::entityQuery('node')
-      ->condition('type', 'health_care_local_facility')
-      ->execute();
-
-    $health_care_facility_service = \Drupal::entityQuery('node')
-      ->condition('type', 'health_care_local_health_service')
-      ->execute();
-
-    $nca_facility = \Drupal::entityQuery('node')
-      ->condition('type', 'nca_facility')
-      ->execute();
-
-    $vba_facility = \Drupal::entityQuery('node')
-      ->condition('type', 'vba_facility')
-      ->execute();
-
-    $vet_center = \Drupal::entityQuery('node')
-      ->condition('type', 'vet_center')
-      ->execute();
+    // Get the nodes for each type for reference.
+    $health_care_local_facility =
+       $this->getNidsFromEntityBundleQuery('health_care_local_facility');
+    $health_care_facility_service =
+      $this->getNidsFromEntityBundleQuery('health_care_local_health_service');
+    $nca_facility =
+      $this->getNidsFromEntityBundleQuery('nca_facility');
+    $vba_facility =
+      $this->getNidsFromEntityBundleQuery('vba_facility');
+    $vet_center =
+      $this->getNidsFromEntityBundleQuery('vet_center');
+    $vet_center_facility_health_servi =
+      $this->getNidsFromEntityBundleQuery('vet_center_facility_health_servi');
+    $vet_center_outstation =
+      $this->getNidsFromEntityBundleQuery('vet_center_outstation');
+    $vet_center_mobile_vet_center =
+      $this->getNidsFromEntityBundleQuery('vet_center_mobile_vet_center');
+    $vet_center_cap =
+      $this->getNidsFromEntityBundleQuery('vet_center_cap');
 
     $form['description'] = [
       '#type' => 'markup',
@@ -95,13 +94,16 @@ class VaGovFacilityForceQueueForm extends FormBase {
     $form['facility_type'] = [
       '#type' => 'radios',
       '#title' => $this->t('Content type'),
-      '#description' => t('Select a content type to queue.'),
+      '#description' => $this->t('Select a content type to queue.'),
       '#options' => [
         'health_care_local_facility' => $this->t('VAMC facilities') . ' (' . count($health_care_local_facility) . ')',
         'health_care_local_health_service' => ' - ' . $this->t('VAMC facility services') . ' (' . count($health_care_facility_service) . ')',
         'nca_facility' => $this->t('NCA facilities') . ' (' . count($nca_facility) . ')',
         'vba_facility' => $this->t('VBA facilities') . ' (' . count($vba_facility) . ')',
         'vet_center' => $this->t('Vet Centers') . ' (' . count($vet_center) . ')',
+        'vet_center_facility_health_servi' => ' - ' . $this->t('Vet Center facility services') . ' (' . count($vet_center_facility_health_servi) . ')',
+        'vet_center_outstation' => $this->t('Vet Center Outstations') . ' (' . count($vet_center_outstation) . ')',
+        'vet_center_mobile_vet_center' => $this->t('Vet Center Mobile Vet Centers') . ' (' . count($vet_center_mobile_vet_center) . ')',
       ],
       '#required' => TRUE,
     ];
@@ -127,9 +129,7 @@ class VaGovFacilityForceQueueForm extends FormBase {
       ->set('bypass_data_check', 1)
       ->save();
 
-    $sandbox['nids'] = \Drupal::entityQuery('node')
-      ->condition('type', $bundle)
-      ->execute();
+    $sandbox['nids'] = $this->getNidsFromEntityBundleQuery($bundle);
 
     if (!empty($sandbox['nids'])) {
       try {
@@ -142,11 +142,16 @@ class VaGovFacilityForceQueueForm extends FormBase {
 
           $nodes = $this->entityTypeManager->getStorage('node')->loadMultiple($nids);
           foreach ($nodes as $node) {
-            if ($bundle === 'health_care_local_health_service') {
-              $queued_count += _post_api_add_facility_service_to_queue($node);
+            $services_to_push = [
+              'health_care_local_health_service',
+              'vet_center_facility_health_servi',
+            ];
+            if (in_array($bundle, $services_to_push)) {
+              $force_push = TRUE;
+              $queued_count += _va_gov_post_api_add_facility_service_to_queue($node, $force_push);
             }
             else {
-              $queued_count += _post_api_add_facility_status_to_queue($node);
+              $queued_count += _va_gov_post_api_add_facility_to_queue($node);
             }
           }
 
@@ -188,6 +193,63 @@ class VaGovFacilityForceQueueForm extends FormBase {
       ->getEditable(static::SETTINGS)
       ->set('bypass_data_check', 0)
       ->save();
+  }
+
+  /**
+   * Gets an array of nodes, based on bundle type.
+   *
+   * @param string $bundleType
+   *   The type of bundle.
+   *
+   * @return array
+   *   Array of nodes.
+   */
+  protected function getNidsFromEntityBundleQuery(string $bundleType) {
+    switch ($bundleType) {
+      // If it's a facility type, we only want those not archived.
+      case "health_care_local_facility":
+      case "nca_facility":
+      case "vba_facility":
+      case "vet_center":
+      case "vet_center_outstation":
+      case "vet_center_mobile_vet_center":
+      case "vet_center_cap":
+        $nodes = $this->entityTypeManager
+          ->getStorage('node')
+          ->getQuery()
+          ->condition('type', $bundleType)
+          ->condition('moderation_state', 'archived', '!=')
+          ->accessCheck(FALSE)
+          ->execute();
+        break;
+
+      // Only the published VAMC facility services.
+      case "health_care_local_health_service":
+        $nodes = $this->entityTypeManager
+          ->getStorage('node')
+          ->getQuery('AND')
+          ->condition('type', 'health_care_local_health_service')
+          ->accessCheck(FALSE)
+          ->condition('status', 1, '=')
+          ->execute();
+        break;
+
+      // Only the published Vet Center facility services.
+      case "vet_center_facility_health_servi":
+        $nodes = $this->entityTypeManager
+          ->getStorage('node')
+          ->getQuery('AND')
+          ->condition('type', 'vet_center_facility_health_servi')
+          ->accessCheck(FALSE)
+          ->condition('status', 1, '=')
+          ->execute();
+        break;
+
+      // If no valid bundle type is passed, return an empty array.
+      default:
+        $nodes = [];
+    }
+    return $nodes;
   }
 
 }

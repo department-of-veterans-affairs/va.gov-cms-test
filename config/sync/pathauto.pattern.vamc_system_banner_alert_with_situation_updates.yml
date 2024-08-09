@@ -10,13 +10,13 @@ type: 'canonical_entities:node'
 pattern: '[node:field_administration:entity:name]/vamc-banner-alert/[node:changed:html_date]/[node:title]'
 selection_criteria:
   b04bbe2a-5fbd-43bb-8ee8-09b8a02c7c4e:
-    id: node_type
-    bundles:
-      full_width_banner_alert: full_width_banner_alert
+    id: 'entity_bundle:node'
     negate: false
+    uuid: b04bbe2a-5fbd-43bb-8ee8-09b8a02c7c4e
     context_mapping:
       node: node
-    uuid: b04bbe2a-5fbd-43bb-8ee8-09b8a02c7c4e
+    bundles:
+      full_width_banner_alert: full_width_banner_alert
 selection_logic: and
 weight: -5
 relationships: {  }

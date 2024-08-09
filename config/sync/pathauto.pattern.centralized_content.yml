@@ -10,13 +10,13 @@ type: 'canonical_entities:node'
 pattern: 'centralized-content/[node:title]'
 selection_criteria:
   df261074-07a9-46c5-8190-69b17040a3da:
-    id: node_type
-    bundles:
-      centralized_content: centralized_content
+    id: 'entity_bundle:node'
     negate: false
+    uuid: df261074-07a9-46c5-8190-69b17040a3da
     context_mapping:
       node: node
-    uuid: df261074-07a9-46c5-8190-69b17040a3da
+    bundles:
+      centralized_content: centralized_content
 selection_logic: and
 weight: -5
 relationships: {  }

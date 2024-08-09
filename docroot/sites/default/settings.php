@@ -18,8 +18,8 @@ $databases['default']['default'] = array(
   'username' => getenv('CMS_MARIADB_USERNAME') ?: 'drupal8',
   'password' => getenv('CMS_MARIADB_PASSWORD') ?: 'drupal8',
   'prefix' => '',
-  // 'database' is the default DB container for Lando (local).
-  'host' => getenv('CMS_MARIADB_HOST') ?: 'database',
+  // 'db' is the default DB container hostname for local.
+  'host' => getenv('CMS_MARIADB_HOST') ?: 'db',
   'port' => 3306,
   'namespace' => 'Drupal\\Core\\Database\\Driver\\mysql',
 );
@@ -97,6 +97,15 @@ $config['image.settings']['allow_insecure_derivatives'] = TRUE;
 $config['image.settings']['suppress_itok_output'] = TRUE;
 
 /**
+ * Optimized assets path:
+ *
+ * A local file system path where optimized assets will be stored. This directory
+ * must exist and be writable by Drupal. This directory must be relative to
+ * the Drupal installation directory and be accessible over the web.
+ */
+$settings['file_assets_path'] = 'sites/default/files';
+
+/**
  * CMS Build settings.
  *
  * These are settings to trigger a static file, front-end WEB build job.
@@ -113,9 +122,10 @@ $settings['va_cms_bot_github_auth_token'] = getenv('CMS_GITHUB_VA_CMS_BOT_TOKEN'
 // Environment settings
 $settings['va_gov_composer_home'] = getenv('COMPOSER_HOME');
 $settings['va_gov_path_to_composer'] = '/usr/local/bin/composer';
-// The default BRD locations. These settings are currently only used on tugboat/lando
-$settings['va_gov_web_root'] = '/var/www/cms/docroot/web';
+// The default project root locations. These settings are currently only used on Tugboat and local environments.
+$settings['va_gov_web_root'] = '/var/www/cms/web';
 $settings['va_gov_app_root'] = '/var/www/cms';
+$settings['va_gov_vets_website_root'] = '/var/www/cms/docroot/vendor/va-gov/vets-website';
 
 // Defaults (should only be local that doesn't set these), default to dev for config_split
 $config['config_split.config_split.dev']['status'] = TRUE;
@@ -138,12 +148,28 @@ $settings['config_sync_directory'] = '../config/sync';
 
 $env_type = getenv('CMS_ENVIRONMENT_TYPE') ?: 'ci';
 
+/**
+ * Environment discovery service settings, vended by the Environment Discovery
+ * service (`va_gov.environment_discovery`).
+ */
+$settings['va_gov_environment'] = [
+  'environment_raw' => $env_type,
+  'is_cms_test' => getenv('CMS_APP_NAME') ?? '' === 'cms-test',
+];
+
 $config['govdelivery_bulletins.settings']['govdelivery_endpoint'] = getenv('CMS_GOVDELIVERY_ENDPOINT') ?: FALSE;
 $config['govdelivery_bulletins.settings']['govdelivery_username'] = getenv('CMS_GOVDELIVERY_USERNAME') ?: FALSE;
 $config['govdelivery_bulletins.settings']['govdelivery_password'] = getenv('CMS_GOVDELIVERY_PASSWORD') ?: FALSE;
+// Configuration for Mapbox
+$config['geocoder.geocoder_provider.mapbox']['configuration']['accessToken'] = getenv('MAPBOX_TOKEN_CMS');
 
 // Set migration settings from environment variables.
-$facility_api_urls = [getenv('CMS_VAGOV_API_URL') . '/services/va_facilities/v0/facilities/all'];
+$facility_api_urls = [
+  getenv('CMS_VAGOV_API_URL') . '/services/va_facilities/v1/facilities?per_page=1000',
+  getenv('CMS_VAGOV_API_URL') . '/services/va_facilities/v1/facilities?per_page=1000&page=2',
+  getenv('CMS_VAGOV_API_URL') . '/services/va_facilities/v1/facilities?per_page=1000&page=3',
+];
+
 $facility_api_key = getenv('CMS_VAGOV_API_KEY');
 $facility_migrations = [
   'va_node_health_care_local_facility',
@@ -174,35 +200,38 @@ $settings['post_api_apikey'] = getenv('CMS_VAGOV_API_KEY') ?: FALSE;
 $settings['slack_webhook_url'] = getenv('CMS_VAGOV_SLACK_WEBHOOK_URL') ?: FALSE;
 $config['slack.settings']['slack_webhook_url'] = $settings['slack_webhook_url'];
 
-// Environment specific settings
-if (file_exists($app_root . '/' . $site_path . '/settings/settings.' . $env_type . '.php')) {
-  include $app_root . '/' . $site_path . '/settings/settings.' . $env_type . '.php';
-}
+// Settings supporting broken link report import. Off by default.
+$settings['broken_link_report_import_enabled'] = FALSE;
+// Default prod location, overrideable by env var.
+$settings['broken_link_report_location'] = getenv('CONTENT_RELEASE_BROKEN_LINK_REPORT') ?: 'https://vetsgov-website-builds-s3-upload.s3-us-gov-west-1.amazonaws.com/broken-link-reports/vagovprod-broken-links.json';
 
-// Fast 404 settings
-if (file_exists($app_root . '/' . $site_path . '/settings/settings.fast_404.php')) {
-  include $app_root . '/' . $site_path . '/settings/settings.fast_404.php';
-}
+// Hide deprecation warnings during transition to PHP 8.1.
+$error_reporting = (int) ini_get('error_reporting');
+ini_set('error_reporting', $error_reporting & ~E_DEPRECATED & ~E_USER_DEPRECATED);
 
-// Ansible moves this file into place during deploy, so if it is present we are in deploy mode.
-if (file_exists($app_root . '/' . $site_path . '/settings/settings.deploy.active.php')) {
-  include $app_root . '/' . $site_path . '/settings/settings.deploy.active.php';
+$settings_files = [
+  // Environment specific settings
+  __DIR__ . '/settings/settings.' . $env_type . '.php',
+  // Fast 404 settings
+  __DIR__ . '/settings/settings.fast_404.php',
+  // Ansible moves this file into place during deploy, so if it is present we are in deploy mode.
+  __DIR__ . '/settings/settings.deploy.active.php',
+  // Local overrides
+  __DIR__ . '/settings.local.php',
+];
+
+foreach ($settings_files as $file) {
+  if (file_exists($file)) {
+    include $file;
+  }
 }
 
 /**
- * Load local development override configuration, if available.
- *
- * Use settings.local.php to override variables on secondary (staging,
- * development, etc) installations of this site. Typically used to disable
- * caching, JavaScript/CSS compression, re-routing of outgoing emails, and
- * other things that should not happen on development and testing sites.
- *
- * Keep this code block at the end of this file to take full effect.
+ * Preserve control characters (e.g. newlines) in text passed to syslog.
+ * @see https://bugs.php.net/bug.php?id=77913
+ * TL;DR: Ensure each watchdog entry becomes only a single line in syslog.
  */
-// Local settings, must stay at bottom of file, this file is ignored by git.
-if (file_exists($app_root . '/' . $site_path . '/settings/settings.local.php')) {
-  include $app_root . '/' . $site_path . '/settings/settings.local.php';
-}
+ini_set('syslog.filter', 'raw');
 
 // The VA_GOV_IN_DEPLOY_MODE is set in settings.deploy.active.php.
 // The file is copied from settings.deploy.inactive.php by Ansible during deploys.
@@ -232,12 +261,39 @@ if (!empty($webhost_on_cli)) {
   $settings['file_public_base_url'] = "{$webhost}/sites/default/files";
 }
 
+// Look for an incoming request header to indicate we should use the public
+// asset S3 location for file rather than the Drupal-internal location.
+if (!empty($public_asset_s3_base_url)) {
+  $headerArray = function_exists('apache_request_headers') ? apache_request_headers() : [];
+  $targetHeader = 'File-Public-Base-Url-Check';
+  foreach ($headerArray as $header => $value) {
+    if (strtolower($header) == strtolower($targetHeader) && $value === 'true') {
+      // Point the file base url to the public asset S3 bucket.
+      $settings['file_public_base_url'] = $public_asset_s3_base_url;
+    }
+  }
+ }
+
+// Monolog
+$settings['container_yamls'][] = __DIR__ . '/services/services.monolog.yml';
+
 // Memcache-specific settings
-if (extension_loaded('memcache') && !empty($settings['memcache']['servers'])) {
+if ((extension_loaded('memcache') || extension_loaded('memcached')) && !empty($settings['memcache']['servers'])) {
   $settings['cache']['default'] = 'cache.backend.memcache';
   $settings['memcache']['bins'] = [
     'default' => 'default',
   ];
-  $settings['container_yamls'][] = $app_root . '/' . $site_path . '/../default/services/services.memcache.yml';
+  $settings['container_yamls'][] = __DIR__ . '/services/services.memcache.yml';
   $settings['memcache']['persistent'] = 'drupal';
 }
+
+// Environment specific services container.
+$env_services_path = __DIR__ . "/services/services.$env_type.yml";
+if (file_exists($env_services_path)) {
+  $settings['container_yamls'][] = $env_services_path;
+}
+
+// Global override for setting the session transaction isolation level.
+// This is intended to prevent deadlocks in the course of normal operation.
+// @see https://www.drupal.org/project/drupal/issues/2733675
+$databases['default']['default']['init_commands']['isolation_level'] = 'SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED';

@@ -2,23 +2,37 @@ uuid: c342cb58-27f8-4a6a-b698-15b68416f3b7
 langcode: en
 status: true
 dependencies:
+  config:
+    - taxonomy.vocabulary.type_of_redirect
   module:
+    - actions_permissions
+    - path
+    - pathauto
+    - redirect
+    - system
+    - taxonomy
+    - toolbar_menu
     - va_gov_backend
 third_party_settings:
   va_gov_backend:
     vgb_description: 'Can create and edit redirects.'
 id: redirect_administrator
 label: 'Redirect admin'
-weight: 2
+weight: 3
 is_admin: null
 permissions:
   - 'access administration pages'
   - 'administer redirect settings'
   - 'administer redirects'
+  - 'administer url aliases'
   - 'create terms in type_of_redirect'
+  - 'create url aliases'
   - 'delete terms in type_of_redirect'
   - 'edit terms in type_of_redirect'
+  - 'execute entity:break_lock path_alias'
+  - 'execute update_alias_media media'
+  - 'execute update_alias_node node'
+  - 'execute update_alias_taxonomy_term taxonomy_term'
   - 'notify of path changes'
-  - 'view cms_help_center in toolbar'
   - 'view sections in toolbar'
   - 'view the administration theme'

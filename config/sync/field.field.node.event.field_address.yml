@@ -26,6 +26,7 @@ default_value:
     sorting_code: null
     address_line1: ''
     address_line2: ''
+    address_line3: ''
     organization: null
     given_name: null
     additional_name: null
@@ -44,11 +45,21 @@ settings:
       override: hidden
     organization:
       override: hidden
+    addressLine1:
+      override: optional
+    addressLine2:
+      override: optional
+    addressLine3:
+      override: hidden
     postalCode:
       override: hidden
     sortingCode:
       override: hidden
     dependentLocality:
       override: hidden
+    locality:
+      override: optional
+    administrativeArea:
+      override: optional
   fields: {  }
 field_type: address

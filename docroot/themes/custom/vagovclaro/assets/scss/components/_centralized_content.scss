@@ -1,0 +1,174 @@
+.not-editable {
+  background-color: var(--va-gray-lightest) !important;
+}
+
+.centralized {
+  background-color: var(--va-gray-lightest) !important;
+  margin-bottom: var(--spacing-l);
+
+  .data-updated a {
+    float: right;
+  }
+
+  .data-updated::after {
+    clear: both;
+    content: ' ';
+    display: block;
+    font-size: 0;
+    height: 0;
+    visibility: hidden;
+  }
+
+  // Nested fieldsets should look like the rest of centralized
+  fieldset {
+    background-color: var(--va-gray-lightest) !important;
+  }
+}
+
+// Colors scope sections on node view page
+.paragraph--type--centralized-content-descriptor fieldset {
+  background-color: var(--va-gray-lightest);
+
+  legend {
+    text-transform: uppercase;
+  }
+}
+
+// non-admin users shouldn't be able to edit centralized content, lots of minor tweaks for them
+.centralized-content {
+  &.role-not-admin {
+    [data-drupal-selector='edit-field-content-block'] > table > thead > tr > th > .paragraphs-actions,
+    [data-drupal-selector='edit-field-content-block'] > table > tbody > tr.draggable > td.field-multiple-drag {
+      display: none;
+    }
+
+    tr {
+      border-bottom: transparent;
+    }
+
+    #edit-field-content-block-add-more-browse,
+    #edit-field-content-block--description {
+      display: none;
+    }
+
+    .paragraph--type--centralized-content-descriptor.paragraph--view-mode--default .js-form-item {
+      background-color: var(--va-gray-med);
+      color: var(--color-white);
+
+      legend {
+        display: none;
+      }
+
+      .fieldset__wrapper {
+        margin-bottom: 0;
+      }
+
+      .field--name-field-cc-documentor-title {
+        font-size: var(--font-size-h3);
+        font-weight: bold;
+        line-height: var(--line-height-heading);
+        padding-top: var(--space-m);
+      }
+    }
+
+    #block-vagovclaro-content .layout-region.layout--node-main {
+      display: block;
+
+      .js-form-type-textarea .js-form-required.form-required,
+      .field-multiple-drag.cc-paragraph-toggle-remove,
+      .paragraph-type--wysiwyg .paragraph-top,
+      .paragraphs-icon-button-collapse,
+      .tabledrag-toggle-weight-wrapper,
+      .textfield_counter_counter,
+      .filter-wrapper,
+      h4.label:empty {
+        display: none;
+      }
+
+      h3 {
+        margin: 0;
+      }
+
+      p.cc-p {
+        margin: 0 0 15px;
+      }
+
+      .cc-special-treatment-field,
+      .cc-special-treatment-paragraph {
+        height: 0;
+        visibility: hidden;
+      }
+
+      .cc-national-wysi-padding td:nth-child(2) {
+        display: block;
+        height: auto;
+      }
+
+      .cc-wysi-wrap {
+        p {
+          margin: 0;
+        }
+      }
+
+      thead th {
+        background: transparent;
+        border: transparent;
+        border-width: 1px 0;
+        padding: 0;
+      }
+
+      .field--name-field-questions thead th {
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .cc-paragraph-header {
+        background: var(--va-gray-med);
+        color: var(--color-white);
+
+        td {
+          padding: 15px;
+
+          p {
+            margin: 0;
+            padding: 0;
+          }
+        }
+      }
+
+      tr {
+        display: block;
+        max-width: 100%;
+        padding: 0;
+
+        .cc-paragraph-header {
+          display: block;
+          height: auto;
+          padding: 15px 0 0 15px;
+          width: 100%;
+
+          p {
+            margin: 5px 0 10px;
+            padding: 0;
+          }
+        }
+      }
+
+      .cc-suffix-text {
+        line-height: 20px;
+        margin: 50px 0;
+
+        strong {
+          font-size: 16px;
+        }
+      }
+    }
+  }
+}
+
+// adjust view page proofing styles for centralized content
+#block-vagovclaro-content .centralized .paragraph,
+#block-vagovclaro-content .node--type-centralized-content .paragraph {
+  border: unset;
+  padding: 0;
+}

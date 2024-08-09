@@ -2,12 +2,15 @@
 
 namespace tests\phpunit\API;
 
-use weitzman\DrupalTestTraits\ExistingSiteBase;
+use Tests\Support\Classes\VaGovExistingSiteBase;
 
 /**
  * A test to confirm amount of nodes by type.
+ *
+ * @group functional
+ * @group all
  */
-class GraphQLTest extends ExistingSiteBase {
+class GraphQLTest extends VaGovExistingSiteBase {
 
   /**
    * A test method to check data returned by GraphQL service.

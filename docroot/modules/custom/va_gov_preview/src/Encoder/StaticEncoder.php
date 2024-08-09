@@ -6,17 +6,20 @@ use Drupal\Core\Messenger\MessengerInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\StringTranslation\TranslationInterface;
 use Drupal\Core\Url;
-use Drupal\serialization\Encoder\JsonEncoder as SerializationJsonEncoder;
 use Drupal\va_gov_preview\StaticServiceProvider;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\Serializer\Encoder\EncoderInterface;
+use Symfony\Component\Serializer\SerializerAwareInterface;
+use Symfony\Component\Serializer\SerializerAwareTrait;
 
 /**
  * Encodes data in JSON.
  *
  * Simply respond to static_html format requests using the JSON encoder.
  */
-class StaticEncoder extends SerializationJsonEncoder {
+class StaticEncoder implements SerializerAwareInterface, EncoderInterface {
   use StringTranslationTrait;
+  use SerializerAwareTrait;
 
   /**
    * The Messenger service.
@@ -57,7 +60,7 @@ class StaticEncoder extends SerializationJsonEncoder {
    *
    * This reads the static files right off the server and returns them.
    */
-  public function encode($data, $format, array $context = []) {
+  public function encode(mixed $data, $format, array $context = []): string {
     $requested_path = Url::fromRoute('<current>', [], ['absolute' => FALSE])->toString();
     $content_path = StaticServiceProvider::urlPathToServerPath($requested_path);
 
@@ -76,6 +79,13 @@ class StaticEncoder extends SerializationJsonEncoder {
     $this->messenger->addWarning($message);
 
     (new RedirectResponse($requested_path))->send();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function supportsEncoding($format): bool {
+    return in_array($format, static::$format);
   }
 
 }

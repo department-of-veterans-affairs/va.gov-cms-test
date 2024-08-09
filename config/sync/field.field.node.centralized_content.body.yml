@@ -8,11 +8,6 @@ dependencies:
   module:
     - allowed_formats
     - text
-third_party_settings:
-  allowed_formats:
-    rich_text: rich_text
-    rich_text_limited: '0'
-    plain_text: '0'
 id: node.centralized_content.body
 field_name: body
 entity_type: node
@@ -20,10 +15,12 @@ bundle: centralized_content
 label: Purpose
 description: 'Help editors understand the purpose of this content to site visitors and/or the value of maintaining it as centralized content.'
 required: false
-translatable: true
+translatable: false
 default_value: {  }
 default_value_callback: ''
 settings:
   display_summary: false
   required_summary: false
+  allowed_formats:
+    - rich_text
 field_type: text_with_summary

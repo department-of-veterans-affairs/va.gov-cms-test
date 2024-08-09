@@ -15,15 +15,15 @@ bundle: health_services_listing
 label: 'Featured content on health-services page'
 description: ''
 required: false
-translatable: true
+translatable: false
 default_value: {  }
 default_value_callback: ''
 settings:
   handler: 'default:paragraph'
   handler_settings:
-    negate: 0
     target_bundles:
       link_teaser: link_teaser
+    negate: 0
     target_bundles_drag_drop:
       address:
         weight: 22
@@ -47,8 +47,8 @@ settings:
         weight: 28
         enabled: false
       link_teaser:
-        enabled: true
         weight: 29
+        enabled: true
       list_of_link_teasers:
         weight: 30
         enabled: false

@@ -1,0 +1,239 @@
+/**
+ * Styles in this file are compiled separately for knowledge base pages.
+ */
+@import 'tokens/mixins';
+
+// User guide pages should be narrow for readability.
+.layout-container {
+  max-width: 1280px;
+  @media (min-width: 1320px) {
+    margin: 0 auto;
+  }
+}
+
+// Main column should be 4/5 of width on user guide pages instead of default 3/4.
+@media (min-width: 800px) {
+  .node-columns main {
+    flex: 4 0;
+  }
+}
+
+.field--name-field-intro-text {
+  &.field__item {
+    @include intro-text;
+    max-width: 100%;
+  }
+}
+
+// Define a grid for lists of teasers and link teasers.
+@mixin user-guide-grid {
+  display: grid;
+  grid-gap: 1rem 2rem;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+}
+
+.paragraph--type--list-of-link-teasers {
+  .field__items {
+    @include user-guide-grid;
+  }
+
+  .field--name-field-link {
+    font-weight: bold;
+    margin-bottom: 0;
+  }
+}
+
+.paragraph--type--lists-of-links {
+  > .field__items {
+    @include user-guide-grid;
+  }
+
+  .field--name-field-links {
+    .field__item {
+      margin: 1em 0;
+    }
+  }
+
+  .field--name-field-link {
+    font-weight: bold;
+  }
+}
+
+h2.section-header {
+  margin-top: 2rem;
+}
+
+#block-vagovclaro-content {
+  .field--name-field-related-user-guides.field--label-above {
+    margin: 0.5rem 0 3rem;
+
+    .field__label {
+      color: var(--va-gray-darkest);
+      font-family: var(--font-family-serif);
+      font-size: 24px;
+      font-style: normal;
+      font-weight: 600;
+      line-height: 130%;
+      padding: 0 0 0.4rem;
+      text-transform: none !important;
+    }
+  }
+
+  .paragraph--type--media-list-videos {
+    &.paragraph--view-mode--user-guides {
+      article {
+        margin-bottom: 2rem;
+
+        .field__item {
+          margin-bottom: 0.25em;
+        }
+
+        .field--name-name {
+          font-weight: bold;
+        }
+
+        .field--name-field-duration {
+          .field__label {
+            font-size: 16px;
+            font-weight: normal;
+            text-transform: capitalize;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Knowledge base menu, but we could apply this elsewhere.
+#block-vagovclaro-cmsuserguides {
+  h2 {
+    font-family: var(--font-family-serif);
+    font-size: var(--font-size-h4);
+    margin-top: var(--spacing-xl);
+  }
+
+  ul {
+    border-bottom: 0;
+    font-size: 15px;
+    line-height: 1.3;
+    list-style-type: none;
+    margin-left: 0; // First menu should align with parent div.
+    padding-left: 0;
+
+    ul {
+      margin: 0;
+      padding: 0;
+    }
+  }
+
+  // Outdent the first set of <nolink> menu items.
+  > ul > li.menu-item > .knowledge_base__menu__section_label {
+    padding-left: 0 !important;
+  }
+
+  li.menu-item {
+    border-top: 1px solid var(--va-gray-lighter);
+    list-style: none;
+    margin-bottom: 0;
+    max-width: unset;
+    padding: 0;
+
+    > * {
+      display: block;
+      padding: 0.5rem 1rem;
+    }
+
+    // Hide all 2nd level menus until we build them out.
+    > ul {
+      display: none;
+    }
+
+    a {
+      background-color: transparent;
+      border: 1px solid transparent;
+      color: var(--va-gray-med);
+
+      &:hover {
+        background-color: var(--va-gray-lighter);
+        color: var(--va-blue);
+        text-decoration: none;
+      }
+    }
+
+    &.menu-item--active-trail {
+      border-left: 3px;
+      font-weight: bold;
+
+
+      > ul {
+        padding: 0;
+
+        > li {
+          max-width: unset;
+
+          > * {
+            padding-left: 2rem; // Both links and section labels.
+          }
+        }
+
+        .knowledge_base__menu__section_label {
+          padding-left: 2rem;
+        }
+
+
+        a {
+          color: var(--color-blue);
+          font-weight: normal;
+          text-decoration: none;
+        }
+      }
+    }
+  }
+
+  .knowledge_base__menu__section_label {
+    color: var(--color-black);
+    display: block;
+    font-weight: bold;
+    margin-top: 1em;
+
+    &:hover {
+      background: none;
+      color: var(--color-black);
+    }
+  }
+}
+
+// Last updated
+.last_updated {
+  @include va-body-font;
+  border-top: 2px solid var(--va-gray-cool-med);
+  margin-top: 1.5rem;
+  padding-top: 1em;
+  width: 100%;
+}
+
+
+// Search
+.kb__search-result {
+  border-bottom: 1px solid var(--va-gray-cool-med);
+  padding: 1em 0;
+
+  &__title {
+    display: block;
+  }
+
+  &__intro {
+    @include intro-text;
+  }
+
+  &__excerpt {
+    font-style: italic;
+    padding: 1em 0;
+  }
+}
+
+// Hide sidebar search form now that it's in the header.
+// TODO post-claro-turn-on: remove the block from the list so it doesn't print on the page at all. Duplicate ID problem
+.layout-sidebar-first #block-vagovclaro-knowledge-base-search-form {
+  display: none;
+}

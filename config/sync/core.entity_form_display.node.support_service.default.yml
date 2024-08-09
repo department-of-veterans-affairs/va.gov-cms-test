@@ -4,15 +4,14 @@ status: true
 dependencies:
   config:
     - field.field.node.support_service.field_administration
+    - field.field.node.support_service.field_last_saved_by_an_editor
     - field.field.node.support_service.field_link
     - field.field.node.support_service.field_office
-    - field.field.node.support_service.field_page_last_built
     - field.field.node.support_service.field_phone_number
     - node.type.support_service
     - workflows.workflow.editorial
   module:
     - content_moderation
-    - datetime
     - field_group
     - linkit
     - path
@@ -24,74 +23,74 @@ third_party_settings:
         - moderation_state
         - revision_log
         - field_page_last_built
+      label: 'Editorial workflow'
+      region: content
       parent_name: ''
       weight: 5
       format_type: fieldset
       format_settings:
-        id: ''
         classes: ''
-        open: false
-        required_fields: true
+        id: ''
         description: ''
-      label: 'Editorial workflow'
-      region: content
+        required_fields: true
+        open: false
     group_governance:
       children:
         - field_administration
+      label: 'Section settings'
+      region: content
       parent_name: ''
       weight: 6
       format_type: details_sidebar
       format_settings:
-        id: ''
         classes: ''
+        id: ''
         open: true
         required_fields: true
         weight: -10
-      label: 'Section settings'
-      region: content
 id: node.support_service.default
 targetEntityType: node
 bundle: support_service
 mode: default
 content:
   field_administration:
+    type: options_select
     weight: 14
+    region: content
     settings: {  }
     third_party_settings: {  }
-    type: options_select
+  field_last_saved_by_an_editor:
+    type: datetime_timestamp
+    weight: 26
     region: content
+    settings: {  }
+    third_party_settings: {  }
   field_link:
+    type: linkit
     weight: 3
+    region: content
     settings:
       placeholder_url: ''
       placeholder_title: ''
     third_party_settings: {  }
-    type: linkit
-    region: content
   field_office:
-    weight: 1
-    settings: {  }
-    third_party_settings: {  }
     type: options_select
+    weight: 1
     region: content
-  field_page_last_built:
-    weight: 10
     settings: {  }
     third_party_settings: {  }
-    type: datetime_default
-    region: content
   field_phone_number:
+    type: telephone_default
     weight: 4
+    region: content
     settings:
       placeholder: ''
     third_party_settings: {  }
-    type: telephone_default
-    region: content
   moderation_state:
     type: moderation_state_default
     weight: 8
-    settings: {  }
     region: content
+    settings: {  }
     third_party_settings: {  }
   path:
     type: path
@@ -109,6 +108,7 @@ content:
     third_party_settings: {  }
 hidden:
   created: true
+  langcode: true
   promote: true
   status: true
   sticky: true

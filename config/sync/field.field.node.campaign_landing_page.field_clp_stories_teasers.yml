@@ -13,7 +13,7 @@ field_name: field_clp_stories_teasers
 entity_type: node
 bundle: campaign_landing_page
 label: 'Featured stories'
-description: 'Add up to two stories to feature on the campaign''s page.'
+description: "Add up to two stories to feature on the campaign's page."
 required: false
 translatable: false
 default_value: {  }
@@ -21,9 +21,9 @@ default_value_callback: ''
 settings:
   handler: 'default:paragraph'
   handler_settings:
-    negate: 0
     target_bundles:
       link_teaser_with_image: link_teaser_with_image
+    negate: 0
     target_bundles_drag_drop:
       address:
         weight: 42
@@ -71,8 +71,8 @@ settings:
         weight: 56
         enabled: false
       link_teaser_with_image:
-        enabled: true
         weight: 57
+        enabled: true
       list_of_link_teasers:
         weight: 58
         enabled: false

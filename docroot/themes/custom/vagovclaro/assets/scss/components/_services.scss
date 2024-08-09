@@ -1,0 +1,91 @@
+// For service locations, such as Facility health services.
+#edit-field-service-location-wrapper {
+  border-bottom: 2 px solid var(--va-gray-cool-med);
+
+  // Hide Collapse, label, and info buttons.
+  .paragraphs-icon-button-collapse,
+  .paragraph-type-label,
+  .paragraph-info {
+    display: none;
+  }
+
+  .field-multiple-drag,
+  .field-multiple-drag.paragraph-bullet {
+    display: none;
+  }
+
+  .paragraph-type--service-location {
+    padding: 30px 0 30px 18px;
+  }
+
+  fieldset {
+    border: hidden;
+
+    th.field-label {
+      display: none;
+    }
+
+    &.form-tablefield {
+      padding-top: 0;
+    }
+  }
+
+  // Hide row weights (shouldn't be draggable)
+  .tabledrag-toggle-weight-wrapper {
+    display: none;
+  }
+
+  .field--name-field-service-location-address {
+    .paragraphs-actions {
+      display: none;
+    }
+
+    tr {
+      border-bottom: hidden;
+    }
+  }
+
+  // explicit width prevents fields from overlapping right rail
+  .text-full {
+    width: 100%;
+  }
+
+  // Spacing updates for this nested form
+  tr .form-item,
+  .claro-details__wrapper {
+    margin-top: 0;
+  }
+
+  .field-multiple-table {
+    margin-bottom: 0;
+    margin-top: 0;
+  }
+}
+
+#field-service-location-address-values {
+  .js .field--widget-paragraphs .field-multiple-table {
+    margin: 0;
+  }
+}
+
+#field-service-location-values {
+  .js .paragraphs-subform {
+    margin-top: 0;
+  }
+
+  .js .field--widget-paragraphs td {
+    padding: 0 !important;
+  }
+}
+
+// VAMC System Health Service
+.services-intro-wrap {
+  h2 {
+    @include va-section-heading;
+  }
+
+  h2 + p {
+    @include va-helptext;
+    color: var(--va-gray-darkest);
+  }
+}

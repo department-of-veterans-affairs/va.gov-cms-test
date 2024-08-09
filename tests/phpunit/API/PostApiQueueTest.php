@@ -5,14 +5,15 @@ namespace tests\phpunit\API;
 use Drupal\Core\Database\Database;
 use Drupal\Core\Queue\DatabaseQueue;
 use Drupal\Core\Site\Settings;
-use weitzman\DrupalTestTraits\ExistingSiteBase;
+use Tests\Support\Classes\VaGovExistingSiteBase;
 
 /**
  * Tests Post API Queue functionality.
  *
- * @group PostApiQueue
+ * @group functional
+ * @group all
  */
-class PostApiQueueTest extends ExistingSiteBase {
+class PostApiQueueTest extends VaGovExistingSiteBase {
 
   /**
    * Modules to install.
@@ -29,7 +30,7 @@ class PostApiQueueTest extends ExistingSiteBase {
   public static $mockData = [
     'nid' => 1546,
     'uid' => 'facility_status_vha_568A4',
-    'endpoint_path' => '/services/va_facilities/v0/facilities/vha_568A4/cms-overlay',
+    'endpoint_path' => '/services/va_facilities/v1/facilities/vha_568A4/cms-overlay',
     'payload' => [
       'operating_status' => [
         'code' => 'CLOSED',
@@ -41,7 +42,7 @@ class PostApiQueueTest extends ExistingSiteBase {
   /**
    * Setup.
    */
-  public function setUp() {
+  public function setUp() : void {
     parent::setUp();
     $queue = new DatabaseQueue('post_api_queue', Database::getConnection());
     $queue->deleteQueue();
@@ -84,11 +85,12 @@ class PostApiQueueTest extends ExistingSiteBase {
 
     $response = $this->processItem(NULL);
     // Payload is empty. Request should fail.
+    // A guzzle exception gets thrown which causes the response to be a code.
     $this->assertEquals(404, $response, 'POST request is expected to fail with 404 due to incomplete endpoint URL.');
 
     $response = $this->processItem(self::$mockData);
     // Payload and credentials are available. POSt should return 200 OK.
-    $this->assertEquals(200, $response, 'POST request is successful.');
+    $this->assertEquals(200, $response->getStatusCode(), 'POST request is successful.');
 
     $queue->deleteQueue();
   }
@@ -152,9 +154,9 @@ class PostApiQueueTest extends ExistingSiteBase {
    */
   protected function processItem($data) {
     $apikey = Settings::get('post_api_apikey');
-    $endpoint_path = isset($data['endpoint_path']) ? $data['endpoint_path'] : NULL;
+    $endpoint_path = $data['endpoint_path'] ?? NULL;
     $endpoint = Settings::get('post_api_endpoint_host') . $endpoint_path;
-    $payload = isset($data['payload']) ? $data['payload'] : [];
+    $payload = $data['payload'] ?? [];
 
     $request_service = \Drupal::service('post_api.request');
 

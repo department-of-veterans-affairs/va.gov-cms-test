@@ -7,21 +7,23 @@ dependencies:
     - node.type.vet_center_facility_health_servi
   module:
     - allowed_formats
+    - epp
     - text
 third_party_settings:
-  allowed_formats:
-    rich_text_limited: rich_text_limited
-    rich_text: '0'
-    plain_text: '0'
+  epp:
+    value: ''
+    on_update: 1
 id: node.vet_center_facility_health_servi.field_body
 field_name: field_body
 entity_type: node
 bundle: vet_center_facility_health_servi
-label: Description
-description: ''
+label: 'Vet Center service description'
+description: 'Use this short paragraph and up to six bullet points to detail how your Vet Center provides this service.'
 required: false
-translatable: true
+translatable: false
 default_value: {  }
 default_value_callback: ''
-settings: {  }
+settings:
+  allowed_formats:
+    - rich_text_limited
 field_type: text_long

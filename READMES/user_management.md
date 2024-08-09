@@ -18,7 +18,7 @@ To resolve this issue:
 
 To import users:
 
-1. go to [the import page](https://prod.cms.va.gov/migrate_source_ui)
+1. go to [the import page](https://prod.cms.va.gov/admin/content/migrate_source_ui))
 1. Select "User Import (supports csv)" from the **Migrations** dropdown
 1. Upload a CSV file in the following format:
 ```
@@ -32,5 +32,5 @@ Notes:
 - The role column uses role machine names - to find them, go to [the roles page](https://prod.cms.va.gov/admin/people/roles) and click the **Edit** link for a role. The machine name will be listed next to the Role name.
 - To find section names, go to [the sections page](https://prod.cms.va.gov/admin/structure/taxonomy/manage/administration/overview). If a given section name can not be found or matches more than one section, a message will be displayed, and you'll need to fix the CSV or manually add the section.
 - Only email addresses ending in `@va.gov` will be imported
-- If importing on BRD, (prod/staging/dev) all accounts will have SSO enabled and be blocked by default.
+- If importing on BRD, (prod/staging) all accounts will have SSO enabled and be blocked by default.
 - If not importing on BRD, all accounts will be enabled and have their password set to `drupal8`.

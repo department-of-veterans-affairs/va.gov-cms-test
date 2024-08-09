@@ -2,7 +2,15 @@ uuid: 550fe9cf-424b-4991-96ef-7c99d65d3040
 langcode: en
 status: true
 dependencies:
+  config:
+    - block_content.type.promo
+    - node.type.event
+    - node.type.outreach_asset
   module:
+    - block_content
+    - file
+    - node
+    - node_link_report
     - va_gov_backend
 third_party_settings:
   va_gov_backend:
@@ -12,6 +20,7 @@ label: 'Content creator - Outreach Hub'
 weight: -5
 is_admin: null
 permissions:
+  - 'access block library'
   - 'access files overview'
   - 'create event content'
   - 'create outreach_asset content'

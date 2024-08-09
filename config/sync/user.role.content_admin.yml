@@ -2,33 +2,75 @@ uuid: bfc758cc-8eee-4aed-909c-a5ccbb83f318
 langcode: en
 status: true
 dependencies:
+  config:
+    - block_content.type.alert
+    - block_content.type.benefit_promo
+    - block_content.type.cta_with_link
+    - block_content.type.news_promo
+    - block_content.type.promo
+    - filter.format.rich_text
+    - filter.format.rich_text_limited
+    - media.type.document
+    - media.type.document_external
+    - media.type.image
+    - media.type.video
+    - node.type.vamc_system_billing_insurance
+    - node.type.vamc_system_medical_records_offi
+    - node.type.vamc_system_register_for_care
+    - workflows.workflow.editorial
+    - workflows.workflow.restricted_archive
   module:
+    - actions_permissions
+    - block_content
+    - block_diff_ui
+    - content_lock
+    - content_moderation
+    - content_translation
+    - entity_clone
+    - entityqueue
+    - file
+    - filter
+    - flag
+    - media
+    - media_diff_ui
+    - node
+    - node_link_report
+    - override_node_options
+    - paragraphs
+    - path
+    - pathauto
+    - smart_date_recur
+    - system
+    - tablefield
+    - taxonomy
+    - taxonomy_diff_ui
+    - tmgmt
+    - toolbar_menu
     - va_gov_backend
+    - va_gov_build_trigger
+    - workbench_access
 third_party_settings:
   va_gov_backend:
     vgb_description: 'For members of the Global UX team, and other content users who have permissions beyond those of Content Publisher. '
 id: content_admin
 label: 'Content admin'
-weight: 1
+weight: 2
 is_admin: null
 permissions:
+  - 'accept translation jobs'
   - 'access administration pages'
+  - 'access block library'
   - 'access files overview'
-  - 'access image_browser entity browser pages'
   - 'access media overview'
-  - 'access media_browser entity browser pages'
   - 'access taxonomy overview'
-  - 'access toolbar'
   - 'access user profiles'
-  - 'access vamc_operating_statuses entity browser pages'
-  - 'administer cms custom menu access'
-  - 'administer media'
   - 'administer menu'
   - 'administer nodes'
   - 'administer taxonomy'
   - 'break content lock'
   - 'bypass node access'
   - 'bypass workbench access'
+  - 'cancel smart date recur instances'
   - 'clone block entity'
   - 'clone block_content entity'
   - 'clone field_config entity'
@@ -38,30 +80,70 @@ permissions:
   - 'clone node entity'
   - 'clone paragraph entity'
   - 'create alert block content'
-  - 'create banner content'
+  - 'create content translations'
+  - 'create cta_with_link block content'
+  - 'create document media'
+  - 'create document_external media'
+  - 'create image media'
+  - 'create media'
   - 'create promo block content'
   - 'create url aliases'
   - 'create vamc_system_billing_insurance content'
   - 'create vamc_system_medical_records_offi content'
   - 'create vamc_system_register_for_care content'
-  - 'edit any banner content'
-  - 'edit any vamc_system_billing_insurance content'
-  - 'edit any vamc_system_medical_records_offi content'
-  - 'edit any vamc_system_register_for_care content'
+  - 'create video media'
+  - 'delete alert revisions'
+  - 'delete all block content revisions'
+  - 'delete all media revisions'
+  - 'delete document revisions'
+  - 'delete document_external revisions'
+  - 'delete image revisions'
+  - 'delete promo revisions'
+  - 'delete video revisions'
+  - 'edit any alert block content'
+  - 'edit any benefit_promo block content'
+  - 'edit any cta_with_link block content'
+  - 'edit any document media'
+  - 'edit any document_external media'
+  - 'edit any image media'
+  - 'edit any news_promo block content'
+  - 'edit any promo block content'
+  - 'edit any video media'
+  - 'execute changed_filename_unflag node'
+  - 'execute changed_title_unflag node'
+  - 'execute deleted_unflag node'
   - 'execute entity:break_lock node'
+  - 'execute flag_delete_flagging flagging'
+  - 'execute new_form_unflag node'
   - 'execute publish_latest_revision_action node'
   - 'execute views_bulk_edit all'
   - 'export tablefield'
   - 'import tablefield'
   - 'link to any page'
-  - 'manipulate all entityqueues'
+  - 'make smart dates recur'
   - 'manipulate entityqueues'
   - 'notify of path changes'
   - 'override all authored by option'
   - 'rebuild tablefield'
-  - 'update any alert block content'
+  - 'reschedule smart date recur instances'
+  - 'revert alert revisions'
+  - 'revert all block content revisions'
+  - 'revert all media revisions'
+  - 'revert all taxonomy term revisions'
+  - 'revert document_external revisions'
+  - 'revert image revisions'
+  - 'revert promo revisions'
+  - 'revert video revisions'
+  - 'translate any entity'
+  - 'unflag changed_filename'
+  - 'unflag changed_name'
+  - 'unflag changed_title'
+  - 'unflag deleted'
+  - 'unflag new'
+  - 'unflag new_form'
+  - 'unflag removed_from_source'
   - 'update any media'
-  - 'update any promo block content'
+  - 'update content translations'
   - 'update media'
   - 'use editorial transition approve'
   - 'use editorial transition archive'
@@ -69,18 +151,30 @@ permissions:
   - 'use editorial transition create_new_draft'
   - 'use editorial transition publish'
   - 'use editorial transition review'
-  - 'use editorial transition stage_for_publishing'
-  - 'use moderation sidebar'
+  - 'use restricted_archive transition approve'
+  - 'use restricted_archive transition archive'
+  - 'use restricted_archive transition archived_draft'
+  - 'use restricted_archive transition archived_published'
+  - 'use restricted_archive transition create_new_draft'
+  - 'use restricted_archive transition publish'
+  - 'use restricted_archive transition review'
   - 'use text format rich_text'
   - 'use text format rich_text_limited'
   - 'use workbench access'
   - 'va gov deploy content build'
+  - 'view alert revisions'
+  - 'view all block content revisions'
   - 'view all media revisions'
+  - 'view all taxonomy term revisions'
   - 'view any unpublished content'
-  - 'view cms_help_center in toolbar'
+  - 'view document revisions'
+  - 'view document_external revisions'
+  - 'view image revisions'
   - 'view latest version'
   - 'view node link report'
+  - 'view promo revisions'
   - 'view sections in toolbar'
   - 'view the administration theme'
   - 'view unpublished paragraphs'
+  - 'view video revisions'
   - 'view workbench access information'

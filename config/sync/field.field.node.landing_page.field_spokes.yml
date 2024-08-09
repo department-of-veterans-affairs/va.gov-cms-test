@@ -13,7 +13,7 @@ field_name: field_spokes
 entity_type: node
 bundle: landing_page
 label: Spokes
-description: '[Help text goes here]'
+description: 'Add a list of link teasers that will provide additional information that relates to the page topic.'
 required: true
 translatable: false
 default_value: {  }
@@ -21,9 +21,9 @@ default_value_callback: ''
 settings:
   handler: 'default:paragraph'
   handler_settings:
-    negate: 0
     target_bundles:
       list_of_link_teasers: list_of_link_teasers
+    negate: 0
     target_bundles_drag_drop:
       address:
         weight: 14
@@ -44,8 +44,8 @@ settings:
         weight: 19
         enabled: false
       list_of_link_teasers:
-        enabled: true
         weight: 20
+        enabled: true
       process:
         weight: 21
         enabled: false

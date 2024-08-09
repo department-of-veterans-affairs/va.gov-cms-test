@@ -8,6 +8,7 @@
 use Drupal\Component\Utility\Crypt;
 use Drupal\Component\Utility\Html;
 use Drupal\Core\Asset\AttachedAssetsInterface;
+use Drupal\Core\Entity\EntityForm;
 use Drupal\Core\Entity\EntityFormInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityPublishedInterface;
@@ -17,18 +18,19 @@ use Drupal\Core\Field\WidgetBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Markup;
 use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Core\Routing\RouteObjectInterface;
 use Drupal\Core\Template\Attribute;
 use Drupal\Core\Url;
 use Drupal\field\Entity\FieldConfig;
+use Drupal\field\FieldStorageConfigInterface;
 use Drupal\file\Entity\File;
 use Drupal\node\NodeInterface;
+use Drupal\paragraphs\Entity\Paragraph;
 use Drupal\taxonomy\TermInterface;
 use Drupal\user\Entity\Role;
 use Drupal\user\RoleInterface;
-use Drupal\va_gov_build_trigger\Form\PreviewForm;
-use Gitonomy\Git\Exception\RuntimeException as RuntimeExceptionAlias;
-use Symfony\Cmf\Component\Routing\RouteObjectInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\Mime\MimeTypeGuesserInterface;
 
 /**
  * Implements hook_help().
@@ -136,60 +138,6 @@ function va_gov_backend_press_release_address_after_build(array $element, FormSt
   $element[0]['address']['country_code']['country_code']['#required'] = TRUE;
   unset($element[0]['address']['country_code']['country_code']['#options']['']);
   return $element;
-}
-
-/**
- * Implements hook_form_FORMID_alter().
- */
-function va_gov_backend_form_views_exposed_form_alter(&$form, FormStateInterface $form_state, $form_id) {
-
-  if ($form['#id'] === 'views-exposed-form-health-service-offerings-service-offerings-dash') {
-    // Change our textfield to a dropdown displaying all VAMC systems.
-    _va_gov_backend_add_vamc_regions_select($form);
-  }
-}
-
-/**
- * A Change text input to select list of VAMC systems.
- *
- * @param array $form
- *   The exposed widget form array.
- */
-function _va_gov_backend_add_vamc_regions_select(array &$form) {
-  // Query nodes.
-  $storage = Drupal::getContainer()->get('entity_type.manager')->getStorage('node');
-  $nids = $storage->getQuery();
-
-  // Gather vamc nodes and sort by title.
-  $nids = $nids->condition('type', 'health_care_region_page')
-    ->sort('title')
-    ->execute();
-
-  // If there are no nodes, move on.
-  if (!$nids) {
-    return FALSE;
-  }
-
-  // Start building out the options for our select list.
-  $options = [];
-  /** @var array{id: int, node: \Drupal\node\NodeInterface} $nodes */
-  $nodes = $storage->loadMultiple($nids);
-
-  // Push titles into select list.
-  foreach ($nodes as $node) {
-    $options[$node->getTitle()] = $node->getTitle();
-  }
-
-  // Start building out our replacement form element.
-  $form['title']['#type'] = 'select';
-  $form['title']['#multiple'] = FALSE;
-
-  // Specify the empty option for our select list.
-  $form['title']['#empty_option'] = t('VAMC');
-
-  // Add the $options from above to our select list.
-  $form['title']['#options'] = $options;
-  unset($form['title']['#size']);
 }
 
 /**
@@ -304,6 +252,9 @@ function _va_gov_backend_get_clp_toggles() {
             'required' => TRUE,
             'show-indicator' => TRUE,
           ],
+          'field_clp_reusable_q_a' => [
+            'required' => FALSE,
+          ],
           'field_clp_faq_cta' => [
             'required' => FALSE,
           ],
@@ -321,11 +272,11 @@ function _va_gov_backend_get_clp_toggles() {
  * @param array $toggles
  *   The array containing arrays of trigger and toggle fields.
  */
-function _va_gov_toggle_fields_states(array &$form, array $toggles) {
+function _va_gov_backend_toggle_fields_states(array &$form, array $toggles) {
   if (!empty($toggles['toggle_groups']) && is_array($toggles['toggle_groups'])) {
     foreach ($toggles['toggle_groups'] as $toggle_group) {
       // Toggle the fields.
-      _va_gov_toggle_field_states($form, $toggle_group);
+      _va_gov_backend_toggle_field_states($form, $toggle_group);
     }
   }
 }
@@ -355,7 +306,7 @@ function _va_gov_toggle_fields_states(array &$form, array $toggles) {
  * @endcode
  * @codingStandardsIgnoreEnd
  */
-function _va_gov_toggle_field_states(array &$form, array $toggle_group) {
+function _va_gov_backend_toggle_field_states(array &$form, array $toggle_group) {
   if (isset($form[$toggle_group['trigger']])) {
     // The trigger is present so show/hide the associated fields.
     foreach ($toggle_group['toggle_fields'] as $key => $field) {
@@ -422,87 +373,26 @@ function _va_gov_backend_allowed_formats_remove_textarea_help(array $form_elemen
  * Implements hook_form_alter().
  */
 function va_gov_backend_form_alter(&$form, FormStateInterface $form_state, $form_id) {
-  // List of forms to modify media library widget help text.
-  $media_widget_content_form_ids = [
-    'node_vet_center_cap_form',
-    'node_vet_center_cap_edit_form',
-    'node_vet_center_edit_form',
-    'node_vet_center_form',
-    'node_vet_center_mobile_vet_center_form',
-    'node_vet_center_mobile_vet_center_edit_form',
-    'node_vet_center_outstation_form',
-    'node_vet_center_outstation_edit_form',
-  ];
-
-  // We want to modify media library widget help text.
-  if (in_array($form_id, $media_widget_content_form_ids)) {
-    $form['field_media']['widget']['#field_prefix']['empty_selection'] = [
-      '#markup' => t('Add a photo of the facility'),
-    ];
-  }
-  // Require message on revision.
-  _va_gov_vet_center_require_revision_message($form, $form_state, $form_id);
   // Don't allow wysiwyg on core taxonomy description field.
   if ($form_id === 'taxonomy_term_health_care_service_taxonomy_form') {
     // We need to manipulate the html prior to after_build.
     $form['description']['widget'][0]['#default_value'] = Html::decodeEntities($form['description']['widget'][0]['#default_value']);
     $form['description']['widget']['#after_build'][] = '_va_gov_backend_allowed_formats_remove_textarea_help';
   }
-  // Prevent system title from being edited on the edit form by non admins.
-  if ($form_id === 'node_health_care_region_page_edit_form') {
-    _va_gov_backend_vamc_title_access($form);
-  }
-
-  if (isset($form['field_hservice_appt_intro_select'])) {
-    $form['field_hservice_appt_leadin']['widget'][0]['value']['#title_display'] = 'invisible';
-    _va_gov_backend_modify_appt_intro_text_states($form, $form_state);
-    $form['#validate'][] = '_va_gov_backend_appt_intro_text_validation';
-  }
 
   // Disable path alias modification after lc node is published.
-  _va_gov_disable_alias_widget($form, $form_state);
+  _va_gov_backend_disable_alias_widget($form, $form_state);
 
   if ($form_id === 'node_campaign_landing_page_form' || $form_id === 'node_campaign_landing_page_edit_form') {
     $clp_toggles = _va_gov_backend_get_clp_toggles();
-    _va_gov_toggle_fields_states($form, $clp_toggles);
+    _va_gov_backend_toggle_fields_states($form, $clp_toggles);
     // Change story link teaser with image add button on clp form.
     if (!empty($form['field_clp_stories_teasers']['widget']['add_more']['add_more_button_link_teaser_with_image'])) {
       $form['field_clp_stories_teasers']['widget']['add_more']['add_more_button_link_teaser_with_image']['#value'] = t('Add story');
     }
   }
 
-  // Add states + custom validation if the Standalone Page field is present.
-  if (isset($form['field_standalone_page'])) {
-    $form['field_primary_category']['widget']['#states']['required']['input[id="edit-field-standalone-page-value"]'] = ['checked' => TRUE];
-    $form['field_tags']['widget'][0]['subform']['field_topics']['#states']['required']['input[id="edit-field-standalone-page-value"]'] = ['checked' => TRUE];
-    $form['field_related_information']['widget'][0]['subform']['field_link']['widget'][0]['uri']['#states']['required']['input[id="edit-field-standalone-page-value"]'] = ['checked' => TRUE];
-    $form['field_related_information']['widget'][0]['subform']['field_link']['widget'][0]['title']['#states']['required']['input[id="edit-field-standalone-page-value"]'] = ['checked' => TRUE];
-
-    // Change field uri and title widget to optional.
-    $form['field_related_information']['widget'][0]['subform']['field_link']['widget'][0]['uri']['#required'] = FALSE;
-    $form['field_related_information']['widget'][0]['subform']['field_link']['widget'][0]['title']['#required'] = FALSE;
-
-    foreach ($form['field_buttons']['widget'] as $idx => $val) {
-      if (is_numeric($idx)) {
-        $form['field_buttons']['widget'][$idx]['subform']['field_button_label']['widget'][0]['value']['#states']['required']['input[id="edit-field-standalone-page-value"]'] = ['checked' => TRUE];
-        $form['field_buttons']['widget'][$idx]['subform']['field_button_link']['widget'][0]['uri']['#states']['required']['input[id="edit-field-standalone-page-value"]'] = ['checked' => TRUE];
-      }
-    }
-
-    // Add custom validation.
-    array_unshift($form['#validate'], '_va_gov_backend_standalone_page_validation');
-  }
-  else {
-    // Mark CTA button fields as required.
-    if (!empty($form['field_buttons'])) {
-      foreach ($form['field_buttons']['widget'] as $idx => $val) {
-        if (is_numeric($idx)) {
-          $form['field_buttons']['widget'][$idx]['subform']['field_button_label']['widget'][0]['value']['#required'] = TRUE;
-          $form['field_buttons']['widget'][$idx]['subform']['field_button_link']['widget'][0]['uri']['#required'] = TRUE;
-        }
-      }
-    }
-  }
+  _va_gov_backend_alter_standalone_page_validation($form, $form_state);
 
   // If Contact Information paragraph component.
   if (isset($form['field_contact_information'])) {
@@ -520,12 +410,18 @@ function va_gov_backend_form_alter(&$form, FormStateInterface $form_state, $form
     _va_gov_backend_smart_date_formatting($form, $form_state);
   };
 
-  $targets = [
-    'field_office',
-    'field_listing',
-  ];
-
-  _va_gov_backend_dropdown_field_access($form, $targets);
+  // Only run when on a node.
+  // Additionally, reduce the number of times called when editing a paragraph,
+  // which will have a triggering_element set.
+  $base_form_id = $form_state->getBuildInfo()['base_form_id'] ?? '';
+  if ((!$form_state->getTriggeringElement()) && ($base_form_id === "node_form")) {
+    $targets = [
+      'field_office',
+      'field_listing',
+      'field_facility_location',
+    ];
+    _va_gov_backend_dropdown_field_access($form, $targets);
+  }
 
   if ($form_id === 'workbench_access_assign_user') {
     $form['#submit'][] = 'va_gov_backend_workbench_assign_user_form_submit';
@@ -538,37 +434,27 @@ function va_gov_backend_form_alter(&$form, FormStateInterface $form_state, $form
       $connection = \Drupal::database()->select('redirect', 'r');
       $connection->fields('r', ['redirect_redirect__options']);
       $connection->condition('r.redirect_source__path', $src_path, '=');
+      // phpcs:disable
+      // Disabling phpcs here due to the warning:
+      // "unserialize() is insecure unless allowed classes are limited. Use a
+      // safe format like JSON or use the allowed_classes option.".
       $query = unserialize($connection->execute()->fetchField());
+      // phpcs:enable
       $value = !empty($query['matchType']) ? $query['matchType'] : '';
     }
     $form['redirect_match_type'] = [
       '#type' => 'select',
       '#options' => [
-        'prefix' => 'prefix',
-        'exact_match' => 'exact match',
-        'regex_case_sensitive' => 'regex case sensitive',
-        'regex_case_insensitive' => 'regex case insensitive',
-        'non_re' => 'non re',
+        'prefix' => t('prefix'),
+        'exact_match' => t('exact match'),
+        'regex_case_sensitive' => t('regex case sensitive'),
+        'regex_case_insensitive' => t('regex case insensitive'),
+        'non_re' => t('non re'),
       ],
       '#title' => t('Match Type'),
       '#default_value' => $value,
     ];
     $form['actions']['submit']['#submit'][] = 'va_gov_backend_form_alter_redirect_submit';
-  }
-
-  if ($form_id === 'node_vamc_operating_status_and_alerts_edit_form') {
-    // Hide field_office for existing operating statuses: they won't be moved.
-    // @todo Consider disabling it instead of hiding it.
-    $form['field_office']['#attributes']['class'] = 'hidden';
-  }
-
-  if ($form_id === 'views_bulk_operations_configure_action') {
-    $build_info = $form_state->getBuildInfo();
-    // We need to target only the VBO "Modify field values" form from
-    // Facility Status tool.
-    if ($build_info['args'][0] === 'facility_governance' && $build_info['args'][1] === 'page_1') {
-      _va_gov_backend_vbo_facility_status_form_ui($form, $form_state);
-    }
   }
 
   // Add to node forms in workflow.
@@ -579,11 +465,20 @@ function va_gov_backend_form_alter(&$form, FormStateInterface $form_state, $form
       '#type' => 'submit',
       '#weight' => 10,
       '#value' => 'Save draft and continue editing',
-      '#submit' => ['::submitForm', 'va_gov_backend_form_alter_submit'],
+      '#submit' => [
+        '::submitForm',
+        '::save',
+        'va_gov_backend_form_alter_submit',
+      ],
     ];
 
     // Remove the default preview button from types not in workflow.
-    $node_type = $form_state->getFormObject()->getEntity()->getType();
+    /** @var \Drupal\Core\Entity\EntityFormInterface $form_object */
+    $form_object = $form_state->getFormObject();
+    /** @var \Drupal\node\NodeInterface $node */
+    $node = $form_object->getEntity();
+    $node_type = $node->getType();
+
     /** @var \Drupal\workflows\WorkflowInterface $workflow */
     $workflow = \Drupal::entityTypeManager()->getStorage('workflow')->load('editorial');
     $types_in_workflow = $workflow->get('type_settings')['entity_types']['node'];
@@ -592,78 +487,45 @@ function va_gov_backend_form_alter(&$form, FormStateInterface $form_state, $form
       unset($form['actions']['preview']);
     }
 
+    /*
+     * @todo Remove this after root issue causing
+     * https://github.com/department-of-veterans-affairs/va.gov-cms/issues/7373
+     * is resolved.
+     */
+    if ($node_type === 'vet_center') {
+      unset($form['actions']['save_continue']);
+    }
+  }
+
+  // Modifications for the VAMC "system menu" field.
+  if ($form_id === 'node_health_care_region_page_edit_form' && isset($form['field_system_menu'])) {
+    // Hide the system menu field if the user isn't a content admin.
+    $user = \Drupal::currentUser();
+    $user_roles = $user->getRoles() ?? ['anonymous'];
+    if (!in_array('administrator', $user_roles)) {
+      $form['field_system_menu']['#access'] = FALSE;
+    }
+    // Set a reasonable default value for the field.
+    if (isset($form['menu']['link']['menu_parent']['#default_value'])) {
+      [$machine_name] = explode(':', $form['menu']['link']['menu_parent']['#default_value']);
+      $form['field_system_menu']['widget']['#default_value'] = $machine_name;
+    }
   }
 
   // Add after_build callback for Press Release node forms.
   if ($form_id === 'node_press_release_form' || $form_id === 'node_press_release_edit_form') {
     $form['field_address']['widget']['#after_build'][] = 'va_gov_backend_press_release_address_after_build';
   }
-
-}
-
-/**
- * Adds Validation to check revision log message is added.
- *
- * @param array $form
- *   The exposed widget form array.
- * @param \Drupal\Core\Form\FormStateInterface $form_state
- *   The form state.
- * @param string $form_id
- *   The form id.
- */
-function _va_gov_vet_center_require_revision_message(array &$form, FormStateInterface &$form_state, $form_id) {
-  $vc_types = [
-    'node_vet_center_edit_form',
-    'node_vet_center_cap_edit_form',
-    'node_vet_center_facility_health_servi_edit_form',
-    'node_vet_center_locations_list_edit_form',
-    'node_vet_center_mobile_vet_center_edit_form',
-    'node_vet_center_outstation_edit_form',
-  ];
-  // Vet centers need to have revision log messages on edit.
-  if (in_array($form_id, $vc_types)) {
-    $widget_fields = [
-      'field_nearby_vet_centers',
-      'field_nearby_mobile_vet_centers',
-    ];
-    foreach ($widget_fields as $widget_field) {
-      // We don't want the node form validation to fire on the removal buttons.
-      $current_widgets = $form[$widget_field]['widget']['current'] ?? [];
-      foreach ($current_widgets as $key => $button) {
-        if (is_numeric($key)) {
-          $form[$widget_field]['widget']['current'][$key]['actions']['remove_button']['#limit_validation_errors'] = [['field_nearby_vet_centers']];
-        }
-      }
-    }
-    $form['revision_log']['#required'] = TRUE;
-    $form['revision_log']['widget']['#required'] = TRUE;
-    $form['revision_log']['widget'][0]['#required'] = TRUE;
-    $form['revision_log']['widget'][0]['value']['#required'] = TRUE;
-    $form['#validate'][] = '_va_gov_backend_validate_required_revision_message';
-  }
-}
-
-/**
- * Adds Validation to check for presence of revision log message.
- *
- * @param array $form
- *   The exposed widget form array.
- * @param \Drupal\Core\Form\FormStateInterface $form_state
- *   The form state.
- */
-function _va_gov_backend_validate_required_revision_message(array $form, FormStateInterface &$form_state) {
-  // Add revision log validation.
-  if ($form_state->isValueEmpty(['revision_log', '0', 'value'])) {
-    $form_state->setErrorByName('revision_log][0][value', t('Revision log message is required'));
-  }
 }
 
 /**
  * Implements hook_field_group_build_pre_render_alter().
  */
-function va_gov_backend_field_group_form_process_build_alter(array $form, FormStateInterface $form_state, &$element) {
+function va_gov_backend_field_group_form_process_build_alter(array &$form, FormStateInterface $form_state, &$element) {
   // Toggle group Q&A component visibility.
-  $form['group_q_a_page_components']['#states']['visible']['input[id="edit-field-standalone-page-value"]'] = ['checked' => TRUE];
+  if (!empty($form['group_q_a_page_components'])) {
+    $form['group_q_a_page_components']['#states']['visible']['input[data-drupal-selector="edit-field-standalone-page-value"]'] = ['checked' => TRUE];
+  }
 }
 
 /**
@@ -677,9 +539,9 @@ function va_gov_backend_form_field_config_edit_form_alter(&$form, FormStateInter
 }
 
 /**
- * Implements hook_field_widget_WIDGET_TYPE_form_alter() for moderation_state widgets.
+ * Implements hook_field_widget_single_element_WIDGET_TYPE_form_alter() for moderation_state widgets.
  */
-function va_gov_backend_field_widget_moderation_state_default_form_alter(&$element, FormStateInterface $form_state, $context) {
+function va_gov_backend_field_widget_single_element_moderation_state_default_form_alter(&$element, FormStateInterface $form_state, $context) {
   $base_form_id = $form_state->getBuildInfo()['base_form_id'] ?? '';
   if ($base_form_id === 'node_form') {
 
@@ -704,12 +566,12 @@ function va_gov_backend_form_media_library_add_form_upload_alter(&$form, FormSta
 }
 
 /**
- * Implements hook_field_widget_WIDGET_TYPE_form_alter() for checkbox widgets.
+ * Implements hook_field_widget_single_element_WIDGET_TYPE_form_alter() for checkbox widgets.
  */
-function va_gov_backend_field_widget_boolean_checkbox_form_alter(&$element, FormStateInterface $form_state, $context) {
+function va_gov_backend_field_widget_single_element_boolean_checkbox_form_alter(&$element, FormStateInterface $form_state, $context) {
   $field_definition = $context['items']->getFieldDefinition();
   if ($field_definition instanceof FieldConfig) {
-    [$entity_type, $bundle, $field_name] = explode('.', $field_definition->id());
+    [$entity_type, , $field_name] = explode('.', $field_definition->id());
     if ($entity_type === 'media' && $field_name === 'field_media_in_library') {
       $element['value']['#attributes']['class'][] = 'field_media_in_library';
     }
@@ -741,39 +603,6 @@ function va_gov_backend_entity_view_alter(array &$build, EntityInterface $entity
     }
   }
 
-  // Check if correct content bundle and unset fields.
-  if ($entity instanceof FieldableEntityInterface && $entity->getEntityTypeId() === 'node' && $entity->bundle() === 'health_care_local_health_service') {
-    foreach (_va_gov_backend_unset_fields($entity) as $appt_intro_field) {
-      unset($build[$appt_intro_field]);
-    }
-  };
-
-}
-
-/**
- * Returns the fields that need to be unset.
- *
- * @return array
- *   Fields that should be unset.
- */
-function _va_gov_backend_unset_fields(FieldableEntityInterface $entity) {
-  $appt_intro_select = $entity->get('field_hservice_appt_intro_select')->value;
-  if ($appt_intro_select === 'default_intro_text') {
-    return [
-      'field_hservice_appt_leadin',
-    ];
-  }
-  elseif ($appt_intro_select === 'custom_intro_text') {
-    return [
-      'field_hservices_lead_in_default',
-    ];
-  }
-  else {
-    return [
-      'field_hservices_lead_in_default',
-      'field_hservice_appt_leadin',
-    ];
-  }
 }
 
 /**
@@ -789,67 +618,6 @@ function _va_gov_backend_get_unlocked_alias_bundles() {
 }
 
 /**
- * Determines whether or not user can edit vamc title.
- *
- * @param array $form
- *   The node form array.
- */
-function _va_gov_backend_vamc_title_access(array &$form) {
-  $allowed_roles = [
-    'administrator',
-    'content_admin',
-  ];
-  $current_user_roles = \Drupal::currentUser()->getRoles();
-  $admin_role_count = count(array_intersect($allowed_roles, $current_user_roles));
-  if ($admin_role_count < 1) {
-    $form['title']['#disabled'] = 'disabled';
-  }
-}
-
-/**
- * Visibility of Appointment Lead-in Text field.
- *
- * @param array $form
- *   The node form array.
- * @param Drupal\Core\Form\FormStateInterface $form_state
- *   Instance of FormStateInterface.
- */
-function _va_gov_backend_modify_appt_intro_text_states(array &$form, FormStateInterface $form_state) {
-  if (isset($form['field_hservice_appt_intro_select'])) {
-    $form['field_hservice_appt_leadin']['#states'] = [
-      'visible' => [
-        ':input[name="field_hservice_appt_intro_select"]' => ['value' => 'custom_intro_text'],
-      ],
-    ];
-    $form['field_hservices_lead_in_default']['#states'] = [
-      'visible' => [
-        ':input[name="field_hservice_appt_intro_select"]' => ['value' => 'default_intro_text'],
-      ],
-    ];
-  }
-}
-
-/**
- * Adds Validation to check for an empty Appointment lead-in field.
- *
- * @param array $form
- *   The exposed widget form array.
- * @param \Drupal\Core\Form\FormStateInterface $form_state
- *   The form state.
- */
-function _va_gov_backend_appt_intro_text_validation(array $form, FormStateInterface $form_state) {
-  if (!empty($form_state->getValue('field_hservice_appt_leadin')) && !empty($form_state->getValue('field_hservice_appt_intro_select'))) {
-    $intro_type = $form_state->getValue('field_hservice_appt_intro_select');
-    $intro_text_value = $form_state->getValue('field_hservice_appt_leadin');
-    if ($intro_type[0]['value'] === 'custom_intro_text') {
-      if (($intro_text_value[0]['value'] === "")) {
-        $form_state->setErrorByName("field_hservice_appt_leadin", t('Appointment lead-in text required'));
-      }
-    }
-  }
-}
-
-/**
  * Disable url alias widget after publish.
  *
  * @param array $form
@@ -857,7 +625,7 @@ function _va_gov_backend_appt_intro_text_validation(array $form, FormStateInterf
  * @param Drupal\Core\Form\FormStateInterface $form_state
  *   Instance of FormStateInterface.
  */
-function _va_gov_disable_alias_widget(array &$form, FormStateInterface $form_state) {
+function _va_gov_backend_disable_alias_widget(array &$form, FormStateInterface $form_state) {
   if (!($form_state->getFormObject() instanceof EntityFormInterface)) {
     return;
   }
@@ -936,8 +704,63 @@ function _va_gov_backend_audience_topics_validation(array $form, FormStateInterf
     if ($tag_count == 0) {
       $form_state->setErrorByName('field_tags][0][subform][field_topics', t('Please select at least one Topic or Audience tag.'));
     }
-    elseif ($tag_count > 4) {
-      $form_state->setErrorByName('field_tags][0][subform][field_topics', t('No more than 4 Topic/Audience tags may be selected.'));
+  }
+}
+
+/**
+ * Optionally alters the validation for standalone page options.
+ *
+ * @param array $form
+ *   Form array by reference.
+ * @param \Drupal\Core\Form\FormStateInterface $form_state
+ *   The current form state.
+ */
+function _va_gov_backend_alter_standalone_page_validation(array &$form, FormStateInterface $form_state) {
+  // Check existence of 'field_standalone_page' user input. We need to use the
+  // un-sanitized user input here because of the timing of the form rebuild
+  // by the paragraph module.
+  $input = $form_state->getUserInput();
+  $standalone = !empty($input['field_standalone_page']['value']);
+  // Add states + custom validation if the Standalone Page field is present.
+  $field_tags_exists = !empty($form['field_tags']['widget']);
+  $field_related_information_exists = !empty($form['field_related_information']['widget'][0]['subform']['field_link']['widget']);
+  if (isset($form['field_standalone_page']) && $field_tags_exists && $field_related_information_exists) {
+    $form['field_primary_category']['widget']['#states']['required']['input[data-drupal-selector="edit-field-standalone-page-value"]'] = ['checked' => TRUE];
+    $form['field_tags']['widget'][0]['subform']['field_topics']['#states']['required']['input[data-drupal-selector="edit-field-standalone-page-value"]'] = ['checked' => TRUE];
+    $form['field_related_information']['widget'][0]['subform']['field_link']['widget'][0]['uri']['#states']['required']['input[data-drupal-selector="edit-field-standalone-page-value"]'] = ['checked' => TRUE];
+    $form['field_related_information']['widget'][0]['subform']['field_link']['widget'][0]['title']['#states']['required']['input[data-drupal-selector="edit-field-standalone-page-value"]'] = ['checked' => TRUE];
+
+    // Require field uri and title widget if the standalone field is set.
+    $form['field_related_information']['widget'][0]['subform']['field_link']['widget'][0]['uri']['#required'] = $standalone;
+    $form['field_related_information']['widget'][0]['subform']['field_link']['widget'][0]['title']['#required'] = $standalone;
+    $form['field_related_information']['widget'][0]['subform']['field_link']['widget'][0]['#required'] = $standalone;
+    // Buttons paragraph.
+    foreach ($form['field_buttons']['widget'] as $key => $button) {
+      if (is_numeric($key)) {
+        $form['field_buttons']['widget'][$key]['subform']['field_button_label']['widget'][0]['#required'] = FALSE;
+        $form['field_buttons']['widget'][$key]['subform']['field_button_link']['widget'][0]['#required'] = FALSE;
+      }
+    }
+
+    foreach ($form['field_buttons']['widget'] as $idx => $val) {
+      if (is_numeric($idx)) {
+        $form['field_buttons']['widget'][$idx]['subform']['field_button_label']['widget'][0]['value']['#states']['required']['input[data-drupal-selector="edit-field-standalone-page-value"]'] = ['checked' => TRUE];
+        $form['field_buttons']['widget'][$idx]['subform']['field_button_link']['widget'][0]['uri']['#states']['required']['input[data-drupal-selector="edit-field-standalone-page-value"]'] = ['checked' => TRUE];
+      }
+    }
+
+    // Add custom validation.
+    array_unshift($form['#validate'], '_va_gov_backend_standalone_page_validation');
+  }
+  else {
+    // Mark CTA button fields as required.
+    if (!empty($form['field_buttons'])) {
+      foreach ($form['field_buttons']['widget'] as $idx => $val) {
+        if (is_numeric($idx)) {
+          $form['field_buttons']['widget'][$idx]['subform']['field_button_label']['widget'][0]['value']['#required'] = TRUE;
+          $form['field_buttons']['widget'][$idx]['subform']['field_button_link']['widget'][0]['uri']['#required'] = TRUE;
+        }
+      }
     }
   }
 }
@@ -952,11 +775,24 @@ function _va_gov_backend_audience_topics_validation(array $form, FormStateInterf
  */
 function _va_gov_backend_standalone_page_validation(array &$form, FormStateInterface &$form_state) {
   if ($form_state->getValue('field_standalone_page')['value'] === 0) {
-    // If we don't unset this field, validation prevents the form from
-    // submitting. This is undesirable when the standalone option is not
-    // toggled on.
+    // If the standalone option is unset, we don't want any form errors on
+    // fields in the 'field_related_information' widget to prevent saving the
+    // form. Formerly, this was handled by using $form_state->unsetValue() on
+    // the 'field_related_information' field, but this stopped working at some
+    // point. So we conditionally remove the errors from the form state,
+    // re-applying any that do not have a 'field_related_information' parent.
+    $form_errors = $form_state->getErrors();
+    $form_state->clearErrors();
+    foreach ($form_errors as $path => $error) {
+      if (!str_starts_with($path, 'field_related_information')) {
+        $form_state->setErrorByName($path, $error);
+      }
+    }
+
+    // To prevent values from persisting on the entity.
     $form_state->unsetValue('field_related_information');
   }
+
   if (!empty($form_state->getValue('field_standalone_page')['value'])) {
     if (empty($form_state->getValue('field_primary_category'))) {
       $form['field_primary_category']['#required'] = TRUE;
@@ -1076,110 +912,6 @@ function va_gov_backend_preprocess_page_title(&$variables) {
 }
 
 /**
- * Add preview button to node view.
- */
-function va_gov_backend_preprocess_page(&$variables) {
-
-  $node = \Drupal::routeMatch()->getParameter('node');
-  if ($node instanceof NodeInterface) {
-    // It's a node.
-    $exclusion_types = [
-      'banner',
-      'documentation_page',
-      'event_listing',
-      'full_width_banner_alert',
-      'health_care_local_health_service',
-      'health_services_listing,',
-      'leadership_listing',
-      'locations_listing',
-      'outreach_asset',
-      'press_releases_listing',
-      'regional_health_care_service_des',
-      'support_service',
-      'story_listing',
-      'vet_center_cap',
-      'vet_center_facility_health_servi',
-      'vet_center_mobile_vet_center',
-      'vet_center_outstation',
-    ];
-    // Make sure we aren't on the node form or an excluded type.
-    $route_name = \Drupal::routeMatch()->getRouteName();
-    if (($route_name !== 'entity.node.edit_form') &&
-      (!in_array($node->bundle(), $exclusion_types))) {
-      // Make sure we aren't on /training-guide.
-      $current_uri = \Drupal::request()->getRequestUri();
-      if ($current_uri !== '/training-guide') {
-        $node = \Drupal::routeMatch()->getParameter('node');
-        $nid = $node->id();
-        $host = \Drupal::request()->getHost();
-        $preview_form = new PreviewForm();
-        $url = $preview_form->getEnvironment($host, $nid);
-        $button = '<a class="button button--primary js-form-submit form-submit node-preview-button" target="_blank" href="' . $url . '">Preview</a>';
-        $variables['page']['sidebar_second']['#markup'] = $button;
-      }
-    }
-  }
-}
-
-/**
- * Modifies UI of the Facility Status VBO Modify Field Values form.
- *
- * The form that allows the user to modify field values contains too many
- * options that are irrelevant to the primary purpose of the tool. This
- * function modifies the form to eliminate UI noise.
- *
- * @param array $form
- *   Form object.
- * @param \Drupal\Core\Form\FormStateInterface $form_state
- *   Form state.
- */
-function _va_gov_backend_vbo_facility_status_form_ui(array &$form, FormStateInterface $form_state) {
-  // This if Facility Status form.
-  // Clean up the UI.
-  $bundle_fields = [];
-  $entity_data = (isset($form['node']) && is_array($form['node'])) ? $form['node'] : NULL;
-
-  if (!empty($entity_data)) {
-    foreach ($entity_data as $bundle => $data) {
-      if (is_array($data)) {
-        $bundle_fields[$bundle] = $data;
-      }
-    }
-  }
-
-  foreach ($bundle_fields as $bundle => $fields) {
-    if (is_array($fields)) {
-      foreach ($fields as $field_name => $field_meta) {
-        $form['node'][$bundle]['#open'] = TRUE;
-        if (!in_array(
-            $field_name,
-            [
-              'field_operating_status_facility',
-              'field_operating_status_more_info',
-            ]
-          )
-          && strpos($field_name, '#', 0) === FALSE) {
-
-          // Remove all facility content type fields that are not related
-          // to Operating status and Op info from field_selection form.
-          unset($form['node'][$bundle]['_field_selector'][$field_name]);
-
-          if (strpos($field_name, '_field_selector', 0) === FALSE) {
-            // Remove all facility content type fields that are not related
-            // to Operating status and Op info from vbo content type form.
-            unset($form['node'][$bundle][$field_name]);
-          }
-        }
-      }
-    }
-  }
-
-  // Remove multi-value field options, since none of the fields we're editing
-  // are multi-value.
-  unset($form['options']);
-}
-
-/**
  * Callback handler for workbench_access_assign_user form - invalidate cache.
  *
  * @param array $form
@@ -1228,6 +960,13 @@ function _va_gov_backend_dropdown_field_access(array &$form, array $targets) {
             }
           }
         }
+        elseif (!empty($option_header)) {
+          // If not an array, it's just an option.
+          // If not in the allowed items array, take it out.
+          if (!in_array($header_key, $allowed_options)) {
+            unset($form[$target]['widget']['#options'][$header_key]);
+          }
+        }
       }
     }
   }
@@ -1239,9 +978,15 @@ function _va_gov_backend_dropdown_field_access(array &$form, array $targets) {
 function va_gov_backend_form_node_form_alter(array &$form, FormStateInterface &$form_state) {
   _va_gov_backend_set_owner_section_default($form, $form_state);
 
-  // Only attach the service options limiter to facility health service bundle.
-  if ($form_state->getformObject()->getEntity()->bundle() === 'health_care_local_health_service') {
-    $form['#attached']['library'][] = 'va_gov_backend/limit_services_to_user_sections';
+  // Only attach the service options limiter to facility health service and
+  // vha_facility_nonclinical_service bundles.
+  /** @var \Drupal\Core\Entity\EntityForm $form_object */
+  $form_object = $form_state->getFormObject();
+  if ($form_object instanceof EntityForm) {
+    $node = $form_object->getEntity();
+    if ($node->bundle() === 'health_care_local_health_service' || $node->bundle() === 'vha_facility_nonclinical_service') {
+      $form['#attached']['library'][] = 'va_gov_backend/limit_services_to_user_sections';
+    }
   }
 }
 
@@ -1303,9 +1048,9 @@ function _va_gov_backend_smart_date_paragraph_formatting(array &$element) {
 }
 
 /**
- * Implements hook_field_widget_WIDGET_TYPE_form_alter().
+ * Implements hook_field_widget_single_element_WIDGET_TYPE_form_alter().
  */
-function va_gov_backend_field_widget_paragraphs_form_alter(&$element, FormStateInterface $form_state, $context) {
+function va_gov_backend_field_widget_single_element_paragraphs_form_alter(&$element, FormStateInterface $form_state, $context) {
   // Hide Trigger Text in Alert paragraph form unless Alert Type is "Expanding".
   $field_definition = $context['items']->getFieldDefinition();
   /**
@@ -1341,17 +1086,6 @@ function va_gov_backend_field_widget_paragraphs_form_alter(&$element, FormStateI
       ];
     }
   }
-
-  // If we have a field ref'ing service location paragraphs, fire function.
-  $vha_paragraphs = [
-    'field_service_location',
-    'field_service_location_address',
-    'field_phone_numbers_paragraph',
-    'field_phone',
-  ];
-  if (in_array($paragraph_entity_reference_field_name, $vha_paragraphs)) {
-    _va_gov_backend_modify_paragraph_interactions($element, $form_state, $context, $paragraph_entity_reference_field_name);
-  }
 }
 
 /**
@@ -1380,9 +1114,9 @@ function _va_gov_backend_restrict_qa_answer_types(array &$element) {
 }
 
 /**
- * Implements hook_field_widget_entity_reference_paragraphs_form_alter().
+ * Implements hook_field_widget_single_element_entity_reference_paragraphs_form_alter().
  */
-function va_gov_backend_field_widget_entity_reference_paragraphs_form_alter(&$element, FormStateInterface $form_state, $context) {
+function va_gov_backend_field_widget_single_element_entity_reference_paragraphs_form_alter(&$element, FormStateInterface $form_state, $context) {
   _va_gov_backend_modify_alert_single_states($element, $form_state, $context);
   _va_gov_backend_modify_contact_information_states($element, $form_state, $context);
 }
@@ -1462,70 +1196,6 @@ function _va_gov_backend_modify_contact_information_states(array &$element, Form
 }
 
 /**
- * Toggles service_location fields depending on parent selector.
- *
- * Adds Validation constraint error id match to html.
- *
- * @param array $element
- *   The widget.
- * @param \Drupal\Core\Form\FormStateInterface $form_state
- *   The form state.
- * @param array $context
- *   The context.
- * @param string $paragraph_entity_reference_field_name
- *   The reference field name.
- */
-function _va_gov_backend_modify_paragraph_interactions(array &$element, FormStateInterface &$form_state, array &$context, $paragraph_entity_reference_field_name) {
-  $field_definition = $context['items']->getFieldDefinition();
-
-  /**
-   * @var \Drupal\field\Entity\FieldConfig $field_definition */
-  $paragraph_entity_reference_field_name = $field_definition->getName();
-  $widget_state = WidgetBase::getWidgetState($element['#field_parents'], $paragraph_entity_reference_field_name, $form_state);
-
-  $paragraph_instance = $widget_state['paragraphs'][$element['#delta']]['entity'];
-  $paragraph_type = $paragraph_instance->bundle();
-
-  // Toggle hours fields depending on "Use facility hours" select.
-  // field_service_location[0][subform][field_service_location_address][0][subform][field_use_facility_address][value].
-  if ($paragraph_type === 'service_location') {
-    // If use facility hours option is not selected, show address entry fields.
-    $toggle_fields = [
-      'field_facility_service_hours',
-    ];
-    $selector = sprintf(':input[name="field_service_location[%1$d][subform][field_hours]"]', $element['#delta']);
-    foreach ($toggle_fields as $field) {
-      $element['subform'][$field]['#states'] = [
-        'visible' => [
-          $selector => ['value' => "2"],
-        ],
-      ];
-    }
-    // Remove caption, rows, and import fields from address tablefield.
-    if (isset($element['subform']['field_facility_service_hours']['widget'][0]['caption'])) {
-      unset($element['subform']['field_facility_service_hours']['widget'][0]['#description']);
-      unset($element['subform']['field_facility_service_hours']['widget'][0]['caption']);
-    }
-    $element['subform']['field_facility_service_hours']['widget'][0]['prefix']['#markup'] = t('<div class="description">Format: "8:00 a.m. to 5:30 p.m. ET" or "24/7"</div>');
-    $element['subform']['field_facility_service_hours']['widget'][0]['#import'] = FALSE;
-    $element['subform']['field_facility_service_hours']['widget'][0]['#addrow'] = FALSE;
-    $element['subform']['field_facility_service_hours']['widget'][0]['#rebuild'] = FALSE;
-  }
-
-}
-
-/**
- * Implements hook_inline_entity_form_alter().
- */
-function va_gov_backend_inline_entity_form_entity_form_alter(&$entity_form, FormStateInterface $form_state) {
-  // Show the facility name so that the editor knows what they're editing,
-  // but don't let the editor change it. It's driven by Facility API.
-  if ($entity_form['#bundle'] === 'health_care_local_facility') {
-    $entity_form['title']['widget'][0]['value']['#attributes']['disabled'] = 'disabled';
-  }
-}
-
-/**
  * Implements hook_entity_bundle_field_info_alter().
  */
 function va_gov_backend_entity_bundle_field_info_alter(&$fields, EntityTypeInterface $entity_type, $bundle) {
@@ -1546,26 +1216,28 @@ function va_gov_backend_entity_bundle_field_info_alter(&$fields, EntityTypeInter
     $fields['field_benefit_categories']->addConstraint('BenefitsSelectionLimit');
   }
   // Validation constraints for long plain and rich text fields.
-  foreach ($fields as $field_name => $field) {
+  foreach ($fields as $field) {
     if ($field->getType() === 'string_long') {
       $field->addConstraint('PreventAbsoluteCmsLinks');
+      $field->addConstraint('PreventProtocolRelativeLinks');
+      $field->addConstraint('PreventAbsoluteUrlsAsPathsInLinks');
+      $field->addConstraint('PreventVaGovDomainsAsPathsInLinks');
+      $field->addConstraint('PreventDomainsAsPathsInLinks');
+      $field->addConstraint('PreventPreviewUrlLinks');
     }
     elseif ($field->getType() === 'text_long') {
       $field->addConstraint('PreventAbsoluteCmsLinks');
       $field->addConstraint('PreventLocalFileLinks');
+      $field->addConstraint('PreventProtocolRelativeLinks');
+      $field->addConstraint('PreventMediaViewLinks');
+      $field->addConstraint('PreventAbsoluteUrlsAsPathsInLinks');
+      $field->addConstraint('PreventVaGovDomainsAsPathsInLinks');
+      $field->addConstraint('PreventDomainsAsPathsInLinks');
+      $field->addConstraint('PreventPreviewUrlLinks');
     }
   }
   // Add paragraph checks on clp panels.
   if ($entity_type->id() === 'node' && $bundle === 'campaign_landing_page') {
-    // Add range check on faq panel.
-    if (isset($fields['field_clp_faq_paragraphs'])) {
-      $fields['field_clp_faq_paragraphs']->addConstraint('RequiredParagraph', [
-        'toggle' => 'field_clp_faq_panel',
-        'readable' => 'Q&A',
-        'min' => 3,
-        'max' => 10,
-      ]);
-    }
     // Add range check on stories panel.
     if (isset($fields['field_clp_stories_teasers'])) {
       $fields['field_clp_stories_teasers']->addConstraint('RequiredParagraph', [
@@ -1626,7 +1298,15 @@ function va_gov_backend_page_attachments(array &$attachments) {
 
   // Pass our relevant data to settings.
   $attachments['#attached']['drupalSettings']['gtm_data'] = _va_gov_backend_gtm_settings();
+  $node = \Drupal::routeMatch()->getParameter('node');
+  if ($node instanceof NodeInterface) {
+    $attachments['#attached']['drupalSettings']['node'] = _va_gov_backend_node_data($node);
+  }
+
   $attachments['#cache']['tags'][] = 'config:workbench_access.access_scheme.section';
+
+  // Move our help text from the wrapper to below the label.
+  $attachments['#attached']['library'][] = 'va_gov_backend/help_text_treatments';
 
   $attachments['#attached']['library'][] = 'va_gov_backend/alert_form';
   $attachments['#attached']['library'][] = 'va_gov_backend/system_styles';
@@ -1647,6 +1327,26 @@ function va_gov_backend_page_attachments(array &$attachments) {
 
     return;
   }
+}
+
+/**
+ * Builds some useful node data for development.
+ *
+ * @param \Drupal\node\NodeInterface $node
+ *   Some valid node.
+ *
+ * @return array
+ *   Keyed array of useful node info.
+ */
+function _va_gov_backend_node_data(NodeInterface $node) {
+  return [
+    'id' => $node->id(),
+    'uuid' => $node->uuid(),
+    'title' => $node->getTitle(),
+    'path' => $node->toUrl()->toString(),
+    'contentType' => $node->bundle(),
+    'jsonApiPath' => "/jsonapi/node/{$node->bundle()}/{$node->uuid()}",
+  ];
 }
 
 /**
@@ -1737,6 +1437,23 @@ function va_gov_backend_menu_local_tasks_alter(&$local_tasks) {
   if (!empty($local_tasks['tabs'][0]['views_view:view.moderation_history.page'])) {
     unset($local_tasks['tabs'][0]['views_view:view.moderation_history.page']);
   }
+
+  // Remove the "Delete" tab for non administrator roles.
+  $perms_service = \Drupal::service('va_gov_user.user_perms');
+  if (!$perms_service->hasAdminRole(TRUE)) {
+    // Remove node delete tab.
+    unset($local_tasks['tabs'][0]['entity.node.delete_form']);
+    // Remove media delete tab.
+    unset($local_tasks['tabs'][0]['entity.media.delete_form']);
+    // Remove block delete tab.
+    unset($local_tasks['tabs'][0]['entity.block.delete_form']);
+    // Remove content block delete tab.
+    unset($local_tasks['tabs'][0]['entity.block_content.delete_form']);
+    // Remove taxonomy vocabulary delete tab.
+    unset($local_tasks['tabs'][0]['entity.taxonomy_vocabulary.delete_form']);
+    // Remove taxonomy term delete tab.
+    unset($local_tasks['tabs'][0]['entity.taxonomy_term.delete_form']);
+  }
 }
 
 /**
@@ -1778,6 +1495,41 @@ function va_gov_backend_rebuild() {
   }
 
   \Drupal::state()->set("environment_indicator.current_release", $indicator);
+
+  $environment_label = '';
+  $env = getenv('CMS_ENVIRONMENT_TYPE') ?: 'ci';
+  switch ($env) {
+    case 'prod':
+      $environment_label = 'Production Environment';
+      break;
+
+    case 'staging':
+      $environment_label = 'Staging Environment';
+      break;
+
+    case 'dev':
+      $environment_label = 'Dev Environment';
+      break;
+
+    case 'tugboat':
+      $tugboat = getenv('TUGBOAT_PREVIEW_TYPE');
+      if ($tugboat === 'pullrequest') {
+        $environment_label = 'PR Environment';
+      }
+      elseif ($tugboat === 'branch') {
+        $environment_label = 'Demo Environment';
+      }
+      break;
+
+    case 'local':
+      $environment_label = 'Local Environment';
+      break;
+
+  }
+
+  \Drupal::state()->set("environment_indicator.environment_label", $environment_label);
+  \Drupal::state()
+    ->set('environment_indicator.env', $env);
 }
 
 /**
@@ -1786,7 +1538,58 @@ function va_gov_backend_rebuild() {
  * Defines Branch component in Admin Toolbar Menu.
  */
 function va_gov_backend_toolbar() {
+
   $items = [];
+  $items['environment_label'] = [
+    '#attached' => [
+      'library' => [
+        'va_gov_backend/tippy_popover_theme',
+        'va_gov_backend/toolbar',
+      ],
+    ],
+    '#type' => 'toolbar_item',
+    'tab' => [
+      '#type' => 'html_tag',
+      '#tag' => 'div',
+      '#value' => \Drupal::state()
+        ->get("environment_indicator.environment_label"),
+      '#attributes' => [
+        'class' => ['toolbar-icon', 'toolbar-icon-environment-label'],
+      ],
+    ],
+    '#wrapper_attributes' => [
+      'class' => ['toolbar-tab', 'environment-toolbar-tab'],
+    ],
+    '#weight' => 100,
+  ];
+
+  if (\Drupal::service('va_gov_user.user_perms')->hasAdminRole(TRUE)) {
+    $items['branch'] = [
+      '#attached' => [
+        'library' => [
+          'va_gov_backend/toolbar',
+        ],
+      ],
+      '#cache' => [
+        'contexts' => ['user.permissions'],
+      ],
+      '#type' => 'toolbar_item',
+      'tab' => [
+        '#type' => 'html_tag',
+        '#tag' => 'div',
+        '#value' => ' - ' . \Drupal::state()
+          ->get("environment_indicator.current_release"),
+        '#attributes' => [
+          'title' => 'See https://github.com/department-of-veterans-affairs/va.gov-cms for more info.',
+          'class' => ['toolbar-icon', 'toolbar-icon-branch'],
+        ],
+      ],
+      '#wrapper_attributes' => [
+        'class' => ['toolbar-tab', 'branch-toolbar-tab'],
+      ],
+      '#weight' => 101,
+    ];
+  }
   $items['content_release_icon'] = [
     '#attached' => [
       'library' => [
@@ -1808,32 +1611,35 @@ function va_gov_backend_toolbar() {
     '#wrapper_attributes' => [
       'class' => ['toolbar-tab', 'content-release-toolbar-tab'],
     ],
-    '#weight' => 101,
+    '#weight' => 102,
   ];
-  $items['branch'] = [
-    '#attached' => [
-      'library' => [
-        'va_gov_backend/toolbar',
+  $white_font = ['prod', 'local', 'dev'];
+  if (in_array(\Drupal::state()
+    ->get('environment_indicator.env'), $white_font)) {
+    $items['content_release_icon'] = [
+      '#attached' => [
+        'library' => [
+          'va_gov_backend/tippy_popover_theme',
+          'va_gov_backend/toolbar',
+        ],
       ],
-    ],
-    '#cache' => [
-      'contexts' => ['user.permissions'],
-    ],
-    '#type' => 'toolbar_item',
-    'tab' => [
-      '#type' => 'html_tag',
-      '#tag' => 'div',
-      '#value' => \Drupal::state()->get("environment_indicator.current_release"),
-      '#attributes' => [
-        'title' => 'See https://github.com/department-of-veterans-affairs/va.gov-cms for more info.',
-        'class' => ['toolbar-icon', 'toolbar-icon-branch'],
+      '#type' => 'toolbar_item',
+      'tab' => [
+        '#type' => 'html_tag',
+        '#tag' => 'button',
+        '#value' => '<span class="button-text">Last Content Release Time</span>',
+        '#attributes' => [
+          'class' => ['toolbar-icon', 'toolbar-icon-content-release'],
+          'title' => 'Mouse over to see last content release time',
+          'id' => 'content-release-status-icon',
+        ],
       ],
-    ],
-    '#wrapper_attributes' => [
-      'class' => ['toolbar-tab', 'branch-toolbar-tab'],
-    ],
-    '#weight' => 100,
-  ];
+      '#wrapper_attributes' => [
+        'class' => ['toolbar-tab', 'content-release-toolbar-tab-prod'],
+      ],
+      '#weight' => 102,
+    ];
+  }
 
   return $items;
 }
@@ -1967,7 +1773,15 @@ function va_gov_backend_entity_presave(EntityInterface $entity) {
  */
 function _va_gov_backend_set_file_type(FieldableEntityInterface $entity) {
   $uri = $entity->get('field_media_external_file')->getValue()[0]['uri'];
-  $mime = \Drupal::service('file.mime_type.guesser')->guess($uri);
+  $guesser = \Drupal::service('file.mime_type.guesser');
+  $mime;
+  if ($guesser instanceof MimeTypeGuesserInterface) {
+    $mime = $guesser->guessMimeType($uri);
+  }
+  else {
+    $mime = $guesser->guessMimeType($uri);
+    @trigger_error('\Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesserInterface is deprecated in drupal:9.1.0 and will be removed in drupal:10.0.0. See https://www.drupal.org/node/3133341', E_USER_DEPRECATED);
+  }
   $entity->set('field_mime_type', $mime);
 }
 
@@ -2011,6 +1825,18 @@ function _va_gov_backend_apply_filter_to_tablefield_cells(FieldableEntityInterfa
 }
 
 /**
+ * Implements hook_field_widget_single_element_WIDGET_TYPE_form_alter().
+ *
+ * Deprecated in va_gov_backend:9.2.3 and is removed from va_gov_backend:10.0.1
+ *   This should be removed in #10675.
+ *
+ * @see https://github.com/department-of-veterans-affairs/va.gov-cms/issues/10675
+ */
+function va_gov_backend_field_widget_single_element_tablefield_form_alter(&$element, FormStateInterface $form_state, $context): void {
+  $element["#description"] = t('The first row will be formatted as the table header. The labels in the first row should accurately describe the corresponding columns.');
+}
+
+/**
  * Determine if pathauto alias should be enabled on node.
  *
  * @param \Drupal\Core\Entity\FieldableEntityInterface $entity
@@ -2025,11 +1851,23 @@ function _va_gov_backend_disable_autopath_alias(FieldableEntityInterface $entity
     $toggled_on_this_save = $current_use_alias_pattern && !$original_use_alias_pattern;
     $active_entity = \Drupal::entityTypeManager()->getStorage('node')->load($entity->id());
     $published_previously = ($active_entity instanceof NodeInterface) ? $active_entity->isPublished() : FALSE;
+    $path = '/node/' . (int) $active_entity->nid->value;
+    $langcode = \Drupal::languageManager()->getCurrentLanguage()->getId();
+    $path_alias = \Drupal::service('path_alias.manager')->getAliasByPath($path, $langcode);
+    // If the path_alias is the node path, alias is not set.
+    $path_alias_set = (bool) preg_match('/\/node\/\d+/', $path_alias) ? FALSE : TRUE;
 
-    if ($published_previously && !$toggled_on_this_save) {
-      // This was published and this was not an intentional toggle on.
+    if ($path_alias_set && $published_previously && !$toggled_on_this_save) {
+      // This has a path alias, was published,
+      // and was not an intentional toggle on.
       // Disable the pathauto pattern.
       $entity->path->pathauto = 0;
+    }
+    elseif (!$path_alias_set) {
+      // If this is not set pathauto already is 0,
+      // so we need to explicitly set it to 1
+      // to get an alias generated.
+      $entity->path->pathauto = 1;
     }
   }
 }
@@ -2070,15 +1908,98 @@ function _va_gov_backend_feature_bump(EntityInterface $entity) {
 }
 
 /**
- * Implements hook_raven_options_alter().
+ * Implements hook_theme_suggestions_HOOK_alter().
+ *
+ * This hook adds a new theme suggestion for all textarea form elements.
  */
-function va_gov_backend_raven_options_alter(array &$options) {
-  try {
-    $repository = Drupal::getContainer()->get('va_gov.consumers.git.repository.factory')->getAppRepository();
-    $options['release'] = !empty($repository->getLastCommit()) ? $repository->getLastCommit()->getHash() : NULL;
-  }
-  catch (RuntimeExceptionAlias $e) {
-    watchdog_exception('git', $e, 'Error getting HEAD commit');
-  }
+function va_gov_backend_theme_suggestions_form_element_alter(array &$suggestions, array $variables) {
 
+  if (isset($variables['element']['#type']) && $variables['element']['#type'] == 'textarea') {
+    $suggestions[] = 'form_element__textarea';
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function va_gov_backend_theme($existing, $type, $theme, $path) {
+
+  return [
+    'form_element__textarea' => [
+      'base hook' => 'form_element',
+    ],
+  ];
+}
+
+/**
+ * Return the node that the paragraph belongs to.
+ *
+ * If the paragraph's parent is a paragraph, recurse up the tree until you
+ * reach a non-paragraph entity.
+ *
+ * @param \Drupal\paragraphs\Entity\Paragraph $paragraph
+ *   The paragraph to find the parent of.
+ *
+ * @return \Drupal\node\Entity\Node|null
+ *   If the paragraph is attached to a node, return the node, otherwise NULL.
+ */
+function va_gov_backend_get_parent_node(Paragraph $paragraph) {
+  $parent_node = NULL;
+  /** @var Drupal\paragraphs\Entity\Paragraph $parent */
+  $parent = $paragraph->getParentEntity();
+  if ($parent !== NULL && $parent->getEntityType()->id() === 'paragraph') {
+    $parent_node = va_gov_backend_get_parent_node($parent);
+  }
+  elseif ($parent !== NULL && $parent->getEntityType()->id() === 'node') {
+    $parent_node = $parent;
+  }
+  return $parent_node;
+}
+
+/**
+ * Return the top entity that the paragraph belongs to.
+ *
+ * If the paragraph's parent is a paragraph, recurse up the tree until you
+ * reach a non-paragraph entity.
+ *
+ * @param \Drupal\paragraphs\Entity\Paragraph $paragraph
+ *   The paragraph to find the parent of.
+ * @param array $tree
+ *   The tree of entities that the paragraph belongs to, contains the
+ *   field_name and the revision_id of all entities in the tree.
+ *
+ * @return \Drupal\Core\Entity\EntityInterface|null
+ *   If the paragraph is attached to an entity, return it, otherwise NULL.
+ */
+function va_gov_backend_get_top_parent_entity(Paragraph $paragraph, array &$tree) {
+  $parent = NULL;
+  $tree[] = [
+    'field_name' => $paragraph->get('parent_field_name')->value,
+    'revision_id' => $paragraph->get('revision_id')->value,
+  ];
+  /** @var Drupal\paragraphs\Entity\Paragraph $parent */
+  $parent = $paragraph->getParentEntity();
+  if ($parent !== NULL && $parent->getEntityType()->id() === 'paragraph') {
+    $parent = va_gov_backend_get_top_parent_entity($parent, $tree);
+  }
+  return $parent;
+}
+
+/**
+ * Implements hook_field_views_data_alter().
+ *
+ * Views integration for timestamp field to filter as a date not a number.
+ *
+ * @see views_field_default_views_data()
+ */
+function va_gov_backend_field_views_data_alter(array &$data, FieldStorageConfigInterface $field_storage) {
+  if ($field_storage->getType() == 'timestamp') {
+    foreach ($data as $table_name => $table_data) {
+      foreach ($table_data as $field_name => $field_data) {
+        if (isset($field_data['filter']) && $field_name != 'delta') {
+          $data[$table_name][$field_name]['filter']['id'] = 'date';
+        }
+      }
+    }
+  }
 }

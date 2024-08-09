@@ -207,13 +207,8 @@ class UserPermsService {
     foreach ($targets as $target) {
 
       if (in_array($target, $form) && !empty($form[$target]['widget']['#options'])) {
-        $cid = 'userpermservice-dropdown-access-' . $target . '-' . $user_id;
 
-        if ($target === 'field_listing') {
-          // Add form id to cid for field_listing, since lists for various
-          // content type are different.
-          $cid = 'userpermservice-dropdown-access-' . $form['#form_id'] . '-' . $target . '-' . $user_id;
-        }
+        $cid = "userpermservice-dropdown-access-{$form['#form_id']}-{$target}-{$user_id}";
 
         $cached_data = \Drupal::cache()->get($cid);
         // If we have a cache, return it.
@@ -266,7 +261,7 @@ class UserPermsService {
    *   The entity id.
    * @param string $entity_type
    *   E.g. node, block.
-   * @param \Drupal\core\Session\AccountInterface $account
+   * @param \Drupal\Core\Session\AccountInterface $account
    *   The user id.
    * @param string $target
    *   The target field name.

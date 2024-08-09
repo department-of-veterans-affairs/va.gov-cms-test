@@ -2,18 +2,19 @@
 
 namespace tests\phpunit\Security;
 
-use weitzman\DrupalTestTraits\ExistingSiteBase;
+use Tests\Support\Classes\VaGovExistingSiteBase;
 
 /**
  * A test to confirm access to node edit form tabs.
+ *
+ * @group functional
+ * @group security
+ * @group all
  */
-class NodeEditTabsTest extends ExistingSiteBase {
+class NodeEditTabsTest extends VaGovExistingSiteBase {
 
   /**
    * A test method to determine whether users can access node edit form tabs.
-   *
-   * @group edit
-   * @group all
    */
   public function testAccessNodeEditTab() {
     // Creates a user. Will be automatically cleaned up at the end of the test.

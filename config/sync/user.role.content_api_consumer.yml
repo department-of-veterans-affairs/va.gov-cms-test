@@ -3,7 +3,13 @@ langcode: en
 status: true
 dependencies:
   module:
+    - content_moderation
+    - govdelivery_bulletins
+    - graphql
+    - node
+    - openapi
     - va_gov_backend
+    - va_gov_graphql
 third_party_settings:
   va_gov_backend:
     vgb_description: 'Used by GraphQL to access content via Content API. Should not be given to humans.'
@@ -14,9 +20,9 @@ is_admin: null
 permissions:
   - 'access bulletin queue trigger api'
   - 'access openapi api docs'
-  - 'administer menu'
   - 'bypass graphql field security'
   - 'use graphql explorer'
   - 'use graphql voyager'
+  - 'va gov graphql read menu content'
   - 'view any unpublished content'
   - 'view own unpublished content'

@@ -1,0 +1,43 @@
+# Main vagovclaro library, includes global js & stylesheet
+core:
+  version: -1
+  css:
+    theme:
+      dist/styles.css:
+        minified: true
+
+      # Library compiled from design system in docroot/design-system
+      dist/ds-drupal.styles.css:
+        minified: true
+  js:
+    assets/js/anchor_links.js: {}
+    assets/js/tabledrag.js: {}
+    assets/js/vagovclaro.theme.help.js: {}
+    assets/js/modal_accessibility.js: {}
+    assets/js/inline_guidance.js: {}
+
+    # Library compiled from design system in docroot/design-system
+    dist/ds-drupal.js: {
+       minified: true
+    }
+
+  dependencies:
+    - core/drupal
+    - core/jquery
+    - core/once
+    - core/drupal.tabledrag
+    - va_gov_backend/tippy_popover_theme
+    - va_gov_backend/tippyjs
+
+
+# Extra styles used on knowledge base pages only
+userguides:
+  css:
+    theme:
+      dist/user_guides.css:
+        minified: true
+
+whatsnew:
+  css:
+    component:
+      dist/whats_new.css: { }

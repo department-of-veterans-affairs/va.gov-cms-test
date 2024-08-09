@@ -5,9 +5,9 @@ namespace Drupal\va_gov_migrate;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\migrate\Event\MigratePostRowSaveEvent;
 use Drupal\migrate\MigrateException;
+use Drupal\migration_tools\Message;
 use Drupal\paragraphs\Entity\Paragraph;
 use QueryPath\DOMQuery;
-use Drupal\migration_tools\Message;
 
 /**
  * ParagraphMigrator migrates paragraphs from query path.
@@ -32,7 +32,7 @@ class ParagraphMigrator {
   /**
    * The entity we're adding paragraphs to.
    *
-   * @var \Drupal\Core\Entity\Entity
+   * @var \Drupal\Core\Entity\EntityInterface
    */
   private $entity;
   /**
@@ -322,7 +322,7 @@ class ParagraphMigrator {
   public function addWysiwyg(EntityInterface &$entity, $parent_field) {
     if (self::hasContent($this->wysiwyg)) {
       try {
-        list('allowed' => $allowed_paragraphs) = self::getAllowedParagraphs($entity, $parent_field);
+        ['allowed' => $allowed_paragraphs] = self::getAllowedParagraphs($entity, $parent_field);
       }
       catch (MigrateException $e) {
         Message::make('Could not add paragraphs to @field. ' . $e->getMessage(), ['@field' => $parent_field], Message::ERROR);
@@ -384,7 +384,6 @@ class ParagraphMigrator {
 
     // Remove all spans with ids
     // Corrects problem in html where spans acting as anchors aren't closed.
-    /** @var \queryPath\DOMQuery $element */
     foreach ($query_path->find('span[id]') as $element) {
       // This should no longer be a problem (the issue that necessitated this
       // has been addressed, but let's leave this for now, just to make sure.

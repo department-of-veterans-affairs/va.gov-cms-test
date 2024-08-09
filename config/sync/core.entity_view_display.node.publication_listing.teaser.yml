@@ -7,8 +7,8 @@ dependencies:
     - field.field.node.publication_listing.field_administration
     - field.field.node.publication_listing.field_description
     - field.field.node.publication_listing.field_intro_text
+    - field.field.node.publication_listing.field_last_saved_by_an_editor
     - field.field.node.publication_listing.field_meta_tags
-    - field.field.node.publication_listing.field_meta_title
     - field.field.node.publication_listing.field_office
     - node.type.publication_listing
   module:
@@ -18,17 +18,29 @@ targetEntityType: node
 bundle: publication_listing
 mode: teaser
 content:
-  links:
-    weight: 100
+  flag_email_node:
     settings: {  }
     third_party_settings: {  }
+    weight: 10
+    region: content
+  flag_subscribe_node:
+    settings: {  }
+    third_party_settings: {  }
+    weight: 10
+    region: content
+  links:
+    settings: {  }
+    third_party_settings: {  }
+    weight: 100
     region: content
 hidden:
+  breadcrumbs: true
   content_moderation_control: true
   field_administration: true
   field_description: true
   field_intro_text: true
+  field_last_saved_by_an_editor: true
   field_meta_tags: true
-  field_meta_title: true
   field_office: true
+  langcode: true
   search_api_excerpt: true

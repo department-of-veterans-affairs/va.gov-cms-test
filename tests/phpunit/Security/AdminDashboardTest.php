@@ -2,18 +2,19 @@
 
 namespace tests\phpunit\Security;
 
-use weitzman\DrupalTestTraits\ExistingSiteBase;
+use Tests\Support\Classes\VaGovExistingSiteBase;
 
 /**
  * A test to confirm admin dashboard security.
+ *
+ * @group functional
+ * @group security
+ * @group all
  */
-class AdminDashboardTest extends ExistingSiteBase {
+class AdminDashboardTest extends VaGovExistingSiteBase {
 
   /**
    * A test method to check permissions to access the admin dashboard.
-   *
-   * @group security
-   * @group all
    *
    * @dataProvider getRoles
    */

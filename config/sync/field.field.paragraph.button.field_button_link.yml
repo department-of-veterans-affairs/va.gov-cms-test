@@ -7,17 +7,21 @@ dependencies:
     - paragraphs.paragraphs_type.button
   module:
     - link
+    - tmgmt_content
+third_party_settings:
+  tmgmt_content:
+    excluded: false
 id: paragraph.button.field_button_link
 field_name: field_button_link
 entity_type: paragraph
 bundle: button
-label: 'Button Link'
+label: Link
 description: ''
-required: false
-translatable: false
+required: true
+translatable: true
 default_value: {  }
 default_value_callback: ''
 settings:
-  link_type: 17
   title: 0
+  link_type: 17
 field_type: link

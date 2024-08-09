@@ -4,11 +4,13 @@ namespace Drupal\va_gov_post_api\Service;
 
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\node\NodeInterface;
+use Drupal\va_gov_facilities\FacilityOps;
+use Drupal\va_gov_lovell\LovellOps;
 
 /**
  * Class PostFacilityService posts facility status info to Lighthouse.
  */
-class PostFacilityStatus extends PostFacilityBase {
+class PostFacilityStatus extends PostFacilityBase implements PostServiceInterface {
 
   /**
    * A array of any errors in prepping the data.
@@ -17,22 +19,8 @@ class PostFacilityStatus extends PostFacilityBase {
    */
   protected $errors = [];
 
-  const STATE_ARCHIVED = 'archived';
-  const STATE_DRAFT = 'draft';
-  const STATE_PUBLISHED = 'published';
-
   /**
-   * The facility service node's default revision.
-   *
-   * This is either the last published revision, or the last revision before
-   * the current save.
-   *
-   * @var \Drupal\node\NodeInterface
-   */
-  protected $defaultRevision;
-
-  /**
-   * The facility service node.
+   * The facility node.
    *
    * @var \Drupal\node\NodeInterface
    */
@@ -53,34 +41,22 @@ class PostFacilityStatus extends PostFacilityBase {
   protected $additionalInfoToPush;
 
   /**
-   * The services that should be pushed to Lighthouse.
-   *
-   * For now we are only pushing covid 19 services. The key is only for
-   * making sense of code, the TID is what is used for comparison.
-   *
-   * @var array
-   */
-  protected $facilitiesWithServices = [
-    'health_care_local_facility',
-    'nca_facility',
-    'vba_facility',
-    'vet_center',
-    'vet_center_outstation',
-  ];
-
-  /**
    * Adds facility service data to Post API queue.
    *
    * @param \Drupal\Core\Entity\EntityInterface $entity
    *   Entity.
+   * @param bool $forcePush
+   *   Force processing of facility status if true.
    *
    * @return int
    *   The count of the number of items queued (1,0).
    */
-  public function queueFacilityStatus(EntityInterface $entity) {
+  public function queueFacilityStatus(EntityInterface $entity, bool $forcePush = FALSE) {
     $queued_count = 0;
+    // Vet Center CAPs are excluded from this push and will have their own.
+    $is_vet_center_cap = $entity->bundle() === 'vet_center_cap';
 
-    if ($entity instanceof NodeInterface && $this->isFacilityWithStatus($entity)) {
+    if ($entity instanceof NodeInterface && FacilityOps::isFacilityWithStatus($entity) && !$is_vet_center_cap) {
       /** @var \Drupal\node\NodeInterface $entity*/
       $this->facilityNode = $entity;
       $facility_id = $entity->hasField('field_facility_locator_api_id') ? $entity->get('field_facility_locator_api_id')->value : NULL;
@@ -90,13 +66,13 @@ class PostFacilityStatus extends PostFacilityBase {
 
       // Set a key based on which the endpoint will be
       // defined during queue execution.
-      $data['endpoint_path'] = ($facility_id) ? "/services/va_facilities/v0/facilities/{$facility_id}/cms-overlay" : NULL;
+      $data['endpoint_path'] = ($facility_id) ? "/services/va_facilities/v1/facilities/{$facility_id}/cms-overlay" : NULL;
 
       // Set payload. Default payload provided by this module is empty.
       // See README.md
       // Entity fields (updated and original) can be compared and processed in
       // order to structure the payload array.
-      $data['payload'] = $this->getPayload();
+      $data['payload'] = $this->getPayload($forcePush);
 
       // Only add to queue if payload is not empty.
       // If its empty, it means that there is no new information to send to
@@ -118,6 +94,38 @@ class PostFacilityStatus extends PostFacilityBase {
   }
 
   /**
+   * Add facility data to Post API queue by VAMC system.
+   *
+   * @param \Drupal\Core\Entity\EntityInterface $entity
+   *   Entity.
+   *
+   * @return int
+   *   The count of the number of items queued.
+   */
+  public function queueSystemRelatedFacilities(EntityInterface $entity) {
+    $queued_count = 0;
+    if (($entity->getEntityTypeId() === 'node')
+    && ($entity->bundle() === 'health_care_region_page')
+    && ($this->shouldPushSystem($entity))) {
+      // Find all VAMC Facilities referencing this VAMC system node.
+      $query = $this->entityTypeManager->getStorage('node')->getQuery();
+      $nids = $query->condition('type', 'health_care_local_facility')
+        ->condition('field_region_page', $entity->id())
+        ->condition('status', 1)
+        ->accessCheck(FALSE)
+        ->execute();
+
+      $vamc_facility_nodes = $this->entityTypeManager->getStorage('node')->loadMultiple($nids);
+      foreach ($vamc_facility_nodes as $node) {
+        // Process each VAMC Facility referencing this node.
+        $queued_count += $this->queueFacilityStatus($node, TRUE);
+      }
+    }
+
+    return $queued_count;
+  }
+
+  /**
    * Get the message variables and values.
    *
    * @return array
@@ -134,16 +142,19 @@ class PostFacilityStatus extends PostFacilityBase {
   /**
    * Compose and return payload array for facility status.
    *
+   * @param bool $forcePush
+   *   Force processing of facility status if true.
+   *
    * @return array
    *   Payload array.
    */
-  protected function getPayload(): array {
+  protected function getPayload(bool $forcePush = FALSE): array {
     // Default payload is an empty array.
     $payload = [];
 
     // Current field values.
     $this->statusToPush = $this->facilityNode->get('field_operating_status_facility')->value;
-    $this->additionalInfoToPush = $this->facilityNode->get('field_operating_status_more_info')->value;
+    $this->additionalInfoToPush = $this->getOperatingStatusMoreInfoShort();
 
     if (empty($this->statusToPush)) {
       // We can not send this without a status, so bail out.
@@ -151,29 +162,152 @@ class PostFacilityStatus extends PostFacilityBase {
       return $payload;
     }
 
-    if ($this->shouldPush()) {
+    if (self::shouldPush($this->facilityNode, $forcePush)) {
       $payload = [
+        'core' => [
+          'facility_url' => $this->getFacilityUrl(),
+        ],
         'operating_status' => [
           'code' => strtoupper($this->statusToPush),
-          'additional_info' => $this->additionalInfoToPush,
+          'additional_info' => (strtoupper($this->statusToPush) != 'NORMAL') ? $this->additionalInfoToPush : NULL,
         ],
       ];
+      if ($this->getFacilityMentalHealthPhone()) {
+        $payload['core']['mental_health_phone'] = $this->getFacilityMentalHealthPhone();
+      }
+
+      $this->addSupplementalStatus($payload);
+      $this->getRelatedSystemInfo($payload);
+      $this->getSystemOverrides($payload);
     }
 
     return $payload;
   }
 
   /**
-   * Checks if the entity is a facility node with status info.
+   * Builds the appropriate url for a facility.
    *
-   * @param \Drupal\node\NodeInterface $entity
-   *   The node to evaluate.
+   * @return string|null
+   *   A facility locator detail page if the node is not published.
+   *   A html page URL if the node is published.
+   *   Null if something completely went wrong.
+   */
+  protected function getFacilityUrl(): string | null {
+    $facility_url = NULL;
+    if ($this->facilityNode->isPublished()) {
+      if (!FacilityOps::facilityHasFePage($this->facilityNode)) {
+        // This facility is published, but has no page of its own.
+        $facility_url = $this->getParentLocationsPageUrl($this->facilityNode);
+      }
+      else {
+        // The node is published, so use the FE URL of the page.
+        $facility_url = "https://www.va.gov{$this->facilityNode->toUrl()->toString()}/";
+      }
+
+    }
+    else {
+      // The page is not published, so send the Facility Locator Detail Page.
+      $facility_id = $this->facilityNode->hasField('field_facility_locator_api_id') ? $this->facilityNode->get('field_facility_locator_api_id')->value : NULL;
+      if (!FacilityOps::isFacilityLaunched($this->facilityNode)) {
+        // This hasn't launched, and is not published, so we don't know the url.
+        $facility_url = NULL;
+      }
+      elseif ($facility_id) {
+        // Has launched but the page does not exist yet so send locator detail.
+        $facility_url = "https://www.va.gov/find-locations/facility/{$facility_id}";
+      }
+    }
+    return $facility_url;
+  }
+
+  /**
+   * Update payload array with supplemental status.
+   *
+   * @param array $payload
+   *   Payload array.
+   */
+  protected function addSupplementalStatus(array &$payload) {
+    // If this facility includes a supplemental status.
+    if ($this->facilityNode->hasField('field_supplemental_status')) {
+      $termId = $this->facilityNode->get('field_supplemental_status')->target_id;
+      if (!is_null($termId)) {
+        /** @var \Drupal\taxonomy\Entity\Term $term */
+        $term = $this->entityTypeManager->getStorage('taxonomy_term')->load($termId);
+        $payload['operating_status']['supplemental_status'][] = [
+          'id' => strtoupper($term->get('field_status_id')->value),
+          'label' => $term->get('name')->value,
+        ];
+      }
+    }
+  }
+
+  /**
+   * Update payload array with related system information.
+   *
+   * @param array $payload
+   *   Payload array.
+   */
+  protected function getRelatedSystemInfo(array &$payload) {
+    // If this facility references a system, include system information.
+    if ($this->facilityNode->hasField('field_region_page')) {
+      $systemId = $this->facilityNode->get('field_region_page')->target_id;
+      if (!is_null($systemId)) {
+        /** @var \Drupal\node\NodeInterface $systemNode */
+        $systemNode = $this->entityTypeManager->getStorage('node')->load($systemId);
+        $systemUrl = $systemNode->toUrl()->toString();
+        $payload['system'] = [
+          'name' => $systemNode->get('title')->value,
+          'url' => 'https://www.va.gov' . $systemUrl,
+          'va_health_connect_phone' => $systemNode->get('field_va_health_connect_phone')->value,
+        ];
+      }
+    }
+  }
+
+  /**
+   * Update payload array with overrides for specific systems.
+   *
+   * @param array $payload
+   *   Payload array.
+   */
+  protected function getSystemOverrides(array &$payload) {
+    // If this facility references a system, include system information.
+    if ($this->facilityNode->hasField('field_region_page')) {
+      $systemId = $this->facilityNode->get('field_region_page')->target_id;
+      // System url overrides for Lovell VA.
+      if (($systemId === LovellOps::LOVELL_FEDERAL_SYSTEM_ID) || ($systemId === LovellOps::VA_SYSTEM_ID)) {
+        $payload['core']['facility_url'] = 'https://www.va.gov/lovell-federal-health-care-va/';
+        $payload['system']['url'] = 'https://www.va.gov/lovell-federal-health-care-va/';
+        $payload['system']['covid_url'] = 'https://www.va.gov/lovell-federal-health-care-va/programs/covid-19-vaccines-and-testing/';
+      }
+      // Facility url overrides.
+      $facility_id = $this->facilityNode->hasField('field_facility_locator_api_id') ? $this->facilityNode->get('field_facility_locator_api_id')->value : NULL;
+
+      // Manila VA Clinic - vha_358.  Manila is a one facility system.
+      if ($facility_id === 'vha_358') {
+        $payload['core']['facility_url'] = 'https://www.visn21.va.gov/locations/manila.asp';
+      }
+    }
+  }
+
+  /**
+   * Determines if the entity is such that it is covered by this service.
+   *
+   * @param \Drupal\Core\Entity\EntityInterface $entity
+   *   Entity (usually a node, but not required).
    *
    * @return bool
-   *   TRUE if it is a facility with status info. FALSE otherwise.
+   *   TRUE if a pushable entity, FALSE otherwise.
    */
-  protected function isFacilityWithStatus(NodeInterface $entity) : bool {
-    return in_array($entity->bundle(), $this->facilitiesWithServices);
+  public static function isPushAble(EntityInterface $entity): bool {
+    if (
+      $entity instanceof NodeInterface
+      && FacilityOps::isFacilityWithStatus($entity)
+      && $entity->bundle() !== 'vet_center_cap') {
+      // CAPS do have status but are covered by a different push.
+      return TRUE;
+    }
+    return FALSE;
   }
 
   /**
@@ -182,44 +316,61 @@ class PostFacilityStatus extends PostFacilityBase {
    * Potentially alters the pushed data based on what it evaluates.  This is
    * beyond its concern but can not be separated cleanly.
    *
+   * @param \Drupal\Core\Entity\EntityInterface $entity
+   *   Entity - A node in this case.
+   * @param bool $forcePush
+   *   Force processing of facility status if true.
+   *
    * @return bool
    *   TRUE if should be pushed, FALSE otherwise.
    */
-  protected function shouldPush() {
+  public static function shouldPush(EntityInterface $entity, bool $forcePush = FALSE) {
+    if (!self::isPushable($entity)) {
+      // This is not covered by this service.
+      return FALSE;
+    }
+    else {
+      // If it made it this far it is a node.
+      /**@var \Drupal\node\NodeInterface $nodeFacility */
+      $nodeFacility = $entity;
+    }
+
     // Moderation state of what is being saved.
-    $moderationState = $this->facilityNode->get('moderation_state')->value;
+    $moderationState = $nodeFacility->get('moderation_state')->value;
     $isArchived = ($moderationState === self::STATE_ARCHIVED) ? TRUE : FALSE;
-    $thisRevisionIsPublished = $this->facilityNode->isPublished();
-    $this->setDefaultRevision();
-    $isNew = $this->facilityNode->isNew();
-    $defaultRevisionIsPublished = $this->defaultRevision->isPublished();
-    $statusChanged = $this->changedValue('field_operating_status_facility');
-    $statusInfoChanged = $this->changedValue('field_operating_status_more_info');
-    $somethingChanged = $statusChanged || $statusInfoChanged;
+    $thisRevisionIsPublished = $nodeFacility->isPublished();
+    $defaultRevision = self::getDefaultRevision($nodeFacility);
+    $isNew = $nodeFacility->isNew();
+    $defaultRevisionIsPublished = $defaultRevision->isPublished();
 
     // Case race. First to evaluate to TRUE wins.
     switch (TRUE) {
+      case LovellOps::isLovellTricareSection($nodeFacility):
+        // Node is part of the Lovell-Tricare section, do not push.
+      case $nodeFacility->bundle() === 'vet_center_cap':
+        // Vet Center Caps are handled by a separate push.
+        $push = FALSE;
+        break;
+
+      case $forcePush && $thisRevisionIsPublished:
+        // Forced push from updates to referenced entity.
       case $isNew:
         // A new node, should be pushed to initiate the value.
-      case $thisRevisionIsPublished && $somethingChanged && $moderationState === self::STATE_PUBLISHED:
-        // This revision is published and had a change, should be pushed.
-      case $isArchived && $somethingChanged:
+      case $thisRevisionIsPublished && $moderationState === self::STATE_PUBLISHED:
+        // This revision is published, should be pushed.
+      case $isArchived:
         // This node has been archived, got to push to remove it.
-      case (!$defaultRevisionIsPublished && !$thisRevisionIsPublished && $somethingChanged):
+      case (!$defaultRevisionIsPublished && !$thisRevisionIsPublished):
         // Draft on an unpublished node, should be pushed.
+      case ($thisRevisionIsPublished && !$defaultRevisionIsPublished):
+        // To be the source of truth for urls, we need to push url on newly
+        // published, because we use different urls.
         $push = TRUE;
         break;
 
       case ($defaultRevisionIsPublished && !$thisRevisionIsPublished && $moderationState === self::STATE_DRAFT):
         // Draft revision on published node, should not push, even w/bypass.
         $push = FALSE;
-        break;
-
-      case ($this->shouldBypass()):
-        // Bypass is activated.
-        // If it is on bypass this is a bulk push, which will be the default rev
-        // so there is no risk of a draft status overriding published status.
-        $push = TRUE;
         break;
 
       default:
@@ -232,50 +383,53 @@ class PostFacilityStatus extends PostFacilityBase {
   }
 
   /**
-   * Decides what to use as the previous/default revision and sets it.
-   */
-  protected function setDefaultRevision() : void {
-    $hasOriginal = isset($this->facilityNode->original) && ($this->facilityNode->original instanceof EntityInterface);
-    if ($this->facilityNode->isNew()) {
-      // There is no previous revision but to make comparison easier, set
-      // the current node as the default.
-      $this->defaultRevision = $this->facilityNode;
-    }
-    elseif (($this->facilityNode->get('moderation_state')->value === self::STATE_PUBLISHED || !$this->facilityNode->isPublished()) && $hasOriginal) {
-      // If it has never been published we just want the last save.
-      // If the node is published, loading the default is an exact copy,
-      // because the save already happened. Switch to using original.
-      $this->defaultRevision = $this->facilityNode->original;
-    }
-    else {
-      $this->defaultRevision = $this->entityTypeManager->getStorage('node')->load($this->facilityNode->id());
-    }
-  }
-
-  /**
-   * Checks if the value of the field on the node changed.
+   * Determines if a VAMC system change merits a facility status push.
    *
-   * @param string $field_name
-   *   The machine name of the field to check on.
+   * @param \Drupal\node\NodeInterface $entity
+   *   The node VAMC system node we need to check push status for.
    *
    * @return bool
-   *   TRUE if the value changed.  FALSE otherwise.
+   *   TRUE if should be pushed, FALSE otherwise.
    */
-  protected function changedValue($field_name): bool {
-    $value = $this->facilityNode->get($field_name)->value;
-    $original_value = $this->defaultRevision->get($field_name)->value;
+  protected function shouldPushSystem(NodeInterface $entity) {
+    // If the name of the system changes we should push facility statuses.
+    $moderationState = $entity->get('moderation_state')->value;
+    $thisRevisionIsPublished = $entity->isPublished();
 
-    return $value !== $original_value;
+    $push = FALSE;
+    if ($thisRevisionIsPublished && $moderationState === self::STATE_PUBLISHED) {
+      $push = TRUE;
+    }
+    return $push;
   }
 
   /**
-   * Removes values from anything that should not be kept in state.
+   * Gathers the mental health phone number from the facility.
+   *
+   * @see https://github.com/department-of-veterans-affairs/va.gov-cms/issues/15686
+   *
+   * @return string
+   *   The mental health phone number.
    */
-  protected function nuke() : void {
-    $this->statusToPush = NULL;
-    $this->additionalInfoToPush = NULL;
-    unset($this->defaultRevision);
-    unset($this->facilityNode);
+  protected function getFacilityMentalHealthPhone(): string {
+    $mental_health_phone = $this->getFieldSafe('field_mental_health_phone');
+    return $mental_health_phone;
+  }
+
+  /**
+   * Retrieves a field and returns the value if there is one or empty string.
+   *
+   * @param string $field_name
+   *   The field name to get.
+   *
+   * @return string
+   *   The field value if it exists, empty string otherwise.
+   */
+  protected function getFieldSafe(string $field_name): string {
+    if ($this->facilityNode->hasField($field_name) && (!empty($this->facilityNode->get($field_name)->value))) {
+      $value = $this->facilityNode->get($field_name)->value;
+    }
+    return $value ?? '';
   }
 
 }

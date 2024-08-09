@@ -4,18 +4,19 @@ namespace tests\phpunit\Security;
 
 use Drupal\Core\Url;
 use Drupal\user\UserInterface;
-use weitzman\DrupalTestTraits\ExistingSiteBase;
+use Tests\Support\Classes\VaGovExistingSiteBase;
 
 /**
  * A test to confirm section access permissions.
+ *
+ * @group functional
+ * @group security
+ * @group all
  */
-class SectionAccessTest extends ExistingSiteBase {
+class SectionAccessTest extends VaGovExistingSiteBase {
 
   /**
    * Test method to confirm section access permissions.
-   *
-   * @group edit
-   * @group all
    *
    * @dataProvider sectionDataProvider
    */
@@ -51,14 +52,14 @@ class SectionAccessTest extends ExistingSiteBase {
   public function sectionDataProvider() : \Generator {
     yield 'Content editors may edit nodes in their sections' => [
       'content_editor',
-      ['Veterans Health Administration'],
-      ['Veterans Health Administration'],
+      ['VHA'],
+      ['VHA'],
       TRUE,
     ];
     yield 'Content editors may not edit nodes in other sections' => [
       'content_editor',
-      ['Veterans Health Administration'],
-      ['National Cemetery Administration'],
+      ['VHA'],
+      ['NCA'],
       FALSE,
     ];
   }

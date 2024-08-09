@@ -1,0 +1,13 @@
+services:
+  logger.channel.va_gov_media:
+    parent: logger.channel_base
+    arguments: [ 'va_gov_media' ]
+  va_gov_media.event_subscriber:
+      class: Drupal\va_gov_media\EventSubscriber\MediaEventSubscriber
+      tags:
+        - { name: event_subscriber }
+
+  va_gov_media.route_subscriber:
+    class: Drupal\va_gov_media\EventSubscriber\VaGovMediaAddRouteSubscriber
+    tags:
+      - { name: event_subscriber }

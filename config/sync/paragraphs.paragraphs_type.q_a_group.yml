@@ -6,10 +6,10 @@ dependencies:
     - paragraphs_browser
 third_party_settings:
   paragraphs_browser:
-    image_path: themes/custom/vagovadmin/images/screenshots/q-a-section.jpg
+    image_path: themes/custom/vagovclaro/images/screenshots/q-a-section.jpg
 id: q_a_group
-label: 'Q&A group'
+label: 'Reusable Q&A Group'
 icon_uuid: null
 icon_default: null
-description: 'For content formatted as a series of questions and answers in "FAQ - multiple Q&A" content type. Use this (instead of Rich text) for better accessibility and easy rearranging.'
+description: 'Create a group using stored Q&As in the CMS. Use this for better accessibility and easy rearranging. '
 behavior_plugins: {  }

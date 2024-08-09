@@ -5,9 +5,25 @@ dependencies:
   config:
     - field.field.taxonomy_term.health_care_service_taxonomy.field_also_known_as
     - field.field.taxonomy_term.health_care_service_taxonomy.field_commonly_treated_condition
+    - field.field.taxonomy_term.health_care_service_taxonomy.field_enforce_unique_combo_servi
+    - field.field.taxonomy_term.health_care_service_taxonomy.field_facility_service_descripti
+    - field.field.taxonomy_term.health_care_service_taxonomy.field_facility_service_header
     - field.field.taxonomy_term.health_care_service_taxonomy.field_health_service_api_id
+    - field.field.taxonomy_term.health_care_service_taxonomy.field_online_self_service
     - field.field.taxonomy_term.health_care_service_taxonomy.field_owner
+    - field.field.taxonomy_term.health_care_service_taxonomy.field_regional_service_descripti
+    - field.field.taxonomy_term.health_care_service_taxonomy.field_regional_service_header
     - field.field.taxonomy_term.health_care_service_taxonomy.field_service_type_of_care
+    - field.field.taxonomy_term.health_care_service_taxonomy.field_show_for_vamc_facilities
+    - field.field.taxonomy_term.health_care_service_taxonomy.field_show_for_vba_facilities
+    - field.field.taxonomy_term.health_care_service_taxonomy.field_show_for_vet_centers
+    - field.field.taxonomy_term.health_care_service_taxonomy.field_tricare_description
+    - field.field.taxonomy_term.health_care_service_taxonomy.field_tricare_specific_service
+    - field.field.taxonomy_term.health_care_service_taxonomy.field_vba_com_conditions
+    - field.field.taxonomy_term.health_care_service_taxonomy.field_vba_friendly_name
+    - field.field.taxonomy_term.health_care_service_taxonomy.field_vba_service_descrip
+    - field.field.taxonomy_term.health_care_service_taxonomy.field_vba_service_regions
+    - field.field.taxonomy_term.health_care_service_taxonomy.field_vba_type_of_care
     - field.field.taxonomy_term.health_care_service_taxonomy.field_vet_center_com_conditions
     - field.field.taxonomy_term.health_care_service_taxonomy.field_vet_center_friendly_name
     - field.field.taxonomy_term.health_care_service_taxonomy.field_vet_center_required_servic
@@ -15,8 +31,12 @@ dependencies:
     - field.field.taxonomy_term.health_care_service_taxonomy.field_vet_center_type_of_care
     - field.field.taxonomy_term.health_care_service_taxonomy.field_vha_healthservice_stopcode
     - taxonomy.vocabulary.health_care_service_taxonomy
+    - workflows.workflow.editorial
   module:
+    - allow_only_one
+    - content_moderation
     - field_group
+    - link
     - path
     - text
 third_party_settings:
@@ -24,55 +44,99 @@ third_party_settings:
     group_governance:
       children:
         - field_owner
-      parent_name: ''
-      weight: 8
-      format_type: details_sidebar
-      format_settings:
-        weight: 0
-        required_fields: true
-        id: ''
-        classes: ''
-        open: false
       label: 'Section settings'
       region: hidden
+      parent_name: ''
+      weight: 12
+      format_type: details_sidebar
+      format_settings:
+        classes: ''
+        id: ''
+        open: false
+        required_fields: true
+        weight: 0
     group_vet_center:
       children:
+        - field_show_for_vet_centers
         - field_vet_center_type_of_care
         - field_vet_center_friendly_name
         - field_vet_center_com_conditions
         - field_vet_center_service_descrip
         - field_vet_center_required_servic
+      label: 'Vet Center'
+      region: content
       parent_name: ''
       weight: 5
       format_type: details
-      region: content
       format_settings:
-        description: 'Add content to these fields if you want to "override" how the service is described on Vet Center pages.'
-        open: true
-        required_fields: true
-        id: ''
         classes: ''
         show_empty_fields: false
-      label: 'Vet Center'
+        id: ''
+        open: true
+        description: 'Add content to these fields if you want to "override" how the service is described on Vet Center pages.'
+        required_fields: true
     group_vamc:
       children:
+        - field_show_for_vamc_facilities
         - field_service_type_of_care
-        - field_non_clinical_service
         - field_also_known_as
         - field_commonly_treated_condition
         - description
+        - field_tricare_description
+        - field_tricare_specific_service
+      label: VAMC
+      region: content
       parent_name: ''
       weight: 4
       format_type: details
-      region: content
       format_settings:
-        description: 'These values act as the default values for VHA health services, but can be overridden for Vet Centers, below.'
-        open: true
-        required_fields: true
-        id: ''
         classes: ''
         show_empty_fields: false
-      label: VAMC
+        id: ''
+        open: true
+        description: 'These values act as the default values for VHA health services, but can be overridden for Vet Centers, below.'
+        required_fields: true
+    group_vba:
+      children:
+        - field_show_for_vba_facilities
+        - field_vba_type_of_care
+        - field_vba_friendly_name
+        - field_vba_com_conditions
+        - field_vba_service_descrip
+        - field_regional_service_header
+        - field_regional_service_descripti
+        - field_facility_service_header
+        - field_facility_service_descripti
+        - field_online_self_service
+        - field_vba_service_regions
+      label: VBA
+      region: content
+      parent_name: ''
+      weight: 6
+      format_type: fieldset
+      format_settings:
+        classes: ''
+        show_empty_fields: false
+        id: ''
+        description: ''
+        required_fields: true
+        description_display: after
+    group_workflow:
+      children:
+        - moderation_state
+        - revision_log_message
+      label: 'Editorial workflow'
+      region: content
+      parent_name: ''
+      weight: 9
+      format_type: fieldset
+      format_settings:
+        classes: ''
+        show_empty_fields: true
+        id: sections
+        description: ''
+        required_fields: true
+        description_display: after
 id: taxonomy_term.health_care_service_taxonomy.default
 targetEntityType: taxonomy_term
 bundle: health_care_service_taxonomy
@@ -80,86 +144,215 @@ mode: default
 content:
   description:
     type: text_textarea
-    weight: 11
+    weight: 18
     region: content
     settings:
-      placeholder: ''
       rows: 5
+      placeholder: ''
     third_party_settings: {  }
   field_also_known_as:
-    weight: 9
+    type: string_textfield
+    weight: 16
+    region: content
     settings:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-    type: string_textfield
-    region: content
   field_commonly_treated_condition:
-    weight: 10
+    type: string_textfield
+    weight: 17
+    region: content
     settings:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-    type: string_textfield
-    region: content
-  field_health_service_api_id:
+  field_enforce_unique_combo_servi:
+    type: allow_only_one_widget
     weight: 1
+    region: content
+    settings:
+      size: 1
+    third_party_settings: {  }
+  field_facility_service_descripti:
+    type: string_textfield
+    weight: 15
+    region: content
     settings:
       size: 60
       placeholder: ''
     third_party_settings: {  }
+  field_facility_service_header:
     type: string_textfield
+    weight: 14
     region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  field_health_service_api_id:
+    type: string_textfield
+    weight: 2
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  field_online_self_service:
+    type: link_default
+    weight: 16
+    region: content
+    settings:
+      placeholder_url: ''
+      placeholder_title: ''
+    third_party_settings: {  }
+  field_regional_service_descripti:
+    type: string_textfield
+    weight: 13
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  field_regional_service_header:
+    type: string_textfield
+    weight: 12
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
   field_service_type_of_care:
-    weight: 7
+    type: options_select
+    weight: 15
+    region: content
     settings: {  }
     third_party_settings: {  }
-    type: options_select
+  field_show_for_vamc_facilities:
+    type: boolean_checkbox
+    weight: 14
     region: content
-  field_vet_center_com_conditions:
-    weight: 10
-    settings:
-      size: 60
-      placeholder: ''
-    third_party_settings: {  }
-    type: string_textfield
-    region: content
-  field_vet_center_friendly_name:
-    weight: 9
-    settings:
-      size: 60
-      placeholder: ''
-    third_party_settings: {  }
-    type: string_textfield
-    region: content
-  field_vet_center_required_servic:
-    weight: 12
     settings:
       display_label: true
     third_party_settings: {  }
+  field_show_for_vba_facilities:
     type: boolean_checkbox
+    weight: 7
     region: content
-  field_vet_center_service_descrip:
-    weight: 11
+    settings:
+      display_label: true
+    third_party_settings: {  }
+  field_show_for_vet_centers:
+    type: boolean_checkbox
+    weight: 15
+    region: content
+    settings:
+      display_label: true
+    third_party_settings: {  }
+  field_tricare_description:
+    type: string_textarea
+    weight: 19
+    region: content
     settings:
       rows: 5
       placeholder: ''
     third_party_settings: {  }
-    type: string_textarea
+  field_tricare_specific_service:
+    type: boolean_checkbox
+    weight: 20
     region: content
-  field_vet_center_type_of_care:
+    settings:
+      display_label: true
+    third_party_settings: {  }
+  field_vba_com_conditions:
+    type: string_textfield
+    weight: 10
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  field_vba_friendly_name:
+    type: string_textfield
+    weight: 9
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  field_vba_service_descrip:
+    type: string_textarea
+    weight: 11
+    region: content
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
+  field_vba_service_regions:
+    type: entity_reference_autocomplete
+    weight: 17
+    region: content
+    settings:
+      match_operator: CONTAINS
+      match_limit: 10
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  field_vba_type_of_care:
+    type: options_select
     weight: 8
+    region: content
     settings: {  }
     third_party_settings: {  }
-    type: options_select
+  field_vet_center_com_conditions:
+    type: string_textfield
+    weight: 18
     region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  field_vet_center_friendly_name:
+    type: string_textfield
+    weight: 17
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  field_vet_center_required_servic:
+    type: boolean_checkbox
+    weight: 20
+    region: content
+    settings:
+      display_label: true
+    third_party_settings: {  }
+  field_vet_center_service_descrip:
+    type: string_textarea
+    weight: 19
+    region: content
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
+  field_vet_center_type_of_care:
+    type: options_select
+    weight: 16
+    region: content
+    settings: {  }
+    third_party_settings: {  }
   field_vha_healthservice_stopcode:
-    weight: 2
+    type: number
+    weight: 3
+    region: content
     settings:
       placeholder: ''
     third_party_settings: {  }
-    type: number
+  moderation_state:
+    type: moderation_state_default
+    weight: 8
     region: content
+    settings: {  }
+    third_party_settings: {  }
   name:
     type: string_textfield
     weight: 0
@@ -170,10 +363,11 @@ content:
     third_party_settings: {  }
   path:
     type: path
-    weight: 6
+    weight: 7
     region: content
     settings: {  }
     third_party_settings: {  }
 hidden:
   field_owner: true
+  langcode: true
   status: true

@@ -15,9 +15,17 @@ targetEntityType: paragraph
 bundle: q_a_section
 mode: default
 content:
+  field_accordion_display:
+    type: boolean_checkbox
+    weight: 2
+    region: content
+    settings:
+      display_label: true
+    third_party_settings: {  }
   field_questions:
     type: paragraphs
-    weight: 2
+    weight: 3
+    region: content
     settings:
       title: 'Question & Answer'
       title_plural: 'Questions & Answers'
@@ -33,25 +41,23 @@ content:
         collapse_edit_all: collapse_edit_all
         duplicate: '0'
     third_party_settings: {  }
-    region: content
   field_section_header:
+    type: string_textfield
     weight: 0
+    region: content
     settings:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-    type: string_textfield
-    region: content
   field_section_intro:
+    type: string_textarea
     weight: 1
+    region: content
     settings:
       rows: 5
       placeholder: ''
     third_party_settings: {  }
-    type: string_textarea
-    region: content
 hidden:
   created: true
-  field_accordion_display: true
   status: true
   uid: true

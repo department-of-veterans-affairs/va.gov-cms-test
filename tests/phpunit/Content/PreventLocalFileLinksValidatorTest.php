@@ -2,21 +2,21 @@
 
 namespace tests\phpunit\Content;
 
-use Drupal\Tests\UnitTestCase;
 use Drupal\va_gov_backend\Plugin\Validation\Constraint\PreventLocalFileLinks;
 use Drupal\va_gov_backend\Plugin\Validation\Constraint\PreventLocalFileLinksValidator;
-use Traits\ValidatorTestTrait;
+use Tests\Support\Classes\VaGovUnitTestBase;
+use Tests\Support\Traits\ValidatorTestTrait;
 
 /**
  * A test to confirm the proper functioning of this validator.
  *
- * @group functional
+ * @group unit
  * @group all
  * @group validation
  *
  * @coversDefaultClass \Drupal\va_gov_backend\Plugin\Validation\Constraint\PreventLocalFileLinksValidator
  */
-class PreventLocalFileLinksValidatorTest extends UnitTestCase {
+class PreventLocalFileLinksValidatorTest extends VaGovUnitTestBase {
 
   use ValidatorTestTrait;
 
@@ -28,9 +28,7 @@ class PreventLocalFileLinksValidatorTest extends UnitTestCase {
    * @param string $testString
    *   Some test string to attempt to validate.
    *
-   * @covers validate
-   * @covers validateText
-   * @covers validateHtml
+   * @covers ::validate
    * @dataProvider validateDataProvider
    */
   public function testValidate(bool $willValidate, string $testString) {

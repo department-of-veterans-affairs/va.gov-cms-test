@@ -18,8 +18,6 @@ the **CMS** build process:
   This tool automatically installs executable versions of Node and NPM at the specific version we set in `composer.json`.
 - Add to `composer.json`'s "scripts" section (post-install-cmd), to kick off "yarn build" and "npm build" commands after `composer install`.
 - Add Composer commands (See `composer.json`'s "scripts" section) to faciitate building and rebuilding the **WEB** project.
-- To confirm this entire stack is working, the Behat test suite includes editing a CMS node, running the web rebuild,
-  then confirms edited content is visible.
 
 ### Developing WEB and CMS Together
 
@@ -29,12 +27,12 @@ CMS developers can change the version of the WEB project they want with standard
 
 ```bash
 # Use a specific SHA
-lando composer require va-gov/web:dev-master#7b4c87257cfc9b5e684c4ba7ddca283efbc4329d
+ddev composer require va-gov/web:dev-master#7b4c87257cfc9b5e684c4ba7ddca283efbc4329d
 # Use a specific branch
-lando composer require va-gov/web:dev-branch_name
+ddev composer require va-gov/web:dev-branch_name
 ```
 
-Then followup with a `lando composer update --lock` and `lando composer va:web:build` will build the front-end with the new hash.
+Then followup with a `ddev composer update --lock` and `ddev composer va:web:build` will build the front-end with the new hash.
 
 #### Rebuild WEB from a local CMS
 
@@ -46,9 +44,9 @@ composer va:web:build
 
 This command will regenerate the HTML and CSS for the entire site, and will put it into `./docroot/static`.
 
-If using lando, you can load it using http://va-gov-cms.lndo.site/static.
+If using ddev, you can load it using https://va-gov-cms.ddev.site/static
 
-NOTE: We are working on a method to load this content from a root url, like http://va-gov-web.lndo.site
+NOTE: We are working on a method to load this content from a root url, like http://va-gov-web.ddev.site
 
 #### Rebuild WEB from a CMS-CI Environment
 

@@ -1,0 +1,9 @@
+va_gov_api.new_banner_alerts:
+  path: '/api/v1/banner-alerts'
+  defaults:
+    _title: 'Banner Alerts'
+    _controller: '\Drupal\va_gov_api\Controller\BannerAlertsController::bannerAlertsByPath'
+  requirements:
+    _permission: 'access content'
+  methods:
+    - GET

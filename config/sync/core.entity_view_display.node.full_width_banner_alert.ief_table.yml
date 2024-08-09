@@ -8,11 +8,14 @@ dependencies:
     - field.field.node.full_width_banner_alert.field_alert_dismissable
     - field.field.node.full_width_banner_alert.field_alert_email_updates_button
     - field.field.node.full_width_banner_alert.field_alert_find_facilities_cta
+    - field.field.node.full_width_banner_alert.field_alert_inheritance_subpages
     - field.field.node.full_width_banner_alert.field_alert_operating_status_cta
     - field.field.node.full_width_banner_alert.field_alert_type
     - field.field.node.full_width_banner_alert.field_banner_alert_situationinfo
     - field.field.node.full_width_banner_alert.field_banner_alert_vamcs
     - field.field.node.full_width_banner_alert.field_body
+    - field.field.node.full_width_banner_alert.field_enforce_unique_combo
+    - field.field.node.full_width_banner_alert.field_last_saved_by_an_editor
     - field.field.node.full_width_banner_alert.field_operating_status_sendemail
     - field.field.node.full_width_banner_alert.field_situation_updates
     - node.type.full_width_banner_alert
@@ -27,50 +30,51 @@ mode: ief_table
 content:
   field_administration:
     type: entity_reference_label
-    weight: 6
-    region: content
     label: hidden
     settings:
       link: true
     third_party_settings: {  }
+    weight: 6
+    region: content
   field_alert_dismissable:
-    weight: 2
+    type: boolean
     label: hidden
     settings:
       format: custom
-      format_custom_true: 'Yes'
       format_custom_false: 'No'
+      format_custom_true: 'Yes'
     third_party_settings: {  }
-    type: boolean
+    weight: 2
     region: content
   field_alert_type:
-    weight: 0
+    type: list_default
     label: hidden
     settings: {  }
     third_party_settings: {  }
-    type: list_default
+    weight: 0
     region: content
   field_banner_alert_vamcs:
     type: entity_reference_label
-    weight: 5
-    region: content
     label: hidden
     settings:
       link: true
     third_party_settings: {  }
+    weight: 5
+    region: content
   field_situation_updates:
     type: paragraph_summary
-    weight: 4
-    region: content
     label: hidden
     settings: {  }
     third_party_settings: {  }
-  label:
-    weight: 1
+    weight: 4
     region: content
+  label:
     settings: {  }
     third_party_settings: {  }
+    weight: 1
+    region: content
 hidden:
+  breadcrumbs: true
   content_moderation_control: true
   field_administration: true
   field_alert_email_updates_button: true
@@ -79,7 +83,10 @@ hidden:
   field_alert_operating_status_cta: true
   field_banner_alert_situationinfo: true
   field_body: true
+  field_enforce_unique_combo: true
+  field_last_saved_by_an_editor: true
   field_operating_status_sendemail: true
+  langcode: true
   links: true
   search_api_excerpt: true
   status: true

@@ -1,6 +1,6 @@
 ## Description
 
-Relates to #_issueid_.
+Relates to #_issueid_. (or closes?)
 
 ## Testing done
 
@@ -10,13 +10,19 @@ Relates to #_issueid_.
 
 ## QA steps
 
+What needs to be checked to prove this works?
+What needs to be checked to prove it didn't break any related things?
+What variations of circumstances (users, actions, values) need to be checked?
+
 As user _uid_ with _user_role_
 1. Do this
-1. Then that
-1. Then validate Acceptance Criteria from issue
-- [ ] This
-- [ ] That
-- [ ] The other thing
+   - [ ] Validate that
+2. Then
+   - [ ] Validate that
+3. Then validate Acceptance Criteria from issue
+   - [ ] a
+   - [ ] b
+   - [ ] c
 
 ### Definition of Done
 
@@ -26,11 +32,16 @@ As user _uid_ with _user_role_
 - [ ] Code Quality Tests have passed.
 - [ ] Acceptance Criteria in related issue are met.
 - [ ] Manual Code Review Approved.
+- [ ] If there are field changes, front end output has been thoroughly checked.
 
 ### Select Team for PR review
 
-- [ ] `Platform CMS team`
-- [ ] `Sitewide CMS Team`
+- [ ] `CMS Team`
+- [ ] `Public websites`
+- [ ] `Facilities`
+- [ ] `User support`
+- [ ] `Accelerated Publishing`
+
 
 ### Is this PR blocked by another PR?
 
@@ -40,12 +51,12 @@ As user _uid_ with _user_role_
 
 - [ ] `Needs PO review`
 
-### CMS user-facing annoucement
+### CMS user-facing announcement
 
 Is an announcement needed to let editors know of this change?
 - [ ] Yes, and it's written in issue ____ and queued for publication.
-  - [ ] Merge and ping @ rachel-kauff so she's ready to publish after deployment
+  - [ ] Merge and ping the UX writer so they are ready to publish after deployment
 - [ ] Yes, but it hasn't yet been written
-  - [ ] Don't merge yet -- ping @ rachel-kauff to prompt her to write and queue content
+  - [ ] Don't merge yet -- ping the UX writer to write and queue content
 - [ ] No announcement is needed for this code change.
   - [ ] Merge & carry on unburdened by announcements

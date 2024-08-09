@@ -1,0 +1,13 @@
+@import 'tokens/variables';
+@import 'tokens/typography';
+@import 'tokens/mixins';
+@import '../../../design-system/components/tokens/variables';
+
+.ck-editor__editable {
+  background: #fff;
+  color: #323a45;
+  font-family: 'Source Sans Pro', sans-serif;
+  font-size: 15px;
+
+  @include va-basic-styling;
+}

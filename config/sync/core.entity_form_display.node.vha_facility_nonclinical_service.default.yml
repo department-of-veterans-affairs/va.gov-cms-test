@@ -4,11 +4,16 @@ status: true
 dependencies:
   config:
     - field.field.node.vha_facility_nonclinical_service.field_administration
+    - field.field.node.vha_facility_nonclinical_service.field_enforce_unique_combo_offic
     - field.field.node.vha_facility_nonclinical_service.field_facility_location
+    - field.field.node.vha_facility_nonclinical_service.field_last_saved_by_an_editor
     - field.field.node.vha_facility_nonclinical_service.field_service_location
     - field.field.node.vha_facility_nonclinical_service.field_service_name_and_descripti
+    - field.field.node.vha_facility_nonclinical_service.field_vamc_nonclin_appt_default
     - node.type.vha_facility_nonclinical_service
+    - workflows.workflow.editorial
   module:
+    - allow_only_one
     - content_moderation
     - field_group
     - limited_field_widgets
@@ -19,38 +24,68 @@ third_party_settings:
     group_section:
       children:
         - field_administration
-      parent_name: ''
-      weight: 6
-      format_type: details_sidebar
+      label: Section
       region: content
+      parent_name: ''
+      weight: 7
+      format_type: details_sidebar
       format_settings:
-        description: ''
-        open: true
-        weight: 0
-        required_fields: true
-        id: ''
         classes: ''
         show_empty_fields: false
-      label: Section
+        id: ''
+        open: true
+        description: ''
+        required_fields: true
+        weight: 0
+    group_editorial_workflow:
+      children:
+        - moderation_state
+        - revision_log
+      label: 'Editorial workflow'
+      region: content
+      parent_name: ''
+      weight: 5
+      format_type: fieldset
+      format_settings:
+        classes: ''
+        show_empty_fields: false
+        id: ''
+        description: ''
+        required_fields: true
 id: node.vha_facility_nonclinical_service.default
 targetEntityType: node
 bundle: vha_facility_nonclinical_service
 mode: default
 content:
   field_administration:
+    type: options_select
     weight: 7
+    region: content
     settings: {  }
     third_party_settings: {  }
-    type: options_select
+  field_enforce_unique_combo_offic:
+    type: allow_only_one_widget
+    weight: 1
     region: content
+    settings:
+      size: 1
+    third_party_settings: {  }
   field_facility_location:
-    weight: 2
+    type: options_select
+    weight: 3
+    region: content
     settings: {  }
     third_party_settings: {  }
-    type: options_select
+  field_last_saved_by_an_editor:
+    type: datetime_timestamp
+    weight: 8
     region: content
+    settings: {  }
+    third_party_settings: {  }
   field_service_location:
-    weight: 3
+    type: paragraphs
+    weight: 4
+    region: content
     settings:
       title: 'Service location'
       title_plural: 'Service Locations'
@@ -58,7 +93,7 @@ content:
       closed_mode: summary
       autocollapse: none
       closed_mode_threshold: 0
-      add_mode: select
+      add_mode: button
       form_display_mode: default
       default_paragraph_type: service_location
       features:
@@ -68,23 +103,21 @@ content:
     third_party_settings:
       limited_field_widgets:
         limit_values: '0'
-    type: paragraphs
-    region: content
   field_service_name_and_descripti:
-    weight: 1
+    type: options_select
+    weight: 2
+    region: content
     settings: {  }
     third_party_settings: {  }
-    type: options_select
-    region: content
   moderation_state:
     type: moderation_state_default
-    weight: 4
-    settings: {  }
+    weight: 5
     region: content
+    settings: {  }
     third_party_settings: {  }
   path:
     type: path
-    weight: 5
+    weight: 6
     region: content
     settings: {  }
     third_party_settings: {  }
@@ -98,6 +131,8 @@ content:
     third_party_settings: {  }
 hidden:
   created: true
+  field_vamc_nonclin_appt_default: true
+  langcode: true
   promote: true
   status: true
   sticky: true

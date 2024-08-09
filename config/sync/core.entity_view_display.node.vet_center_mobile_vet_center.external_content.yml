@@ -7,11 +7,13 @@ dependencies:
     - field.field.node.vet_center_mobile_vet_center.field_address
     - field.field.node.vet_center_mobile_vet_center.field_administration
     - field.field.node.vet_center_mobile_vet_center.field_facility_locator_api_id
+    - field.field.node.vet_center_mobile_vet_center.field_last_saved_by_an_editor
     - field.field.node.vet_center_mobile_vet_center.field_media
     - field.field.node.vet_center_mobile_vet_center.field_office
     - field.field.node.vet_center_mobile_vet_center.field_office_hours
     - field.field.node.vet_center_mobile_vet_center.field_phone_number
     - field.field.node.vet_center_mobile_vet_center.field_table_of_contents
+    - field.field.node.vet_center_mobile_vet_center.field_timezone
     - node.type.vet_center_mobile_vet_center
   module:
     - address
@@ -27,10 +29,11 @@ third_party_settings:
         - field_address
         - field_phone_number
         - field_office_hours
+      label: 'Location Information'
       parent_name: ''
+      region: content
       weight: 0
       format_type: tooltip
-      region: content
       format_settings:
         show_empty_fields: 0
         id: ''
@@ -43,36 +46,38 @@ third_party_settings:
         tooltip_description: "Why can’t I edit this?\r\nThis content is automatically populated from centralized databases, and helps maintain consistent information across all of VA.gov."
         open: false
         required_fields: false
-      label: 'Location Information'
 id: node.vet_center_mobile_vet_center.external_content
 targetEntityType: node
 bundle: vet_center_mobile_vet_center
 mode: external_content
 content:
   field_address:
-    weight: 4
+    type: address_default
     label: above
     settings: {  }
     third_party_settings: {  }
-    type: address_default
+    weight: 4
     region: content
   field_facility_locator_api_id:
-    weight: 3
+    type: string
     label: above
     settings:
       link_to_entity: false
     third_party_settings: {  }
-    type: string
+    weight: 3
     region: content
   field_office_hours:
-    weight: 6
+    type: office_hours
     label: above
     settings:
-      show_closed: all
-      office_hours_first_day: ''
       day_format: short
       time_format: g
-      closed_format: ''
+      compress: false
+      grouped: false
+      show_empty: true
+      show_closed: all
+      closed_format: Closed
+      all_day_format: 'All day open'
       separator:
         days: '<br />'
         grouped_days: ' - '
@@ -83,27 +88,43 @@ content:
         position: ''
         open_text: 'Currently open!'
         closed_text: 'Currently closed'
-      compress: false
-      grouped: false
+      exceptions:
+        title: 'Exception hours'
+        replace_exceptions: false
+        restrict_exceptions_to_num_days: 7
+        date_format: long
+        all_day_format: 'All day open'
+      timezone_field: ''
+      office_hours_first_day: ''
       schema:
         enabled: false
-      timezone_field: ''
     third_party_settings: {  }
-    type: office_hours
+    weight: 6
     region: content
   field_phone_number:
-    weight: 5
+    type: telephone_link
     label: above
     settings:
       title: ''
     third_party_settings: {  }
-    type: telephone_link
+    weight: 5
     region: content
 hidden:
+  breadcrumbs: true
   content_moderation_control: true
   field_administration: true
+  field_last_saved_by_an_editor: true
   field_media: true
   field_office: true
   field_table_of_contents: true
+  field_timezone: true
+  flag_awaiting_csv: true
+  flag_awaiting_editor: true
+  flag_awaiting_redirect: true
+  flag_changed_name: true
+  flag_changed_title: true
+  flag_new: true
+  flag_removed_from_source: true
+  langcode: true
   links: true
   search_api_excerpt: true

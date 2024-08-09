@@ -1,5 +1,5 @@
-// This file is called from ansible/deployment/config/jenkins-vetsgov/seed_job.groovy
-// and is used in the http://jenkins.vfs.va.gov/job/testing/job/cms-test job that
+// This file is sourced from ansible/deployment/config/jenkins-vetsgov/seed_job.groovy
+// and is used in the http://jenkins.vfs.va.gov/job/testing/job/cms job that
 // auto-triggers deploys to DEV & STAGING on commit and which is triggered
 // by a webhook.
 
@@ -37,37 +37,19 @@ pipeline {
           commit = sh(returnStdout: true, script: "git rev-parse HEAD").trim()
         }
 
-        build job: "builds/${params.app}", parameters: [
-          booleanParam(name: 'release', value: false),
-          booleanParam(name: 'notify_slack', value: true),
-          stringParam(name: 'ref', value: commit),
-          booleanParam(name: 'force_rebuild', value: false)
-        ], wait: true
-      }
-    }
-
-    stage('Deploy to dev') {
-
-      when {
-        allOf {
-          expression { return !params.SKIP_DEPLOY }
-          expression { return !shouldBail() }
+        retry(3){
+          build job: "builds/${params.app}", parameters: [
+            booleanParam(name: 'release', value: false),
+            booleanParam(name: 'notify_slack', value: true),
+            stringParam(name: 'slack_channel', value: "${params.slack_channel}"),
+            stringParam(name: 'ref', value: commit),
+            booleanParam(name: 'force_rebuild', value: true)
+          ], wait: true
         }
       }
-
-      steps {
-        sh 'echo SUCCESS, we are in DEV step'
-        build job: "deploys/${params.app}-vagov-dev", parameters: [
-          stringParam(name: 'app', value: params.app),
-          booleanParam(name: 'notify_slack', value: true),
-          stringParam(name: 'ref', value: commit),
-          booleanParam(name: 'migration_status', value: false)
-        ] , wait: false
-      }
     }
 
-    stage('Deploy to staging') {
-
+    stage('Deploy to STAGING') {
       when {
         allOf {
           expression { return !params.SKIP_DEPLOY }

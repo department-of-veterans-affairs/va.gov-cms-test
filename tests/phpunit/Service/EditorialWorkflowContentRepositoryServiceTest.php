@@ -3,12 +3,15 @@
 namespace tests\phpunit\Service;
 
 use Drupal\va_gov_workflow_assignments\Service\EditorialWorkflowContentRepository;
-use weitzman\DrupalTestTraits\ExistingSiteBase;
+use Tests\Support\Classes\VaGovExistingSiteBase;
 
 /**
  * Test the EditorialWorkflowContentRepository service.
+ *
+ * @group functional
+ * @group all
  */
-class EditorialWorkflowContentRepositoryServiceTest extends ExistingSiteBase {
+class EditorialWorkflowContentRepositoryServiceTest extends VaGovExistingSiteBase {
 
   /**
    * The tested EditorialWorkflowContentRepository service.
@@ -20,16 +23,13 @@ class EditorialWorkflowContentRepositoryServiceTest extends ExistingSiteBase {
   /**
    * {@inheritdoc}
    */
-  public function setUp() {
+  public function setUp() : void {
     parent::setUp();
     $this->editorialWorkflowContentRepository = new EditorialWorkflowContentRepository(\Drupal::database());
   }
 
   /**
    * Verify getLatestArchivedRevisionId method.
-   *
-   * @group functional
-   * @group all
    */
   public function testGetLatestArchivedRevisionId() {
     $author = $this->createUser();
@@ -47,9 +47,6 @@ class EditorialWorkflowContentRepositoryServiceTest extends ExistingSiteBase {
 
   /**
    * Verify getLatestPublishedRevisionId method.
-   *
-   * @group functional
-   * @group all
    */
   public function testGetLatestPublishedRevisionId() {
     $author = $this->createUser();

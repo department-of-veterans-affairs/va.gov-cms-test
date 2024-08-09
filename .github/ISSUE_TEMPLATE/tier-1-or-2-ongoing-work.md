@@ -20,10 +20,3 @@ Tier 2 expectations here: https://docs.google.com/document/d/15oe0wtGI_MdaScYpjJ
 ### Table to help track issues and approximate time spent
 | Date | Issue | Resolution | Time Spent |
 | -- | -- | -- | -- |
-
-### CMS Team
-
-Please leave only the team that will do this work selected. If you're not sure, it's fine to leave both selected.
-
-- [x] `Platform CMS Team`
-- [x] `Sitewide CMS Team`

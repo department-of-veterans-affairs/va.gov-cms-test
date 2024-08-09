@@ -1,0 +1,34 @@
+.region-content #block-vagovadmin-content .layout-region-node-main {
+  overflow: visible;
+}
+
+tr.ief-row-form .description.ief-service-type {
+  color: #595959;
+  font-size: 0.95em;
+  font-weight: 400;
+  margin: 0.2em 0 0;
+}
+
+.empty-display-none {
+  display: none;
+}
+
+.not-empty-display-block {
+  display: block;
+}
+
+.health_service_text_container.tooltip-layout {
+  color: #595959;
+  margin-top: 10px;
+  padding-top: 10px;
+}
+
+.services-general-description {
+  font-weight: bold;
+  margin-bottom: 0;
+  margin-top: 2em;
+}
+
+.no-content {
+  display: none;
+}

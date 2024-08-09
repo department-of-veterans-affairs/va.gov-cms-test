@@ -3,8 +3,10 @@
  */
 
 ((Drupal) => {
+  let myFacility = "";
   // Grab our fields and options.
   const adminField = document.getElementById("edit-field-administration");
+
   const facilityFieldOptions = document.querySelectorAll(
     "#edit-field-facility-location option"
   );
@@ -15,6 +17,7 @@
   const systemField = document.getElementById(
     "edit-field-regional-health-service"
   );
+
   const winnower = () => {
     const pathType = drupalSettings.path.currentPath.split("/")[1];
     // Set our selects back to "Select a value." on add forms.
@@ -33,32 +36,35 @@
       systemField.selectedIndex = "_none";
     }
 
-    // Get our base match text string.
     const adminFieldText = adminField.options[adminField.selectedIndex].text;
     // Get our search string from the field text.
     const adminMatcher = adminFieldText.replace(/(^-+)/g, "");
-    // Winnow facility field options that don't contain adminMatcher.
-    facilityFieldOptions.forEach((i) => {
-      // Apply reset everytime we fire.
-      i.classList.remove("hidden-option");
-      if (!i.text.includes(adminMatcher)) {
+
+    // Hide all options and only show options matching field text.
+    function hideSeekShow(domElement, textMatch) {
+      domElement.forEach((i) => {
         i.classList.add("hidden-option");
-      }
-    });
-    // Winnow system field options that don't contain adminMatcher.
-    systemFieldOptions.forEach((i) => {
-      // Apply reset every time we fire.
-      i.classList.remove("hidden-option");
-      if (!i.text.includes(adminMatcher)) {
-        i.classList.add("hidden-option");
-      }
-    });
+        if (i.text.includes(textMatch)) {
+          i.classList.remove("hidden-option");
+        }
+      });
+    }
+
+    hideSeekShow(facilityFieldOptions, adminMatcher);
+    hideSeekShow(systemFieldOptions, adminMatcher);
   };
 
   Drupal.behaviors.vaGovLimitServiceOptions = {
     attach() {
-      winnower();
+      if (myFacility === "" || window.onload) {
+        winnower();
+      }
       adminField.addEventListener("change", winnower);
+      if (facilityField !== null) {
+        facilityField.addEventListener("change", function setText() {
+          myFacility = facilityField.options[facilityField.selectedIndex].text;
+        });
+      }
     },
   };
 })(Drupal);

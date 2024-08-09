@@ -8,11 +8,6 @@ dependencies:
   module:
     - allowed_formats
     - text
-third_party_settings:
-  allowed_formats:
-    rich_text_limited: rich_text_limited
-    rich_text: '0'
-    plain_text: '0'
 id: node.banner.body
 field_name: body
 entity_type: node
@@ -20,10 +15,12 @@ bundle: banner
 label: Body
 description: ''
 required: true
-translatable: true
+translatable: false
 default_value: {  }
 default_value_callback: ''
 settings:
   display_summary: true
   required_summary: false
+  allowed_formats:
+    - rich_text_limited
 field_type: text_with_summary

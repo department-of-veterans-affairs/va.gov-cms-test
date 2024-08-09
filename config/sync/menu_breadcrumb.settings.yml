@@ -1,13 +1,18 @@
+_core:
+  default_config_hash: MWtaH6iqiztF4V37kZZSpw-NZBbZijdlO_xMPIUCibY
 determine_menu: true
 disable_admin_page: true
 append_current_page: true
 current_page_as_link: false
+stop_on_first_match: false
 append_member_page: false
 member_page_as_link: false
 remove_home: false
 add_home: true
-home_as_site_name: false
+front_title: 0
 exclude_empty_url: false
+exclude_disabled_menu_items: false
+derived_active_trail: true
 menu_breadcrumb_menus:
   root-benefits-hub:
     enabled: 1
@@ -59,7 +64,17 @@ menu_breadcrumb_menus:
     weight: -1
     taxattach: 0
     langhandle: 0
+  va-saginaw-health-care:
+    enabled: 1
+    weight: 0
+    taxattach: 0
+    langhandle: 0
   va-roseburg-health-care:
+    enabled: 1
+    weight: 0
+    taxattach: 0
+    langhandle: 0
+  va-indiana-health-care:
     enabled: 1
     weight: 0
     taxattach: 0
@@ -74,7 +89,7 @@ menu_breadcrumb_menus:
     weight: 0
     taxattach: 0
     langhandle: 0
-  va-northern-indiana-health-care:
+  va-iron-mountain-health-care:
     enabled: 1
     weight: 0
     taxattach: 0
@@ -84,27 +99,7 @@ menu_breadcrumb_menus:
     weight: 0
     taxattach: 0
     langhandle: 0
-  va-iron-mountain-health-care:
-    enabled: 1
-    weight: 0
-    taxattach: 0
-    langhandle: 0
-  va-kansas-city-health-care:
-    enabled: 1
-    weight: 0
-    taxattach: 0
-    langhandle: 0
-  va-indiana-health-care:
-    enabled: 1
-    weight: 0
-    taxattach: 0
-    langhandle: 0
-  va-san-diego-health-care:
-    enabled: 1
-    weight: 0
-    taxattach: 0
-    langhandle: 0
-  va-saginaw-health-care:
+  va-detroit-health-care:
     enabled: 1
     weight: 0
     taxattach: 0
@@ -119,7 +114,7 @@ menu_breadcrumb_menus:
     weight: 0
     taxattach: 0
     langhandle: 0
-  va-puget-sound-health-care:
+  va-san-diego-health-care:
     enabled: 1
     weight: 0
     taxattach: 0
@@ -129,7 +124,7 @@ menu_breadcrumb_menus:
     weight: 0
     taxattach: 0
     langhandle: 0
-  va-detroit-health-care:
+  va-leavenworth-health-care:
     enabled: 1
     weight: 0
     taxattach: 0
@@ -139,7 +134,7 @@ menu_breadcrumb_menus:
     weight: 0
     taxattach: 0
     langhandle: 0
-  va-orlando-health-care:
+  va-columbia-south-carolina-healt:
     enabled: 1
     weight: 0
     taxattach: 0
@@ -149,17 +144,27 @@ menu_breadcrumb_menus:
     weight: 0
     taxattach: 0
     langhandle: 0
-  va-leavenworth-health-care:
+  va-orlando-health-care:
     enabled: 1
     weight: 0
     taxattach: 0
     langhandle: 0
-  va-lovell-fhcc-health-care:
+  va-cincinnati-health-care:
     enabled: 1
     weight: 0
     taxattach: 0
     langhandle: 0
-  va-lexington-health-care:
+  va-kansas-city-health-care:
+    enabled: 1
+    weight: 0
+    taxattach: 0
+    langhandle: 0
+  va-louisville-health-care:
+    enabled: 1
+    weight: 0
+    taxattach: 0
+    langhandle: 0
+  va-puget-sound-health-care:
     enabled: 1
     weight: 0
     taxattach: 0
@@ -209,7 +214,7 @@ menu_breadcrumb_menus:
     weight: 0
     taxattach: 0
     langhandle: 0
-  va-loma-linda-health-care:
+  va-lexington-health-care:
     enabled: 1
     weight: 0
     taxattach: 0
@@ -239,12 +244,7 @@ menu_breadcrumb_menus:
     weight: 0
     taxattach: 0
     langhandle: 0
-  va-chillicothe-health-care:
-    enabled: 1
-    weight: 0
-    taxattach: 0
-    langhandle: 0
-  va-louisville-health-care:
+  va-chicago-health-care:
     enabled: 1
     weight: 0
     taxattach: 0
@@ -254,52 +254,27 @@ menu_breadcrumb_menus:
     weight: 0
     taxattach: 0
     langhandle: 0
-  va-cincinnati-health-care:
+  va-loma-linda-health-care:
     enabled: 1
     weight: 0
     taxattach: 0
     langhandle: 0
-  va-columbia-south-carolina-healt:
+  va-chillicothe-health-care:
     enabled: 1
     weight: 0
     taxattach: 0
     langhandle: 0
-  va-chicago-health-care:
+  va-northern-indiana-health-care:
     enabled: 1
     weight: 0
     taxattach: 0
     langhandle: 0
-  va-texas-valley-health-care:
+  va-charleston-health-care:
     enabled: 1
     weight: 0
     taxattach: 0
     langhandle: 0
-  va-birmingham-health-care:
-    enabled: 1
-    weight: 0
-    taxattach: 0
-    langhandle: 0
-  va-bay-pines-health-care:
-    enabled: 1
-    weight: 0
-    taxattach: 0
-    langhandle: 0
-  va-battle-creek-health-care:
-    enabled: 1
-    weight: 0
-    taxattach: 0
-    langhandle: 0
-  va-augusta-health-care:
-    enabled: 1
-    weight: 0
-    taxattach: 0
-    langhandle: 0
-  va-atlanta-health-care:
-    enabled: 1
-    weight: 0
-    taxattach: 0
-    langhandle: 0
-  va-tennessee-valley-health-care:
+  va-boise-health-care:
     enabled: 1
     weight: 0
     taxattach: 0
@@ -309,17 +284,37 @@ menu_breadcrumb_menus:
     weight: 0
     taxattach: 0
     langhandle: 0
+  va-augusta-health-care:
+    enabled: 1
+    weight: 0
+    taxattach: 0
+    langhandle: 0
   va-amarillo-health-care:
     enabled: 1
     weight: 0
     taxattach: 0
     langhandle: 0
-  va-tomah-health-care:
+  va-battle-creek-health-care:
     enabled: 1
     weight: 0
     taxattach: 0
     langhandle: 0
-  va-boise-health-care:
+  va-bay-pines-health-care:
+    enabled: 1
+    weight: 0
+    taxattach: 0
+    langhandle: 0
+  va-tampa-health-care:
+    enabled: 1
+    weight: 0
+    taxattach: 0
+    langhandle: 0
+  va-texas-valley-health-care:
+    enabled: 1
+    weight: 0
+    taxattach: 0
+    langhandle: 0
+  va-tomah-health-care:
     enabled: 1
     weight: 0
     taxattach: 0
@@ -334,32 +329,7 @@ menu_breadcrumb_menus:
     weight: 0
     taxattach: 0
     langhandle: 0
-  va-tuscaloosa-health-care:
-    enabled: 1
-    weight: 0
-    taxattach: 0
-    langhandle: 0
-  va-wallawalla-health-care:
-    enabled: 1
-    weight: 0
-    taxattach: 0
-    langhandle: 0
-  pension-benefits-hub:
-    enabled: 1
-    weight: 0
-    taxattach: 0
-    langhandle: 0
-  va-west-palm-beach-health-care:
-    enabled: 1
-    weight: 0
-    taxattach: 0
-    langhandle: 0
-  va-west-texas-health-care:
-    enabled: 1
-    weight: 0
-    taxattach: 0
-    langhandle: 0
-  va-wichita-health-care:
+  va-birmingham-health-care:
     enabled: 1
     weight: 0
     taxattach: 0
@@ -369,22 +339,27 @@ menu_breadcrumb_menus:
     weight: 0
     taxattach: 0
     langhandle: 0
-  va-tampa-health-care:
+  va-tuscaloosa-health-care:
     enabled: 1
     weight: 0
     taxattach: 0
     langhandle: 0
-  va-central-alabama-health-care:
+  va-tennessee-valley-health-care:
     enabled: 1
     weight: 0
     taxattach: 0
     langhandle: 0
-  va-charleston-health-care:
+  va-walla-walla-health-care:
+    enabled: 0
+    weight: 0
+    taxattach: 0
+    langhandle: 0
+  pension-benefits-hub:
     enabled: 1
     weight: 0
     taxattach: 0
     langhandle: 0
-  va-spokane-health-care:
+  lovell-federal-health-care:
     enabled: 1
     weight: 0
     taxattach: 0
@@ -399,12 +374,32 @@ menu_breadcrumb_menus:
     weight: 0
     taxattach: 0
     langhandle: 0
-  va-southern-oregon-health-care:
+  va-central-ohio-health-care:
     enabled: 1
     weight: 0
     taxattach: 0
     langhandle: 0
-  va-central-ohio-health-care:
+  va-wichita-health-care:
+    enabled: 1
+    weight: 0
+    taxattach: 0
+    langhandle: 0
+  va-west-palm-beach-health-care:
+    enabled: 1
+    weight: 0
+    taxattach: 0
+    langhandle: 0
+  va-southern-arizona-health-care:
+    enabled: 1
+    weight: 0
+    taxattach: 0
+    langhandle: 0
+  lovell-tricare-health-care:
+    enabled: 1
+    weight: 0
+    taxattach: 0
+    langhandle: 0
+  va-central-alabama-health-care:
     enabled: 1
     weight: 0
     taxattach: 0
@@ -414,7 +409,22 @@ menu_breadcrumb_menus:
     weight: 0
     taxattach: 0
     langhandle: 0
-  va-southern-arizona-health-care:
+  va-southern-oregon-health-care:
+    enabled: 1
+    weight: 0
+    taxattach: 0
+    langhandle: 0
+  va-west-texas-health-care:
+    enabled: 1
+    weight: 0
+    taxattach: 0
+    langhandle: 0
+  va-spokane-health-care:
+    enabled: 1
+    weight: 0
+    taxattach: 0
+    langhandle: 0
+  va-atlanta-health-care:
     enabled: 1
     weight: 0
     taxattach: 0
@@ -464,7 +474,7 @@ menu_breadcrumb_menus:
     weight: 9
     taxattach: 0
     langhandle: 0
-  va-sierra-nevada-health-care:
+  va-southern-nevada-health-care:
     enabled: 1
     weight: 10
     taxattach: 0
@@ -479,7 +489,7 @@ menu_breadcrumb_menus:
     weight: 10
     taxattach: 0
     langhandle: 0
-  va-st-cloud-health-care:
+  va-sierra-nevada-health-care:
     enabled: 1
     weight: 10
     taxattach: 0
@@ -504,7 +514,7 @@ menu_breadcrumb_menus:
     weight: 10
     taxattach: 0
     langhandle: 0
-  va-richmond-health-care:
+  va-southeast-louisiana-health-ca:
     enabled: 1
     weight: 10
     taxattach: 0
@@ -514,32 +524,7 @@ menu_breadcrumb_menus:
     weight: 10
     taxattach: 0
     langhandle: 0
-  va-southern-nevada-health-care:
-    enabled: 1
-    weight: 10
-    taxattach: 0
-    langhandle: 0
   va-san-francisco-health-care:
-    enabled: 1
-    weight: 10
-    taxattach: 0
-    langhandle: 0
-  pittsburgh-health-care:
-    enabled: 1
-    weight: 10
-    taxattach: 0
-    langhandle: 0
-  va-syracuse-health-care:
-    enabled: 1
-    weight: 10
-    taxattach: 0
-    langhandle: 0
-  va-washington-dc-health-care:
-    enabled: 1
-    weight: 10
-    taxattach: 0
-    langhandle: 0
-  va-sioux-falls-health-care:
     enabled: 1
     weight: 10
     taxattach: 0
@@ -549,17 +534,27 @@ menu_breadcrumb_menus:
     weight: 10
     taxattach: 0
     langhandle: 0
-  va-salem-health-care:
+  pittsburgh-health-care:
     enabled: 1
     weight: 10
     taxattach: 0
     langhandle: 0
-  va-southeast-louisiana-health-ca:
+  va-sioux-falls-health-care:
     enabled: 1
     weight: 10
     taxattach: 0
     langhandle: 0
-  va-providence-health-care:
+  va-st-cloud-health-care:
+    enabled: 1
+    weight: 10
+    taxattach: 0
+    langhandle: 0
+  va-salt-lake-city-health-care:
+    enabled: 1
+    weight: 10
+    taxattach: 0
+    langhandle: 0
+  va-washington-dc-health-care:
     enabled: 1
     weight: 10
     taxattach: 0
@@ -569,7 +564,22 @@ menu_breadcrumb_menus:
     weight: 10
     taxattach: 0
     langhandle: 0
-  va-salt-lake-city-health-care:
+  va-salem-health-care:
+    enabled: 1
+    weight: 10
+    taxattach: 0
+    langhandle: 0
+  va-providence-health-care:
+    enabled: 1
+    weight: 10
+    taxattach: 0
+    langhandle: 0
+  va-richmond-health-care:
+    enabled: 1
+    weight: 10
+    taxattach: 0
+    langhandle: 0
+  va-syracuse-health-care:
     enabled: 1
     weight: 10
     taxattach: 0
@@ -580,8 +590,8 @@ menu_breadcrumb_menus:
     taxattach: 0
     langhandle: 0
   admin:
-    weight: 10
     enabled: 0
+    weight: 10
     taxattach: 0
     langhandle: 0
   va-oklahoma-health-care:
@@ -640,8 +650,8 @@ menu_breadcrumb_menus:
     taxattach: 0
     langhandle: 0
   account:
-    weight: 10
     enabled: 0
+    weight: 10
     taxattach: 0
     langhandle: 0
   va-central-california-health-car:
@@ -650,8 +660,8 @@ menu_breadcrumb_menus:
     taxattach: 0
     langhandle: 0
   tools:
-    weight: 10
     enabled: 0
+    weight: 10
     taxattach: 0
     langhandle: 0
   sections:
@@ -665,28 +675,28 @@ menu_breadcrumb_menus:
     taxattach: 0
     langhandle: 0
   main:
-    weight: 10
     enabled: 0
+    weight: 10
     taxattach: 0
     langhandle: 0
   homepage-top-tasks-blocks:
-    weight: 10
     enabled: 0
+    weight: 10
     taxattach: 0
     langhandle: 0
   header-megamenu:
-    weight: 10
     enabled: 0
+    weight: 10
     taxattach: 0
     langhandle: 0
   footer-bottom-rail:
-    weight: 10
     enabled: 0
+    weight: 10
     taxattach: 0
     langhandle: 0
   footer:
-    weight: 10
     enabled: 0
+    weight: 10
     taxattach: 0
     langhandle: 0
   documentation:
@@ -824,9 +834,4 @@ menu_breadcrumb_menus:
     weight: 10
     taxattach: 0
     langhandle: 0
-_core:
-  default_config_hash: MWtaH6iqiztF4V37kZZSpw-NZBbZijdlO_xMPIUCibY
-stop_on_first_match: false
-front_title: 0
-exclude_disabled_menu_items: false
-derived_active_trail: true
+home_as_site_name: false

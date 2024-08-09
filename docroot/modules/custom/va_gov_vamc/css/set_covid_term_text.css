@@ -1,0 +1,24 @@
+#group-covid-19-safety-guidelines .fieldset__description {
+  margin-bottom: 0;
+}
+
+#covid-safety-guidelines-status-text-prefix h5 {
+  margin: 0;
+}
+
+#covid-safety-guidelines-status-text {
+  background-color: rgba(243, 244, 249, 0.4);
+  position: relative;
+}
+
+#covid-safety-guidelines-status-text-target {
+  display: inline-block;
+}
+
+#group-operating-status > legend > span {
+  font-size: var(--va-display-m);
+}
+
+#group-operating-status h3 {
+  font-size: var(--va-display-s);
+}

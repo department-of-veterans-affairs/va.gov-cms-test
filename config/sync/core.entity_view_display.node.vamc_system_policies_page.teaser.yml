@@ -11,6 +11,7 @@ dependencies:
     - field.field.node.vamc_system_policies_page.field_cc_top_of_page_content
     - field.field.node.vamc_system_policies_page.field_enforce_unique_combo
     - field.field.node.vamc_system_policies_page.field_fieldset_markup
+    - field.field.node.vamc_system_policies_page.field_last_saved_by_an_editor
     - field.field.node.vamc_system_policies_page.field_office
     - field.field.node.vamc_system_policies_page.field_vamc_other_policies
     - field.field.node.vamc_system_policies_page.field_vamc_visitation_policy
@@ -23,16 +24,17 @@ bundle: vamc_system_policies_page
 mode: teaser
 content:
   content_moderation_control:
-    weight: -20
     settings: {  }
     third_party_settings: {  }
+    weight: -20
     region: content
   links:
-    weight: 100
     settings: {  }
     third_party_settings: {  }
+    weight: 100
     region: content
 hidden:
+  breadcrumbs: true
   field_administration: true
   field_cc_bottom_of_page_content: true
   field_cc_gen_visitation_policy: true
@@ -40,7 +42,9 @@ hidden:
   field_cc_top_of_page_content: true
   field_enforce_unique_combo: true
   field_fieldset_markup: true
+  field_last_saved_by_an_editor: true
   field_office: true
   field_vamc_other_policies: true
   field_vamc_visitation_policy: true
+  langcode: true
   search_api_excerpt: true

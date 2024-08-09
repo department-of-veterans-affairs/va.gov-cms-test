@@ -12,8 +12,8 @@ entity_type: paragraph
 bundle: media
 label: 'Select an image'
 description: ''
-required: false
-translatable: false
+required: true
+translatable: true
 default_value: {  }
 default_value_callback: ''
 settings:

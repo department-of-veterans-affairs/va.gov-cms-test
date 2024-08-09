@@ -1,0 +1,253 @@
+<?php
+
+/**
+ * @file
+ * Install file for VA Gov VAMC.
+ */
+
+use Drupal\codit_menu_tools\MenuInsert;
+use Drupal\field\Entity\FieldConfig;
+use Drupal\node\Entity\Node;
+use Drupal\va_gov_lovell\LovellOps;
+use Psr\Log\LogLevel;
+
+require_once __DIR__ . '/../../../../scripts/content/script-library.php';
+
+/**
+ * Calculates an array of system nids that need to have a top task page created.
+ *
+ * @param string $top_task_bundle
+ *   The bundle name of the top task node to build.
+ *
+ * @return array
+ *   An array of VAMC system nids for systems that have no top task page.
+ */
+function _va_gov_vamc_get_systems_to_process($top_task_bundle) {
+  $systems_to_process = [];
+  $system_nids = _va_gov_get_vamc_systems();
+  $systems_with_existing_pages_nids = _va_gov_get_systems_with_existing_pages($top_task_bundle);
+  // Also remove Lovell Federal and Lovell Tricare.
+  $non_va_lovell = [LovellOps::TRICARE_SYSTEM_ID, LovellOps::LOVELL_FEDERAL_SYSTEM_ID];
+  $systems_needing_pages_nids = array_diff($system_nids, $systems_with_existing_pages_nids, $non_va_lovell);
+  if (!empty($systems_needing_pages_nids)) {
+    $needy_systems = Node::loadMultiple($systems_needing_pages_nids);
+    foreach ($needy_systems as $needy_system) {
+      // Get menu data.
+      $menu_link_manager = \Drupal::service('plugin.manager.menu.link');
+      $menus = $menu_link_manager->loadLinksByRoute('entity.node.canonical', ['node' => $needy_system->id()]);
+      /** @var Drupal\menu_link_content\Plugin\Menu\MenuLinkContent $menu_link */
+      $menu_link = reset($menus);
+
+      $systems_to_process[$needy_system->id()] = [
+        'field_office' => $needy_system->id(),
+        'field_administration' => $needy_system->get('field_administration')->target_id,
+        'menu_link_name' => $menu_link->getMenuName(),
+        'menu_item_id' => $menu_link->getPluginId(),
+      ];
+    }
+  }
+  return $systems_to_process;
+}
+
+/**
+ * Get the nid for all published VAMC systems.
+ *
+ * @return array
+ *   An array of system nodes.
+ */
+function _va_gov_get_vamc_systems() {
+  $systems = \Drupal::entityQuery('node')
+    ->condition('type', 'health_care_region_page')
+    ->condition('status', 1)
+    ->accessCheck(FALSE)
+    ->execute();
+  return array_values($systems);
+}
+
+/**
+ * Get systems that already have a specific top task page.
+ *
+ * @param string $top_task_bundle
+ *   The machine name of the top task bundle.
+ *
+ * @return array
+ *   An array of system nids that already have one of these top task pages.
+ */
+function _va_gov_get_systems_with_existing_pages($top_task_bundle) {
+  $existing_tt_nids = \Drupal::entityQuery('node')
+    ->condition('type', $top_task_bundle)
+    ->accessCheck(FALSE)
+    ->execute();
+  $existing_tt_pages = Node::loadMultiple($existing_tt_nids);
+  $systems_with_tt_page = [];
+  foreach ($existing_tt_pages as $existing_tt_page) {
+    $systems_with_tt_page[] = $existing_tt_page->get('field_office')->target_id;
+  }
+  return $systems_with_tt_page;
+}
+
+/**
+ * Creates designated facility pages for each VAMC system.
+ *
+ * @param array $sandbox
+ *   Hook_update_n sandbox for keeping state.
+ * @param string $build_bundle
+ *   The bundle name of the node to build.
+ * @param string $moderation_state
+ *   The machine name of the moderation state to assign. default: draft.
+ */
+function _va_gov_vamc_create_system_content_pages(array &$sandbox, string $build_bundle, string $moderation_state = 'draft') {
+  $cms_migrator = 1317;
+  // Run through a batch of 25.
+  $i = 0;
+
+  foreach ($sandbox['items_to_process'] as $system_nid => $system_info) {
+    if (++$i > 25) {
+      break;
+    }
+
+    $new_page = Node::create([
+      'type' => $build_bundle,
+      'status' => ($moderation_state === 'published') ? 1 : 0,
+      'moderation_state' => $moderation_state,
+      'revision_log' => 'Created automatically.',
+    ]);
+    // CMS migrator.
+    $new_page->setOwnerId($cms_migrator);
+    $new_page->setRevisionUserId($cms_migrator);
+    if ($moderation_state === 'published') {
+      $new_page->setPublished();
+    }
+    else {
+      $new_page->setUnpublished();
+    }
+    $new_page->setUnpublished();
+    $new_page->setTitle(_va_gov_vamc_get_title($build_bundle));
+    $new_page->set('field_administration', $system_info['field_administration']);
+    $new_page->set('field_office', $system_info['field_office']);
+    $new_page->save();
+
+    $menuManipulator = new MenuInsert($system_info['menu_link_name']);
+    $menu_item_title = "VA police";
+    $menu_item_destination = "entity:node/{$new_page->id()}";
+    $menu_item_description = '';
+    $menu_item_enabled = TRUE;
+    $parent_title = '';
+    $adjacent_sibling = 'Policies';
+    $place_below = FALSE;
+    $menuManipulator->addMenuItem($menu_item_title, $menu_item_destination, $menu_item_description, $menu_item_enabled, $parent_title, $adjacent_sibling, $place_below);
+
+    unset($sandbox['items_to_process'][$system_nid]);
+  }
+
+}
+
+/**
+ * Gets the default title for a content type.
+ *
+ * @param string $build_bundle
+ *   The machine name of the bundle.
+ *
+ * @return string
+ *   The title to be used for the content type.
+ */
+function _va_gov_vamc_get_title($build_bundle) {
+  $lookup = [
+    'vamc_system_medical_records_offi' => 'Medical records office',
+    'vamc_system_billing_insurance' => 'Billing and insurance',
+    'vamc_system_register_for_care' => 'Register for care',
+    'vamc_system_va_police' => 'VA police',
+  ];
+
+  return $lookup[$build_bundle] ?? 'MISTAKE - DELETE ME';
+}
+
+/**
+ * Delete VA Lovell Federal health care menu.
+ */
+function va_gov_vamc_update_9001() {
+  // Delete all menu items of given menu.
+  $storage_handler = \Drupal::entityTypeManager()->getStorage('menu');
+  $items = $storage_handler->loadByProperties(['type' => 'system.menu.va-lovell-federal-health-care']);
+  $storage_handler->delete($items);
+
+  // Delete menu.
+  $menu = \Drupal::configFactory()->getEditable('system.menu.va-lovell-federal-health-care');
+  $menu->delete();
+
+  Drupal::logger('va_gov_vamc')->log(LogLevel::INFO, 'VA Lovell Federal health care menu: Successfully removed VA Lovell Federal health care menu.');
+}
+
+/**
+ * Remove field_body from VAMC Facility Health Service content type.
+ */
+function va_gov_vamc_update_9003() {
+  $bundle = "health_care_local_health_service";
+  $field = FieldConfig::loadByName('node', $bundle, 'field_body');
+  if ($field) {
+    /** @var Drupal\field\FieldConfigInterface $field */
+    $field->delete();
+
+    Drupal::logger('va_gov_vamc')->log(LogLevel::INFO, 'VAMC Facility Health Service: Successfully removed field_body field.');
+  }
+  return "The field field_body have been removed from the VAMC Facility Health Service content type.";
+}
+
+/**
+ * Build top task page vamc_system_billing_insurance for each system.
+ */
+function va_gov_vamc_update_9004(&$sandbox) {
+  $build_bundle = 'vamc_system_billing_insurance';
+  script_library_sandbox_init($sandbox, '_va_gov_vamc_get_systems_to_process', [$build_bundle]);
+  _va_gov_vamc_create_system_content_pages($sandbox, $build_bundle);
+  return script_library_sandbox_complete($sandbox, "Created @total {$build_bundle} nodes.");
+}
+
+/**
+ * Build top task page vamc_system_medical_records_offi for each system.
+ */
+function va_gov_vamc_update_9005(&$sandbox) {
+  $build_bundle = 'vamc_system_medical_records_offi';
+  script_library_sandbox_init($sandbox, '_va_gov_vamc_get_systems_to_process', [$build_bundle]);
+  _va_gov_vamc_create_system_content_pages($sandbox, $build_bundle);
+  return script_library_sandbox_complete($sandbox, "Created @total {$build_bundle} nodes.");
+}
+
+/**
+ * Build top task page vamc_system_register_for_care for each system.
+ */
+function va_gov_vamc_update_9006(&$sandbox) {
+  $build_bundle = 'vamc_system_register_for_care';
+  script_library_sandbox_init($sandbox, '_va_gov_vamc_get_systems_to_process', [$build_bundle]);
+  _va_gov_vamc_create_system_content_pages($sandbox, $build_bundle);
+  return script_library_sandbox_complete($sandbox, "Created @total {$build_bundle} nodes.");
+}
+
+/**
+ * Update the alert body field to only rich_text_limited.
+ */
+function va_gov_vamc_update_9007() {
+  $storage_handler = \Drupal::entityTypeManager()->getStorage('node');
+  $alerts = $storage_handler->loadByProperties(['type' => 'full_width_banner_alert']);
+  $updated = 0;
+  foreach ($alerts as $alert) {
+    $alert->field_body->format = 'rich_text_limited';
+    $alert->setNewRevision(TRUE);
+    // New revision will inherit content moderation status from default rev.
+    $alert->isDefaultRevision(TRUE);
+    $alert->setRevisionLogMessage('VACMS Facilities Team: Updated Alert body text format to Rich Text Limited');
+    $alert->setRevisionCreationTime(Drupal::time()->getRequestTime());
+    $alert->setChangedTime(Drupal::time()->getRequestTime());
+    // Set revision author to uid 1317 (CMS Migrator user).
+    $alert->setRevisionUserId(1317);
+    $saved = $alert->save();
+    $updated = (is_int($saved) && $saved > 0) ? $updated + 1 : $updated;
+  }
+
+  $log_level = ($updated === count($alerts)) ? LogLevel::INFO : LogLevel::ERROR;
+
+  Drupal::logger('va_gov_vamc')->log($log_level, 'Alert body update: Successfully updated %ct_updated out of %ct_count alerts.', [
+    '%ct_count' => count($alerts),
+    '%ct_updated' => $updated,
+  ]);
+}

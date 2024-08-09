@@ -1,0 +1,14 @@
+services:
+  va_gov_content_release.content_release_commands:
+    class: \Drupal\va_gov_content_release\Commands\FrontendVersionCommands
+    arguments:
+      - '@va_gov_content_release.frontend_version'
+    tags:
+      - { name: drush.command }
+
+  va_gov_content_release.request_commands:
+    class: \Drupal\va_gov_content_release\Commands\RequestCommands
+    arguments:
+      - '@va_gov_content_release.request'
+    tags:
+      - { name: drush.command }

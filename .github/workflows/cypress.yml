@@ -1,0 +1,70 @@
+name: Cypress
+on:
+  workflow_dispatch:
+    inputs:
+      preview_url:
+        description: 'Environment to run tests against'
+        type: 'string'
+        required: true
+      pull_request:
+        description: 'Pull Request number'
+        type: 'string'
+        required: true
+      commit_sha:
+        description: 'SHA of commit on which to update statuses'
+        type: 'string'
+        required: true
+
+jobs:
+
+  # Cypress tests, hopefully with parallelization.
+  cypress:
+    runs-on: self-hosted
+    strategy:
+      fail-fast: false
+      matrix:
+        # Let's try splitting tests four ways.
+        containers: [1, 2, 3, 4]
+    env:
+      NODE_EXTRA_CA_CERTS: /etc/ssl/certs/ca-certificates.crt
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
+        with:
+          # When Sorry-Cypress support is enabled on `main`, this should be
+          # removed so that the `main` version of the workflow is used
+          ref: ${{ inputs.commit_sha }}
+
+      - name: Setup the Node environment
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
+        with:
+          node-version: '18.13'
+
+      - name: Install Node package dependencies
+        run: npm ci
+        env:
+          NODE_TLS_REJECT_UNAUTHORIZED: 0
+
+      - name: Cypress run
+        uses: cypress-io/github-action@1b70233146622b69e789ccdd4f9452adc638d25a # v6.6.1
+        with:
+          wait-on: "${{ inputs.preview_url }}"
+          command: 'npm run test:cypress:parallel'
+        env:
+          CYPRESS_BASE_URL: "${{ inputs.preview_url }}"
+          CY_BUILD_ID: "${{ github.repository }}-${{ github.run_id }}-${{ github.run_attempt}}"
+
+      - name: Update status on commit.
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
+        with:
+          script: |
+            await octokit.rest.repos.createCommitStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              sha: inputs.commit_sha,
+              state: context.job.status,
+              description: `Cypress tests ${context.job.status}`,
+            })
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

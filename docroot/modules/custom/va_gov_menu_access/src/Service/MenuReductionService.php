@@ -8,6 +8,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\node\NodeForm;
 use Drupal\path_alias\AliasManagerInterface;
+use Drupal\va_gov_lovell\LovellOps;
 use Drupal\va_gov_user\Service\UserPermsService;
 
 /**
@@ -23,6 +24,7 @@ class MenuReductionService {
   const ENABLED = 'enabled';
   const DISABLED = 'disabled';
   const SEPARATOR = 'separator';
+  const LOVELLSYS = 'lovellsys';
 
   /**
    * The alias manager interface.
@@ -258,6 +260,14 @@ class MenuReductionService {
       $alias = $this->getAliasFromUri($menu_item->get('link')->uri);
       if ($alias) {
         $subject_uuid = $parent_options_menu_ids[$menu_item->get('uuid')->value];
+        // The Lovell menu is the only system menu with field_menu_section.
+        // This field stores section information for Lovell menu items.
+        // Display this information for editors to help with menu placement.
+        if ($menu_item->hasfield('field_menu_section')) {
+          $menu_section = ' - ' . strtoupper($menu_item->get('field_menu_section')->value);
+          $subject_uuid['option'] .= $menu_section;
+        }
+
         $menu_element_type = $this->getMenuItemType($alias);
         $menu_element_type = $menu_element_type ?? $this->checkForSeparator($allowed_separators, $menu_item);
 
@@ -422,6 +432,23 @@ class MenuReductionService {
   }
 
   /**
+   * Check for a match for a pattern of Lovell subsystem.
+   *
+   * @param string $alias
+   *   The current alias.
+   *
+   * @return string|null
+   *   A state of self::LOVELLSYS or NULL.
+   */
+  protected function checkForLovellSubSystem(string $alias) {
+    if ($alias === '/' . LovellOps::TRICARE_PATH
+      || $alias === '/' . LovellOps::VA_PATH) {
+      return self::LOVELLSYS;
+    }
+    return NULL;
+  }
+
+  /**
    * Check for a match for a pattern of enabled allowed parent.
    *
    * @param string $alias
@@ -481,7 +508,8 @@ class MenuReductionService {
   protected function getMenuItemType($alias) {
     $type = NULL;
     if ($alias) {
-      $type = $this->checkForDisabledParentWithChildren($alias)
+      $type = $this->checkForLovellSubSystem($alias)
+      ?? $this->checkForDisabledParentWithChildren($alias)
       ?? $this->checkForTypeDisabledParent($alias)
       ?? $this->checkForSimpleMatch($alias);
     }
@@ -588,11 +616,11 @@ class MenuReductionService {
       $form['menu']['link']['menu_parent']['#value'] = $this->currentMenuParent;
     }
     // Check for rare possibility that menu parent is the default menu root.
-    elseif ($this->currentMenuParent === "pittsburgh-health-care:") {
+    elseif (empty($this->currentMenuParent) || $this->currentMenuParent === "pittsburgh-health-care:") {
       return;
     }
     // This is not new so check the current parent exists in the reduced form.
-    elseif (!$current_menu_item_is_present || $this->isCurrentMenuSettingDisabled($form)) {
+    elseif (!$current_menu_item_is_present || $this->isCurrentMenuParentDisabledAndLocked($form)) {
       // Parent does not exist in reduced form, Put the original parent options
       // back to prevent data loss. The existing menu setting should not be
       // allowed, but it exists, so allow it to persist. It may have been
@@ -605,10 +633,11 @@ class MenuReductionService {
       $title .= " ($can_not_change)";
       $form['menu']['link']['menu_parent']['#title'] = $title;
     }
+
   }
 
   /**
-   * Checks to see if the current menu parent is disabled.
+   * Checks to see if the current menu parent is disabled and children locked.
    *
    * @param array $form
    *   The form array.
@@ -616,10 +645,31 @@ class MenuReductionService {
    * @return bool
    *   TRUE if the current menu parent is disabled.  FALSE otherwise.
    */
-  protected function isCurrentMenuSettingDisabled(array $form) : bool {
+  protected function isCurrentMenuParentDisabledAndLocked(array $form) : bool {
     $is_disabled = FALSE;
     $current_menu_setting = $form['menu']['link']['menu_parent']['#options'][$this->currentMenuParent] ?? '';
     if (strpos($current_menu_setting, 'Disabled no-link') !== FALSE) {
+      $is_disabled = TRUE;
+    }
+
+    return $is_disabled;
+  }
+
+  /**
+   * Checks if the current menu parent is disabled but might allow children.
+   *
+   * @param array $form
+   *   The form array.
+   * @param string $menu_parent
+   *   The id of the menu parent currently selected at node load.
+   *
+   * @return bool
+   *   TRUE if the current menu parent is disabled.  FALSE otherwise.
+   */
+  public static function isCurrentMenuParentDisabled(array $form, $menu_parent) : bool {
+    $is_disabled = FALSE;
+    $current_menu_setting = $form['menu']['link']['menu_parent']['#options'][$menu_parent] ?? '';
+    if (strpos($current_menu_setting, 'Disabled') !== FALSE) {
       $is_disabled = TRUE;
     }
 

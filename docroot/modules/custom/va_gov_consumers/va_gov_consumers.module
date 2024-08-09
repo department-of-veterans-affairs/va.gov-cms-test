@@ -9,25 +9,30 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
 
 /**
- * Implements hook_form_alter().
+ * Implements hook_module_implements_alter().
  */
-function va_gov_consumers_form_alter(&$form, FormStateInterface $form_state, $form_id) {
-  _vagov_consumers_modify_va_form_fields($form, $form_id, $form_state);
-  _vagov_consumers_modify_vet_center_fields($form, $form_id, $form_state);
-  _vagov_consumers_disable_vha_api_form_fields($form, $form_id);
-  _vagov_consumers_disable_non_vha_facilities_api_form_fields($form, $form_id);
+function va_gov_consumers_module_implements_alter(&$implementations, $hook) {
+  switch ($hook) {
+    // Move our hook_form_alter() implementation to the end of the list.
+    // This was added to compensate for a similar call ignoring weights.
+    // See: docroot/modules/contrib/field_group/field_group.module.
+    case 'form_alter':
+      $va_gov_consumers = $implementations['va_gov_consumers'];
+      unset($implementations['va_gov_consumers']);
+      $implementations['va_gov_consumers'] = $va_gov_consumers;
+      break;
+  }
 }
 
 /**
- * Callback for table field widget.
- *
- * @param object $element
- *   The field object.
+ * Implements hook_form_alter().
  */
-function _va_gov_consumers_customize_table($element) {
-  unset($element['tablefield']['import']);
-  unset($element['tablefield']['rebuild']);
-  return $element;
+function va_gov_consumers_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  _va_gov_consumers_modify_va_form_fields($form, $form_id, $form_state);
+  _va_gov_consumers_modify_vamc_system_related_fields($form, $form_id, $form_state);
+  _va_gov_consumers_modify_facility_fields($form, $form_id, $form_state);
+  _va_gov_consumers_disable_vha_api_form_fields($form, $form_id);
+  _va_gov_consumers_disable_non_vha_facilities_api_form_fields($form, $form_id);
 }
 
 /**
@@ -38,7 +43,7 @@ function _va_gov_consumers_customize_table($element) {
  * @param string $form_id
  *   The machine name for the form.
  */
-function _vagov_consumers_disable_vha_api_form_fields(array &$form, $form_id) {
+function _va_gov_consumers_disable_vha_api_form_fields(array &$form, $form_id) {
   if ($form_id === 'node_health_care_local_facility_edit_form' || $form_id === 'node_health_care_local_facility_form') {
     if (empty($form['title']['widget'][0]['value']['#default_value'])) {
       $form['title']['widget'][0]['value']['#default_value'] = t('API Data');
@@ -48,13 +53,22 @@ function _vagov_consumers_disable_vha_api_form_fields(array &$form, $form_id) {
     if (!empty($form['field_facility_locator_api_id']['widget'][0]['value']['#default_value'])) {
       $form['field_facility_locator_api_id']['widget'][0]['value']['#attributes']['disabled'] = TRUE;
     }
-    // Special handling for the table field widget.
-    $form['field_facility_hours']['widget'][0]['#after_build'][] = '_va_gov_consumers_customize_table';
-    $form['field_facility_hours']['widget'][0]['#addrow'] = FALSE;
-    if (isset($form['field_facility_hours']['widget'][0]['caption'])) {
-      unset($form['field_facility_hours']['widget'][0]['caption']);
-    }
   }
+}
+
+/**
+ * Returns the names of the add and edit Vet center forms.
+ *
+ * @return array
+ *   The Vet center form names.
+ */
+function _va_gov_consumers_return_vet_center_form_names() {
+  return [
+    'node_vet_center_edit_form',
+    'node_vet_center_form',
+    'node_vet_center_outstation_edit_form',
+    'node_vet_center_outstation_form',
+  ];
 }
 
 /**
@@ -65,7 +79,7 @@ function _vagov_consumers_disable_vha_api_form_fields(array &$form, $form_id) {
  * @param string $form_id
  *   The machine name for the form.
  */
-function _vagov_consumers_disable_non_vha_facilities_api_form_fields(array &$form, $form_id) {
+function _va_gov_consumers_disable_non_vha_facilities_api_form_fields(array &$form, $form_id) {
   $target_forms = [
     'node_nca_facility_edit_form',
     'node_nca_facility_form',
@@ -84,10 +98,15 @@ function _vagov_consumers_disable_non_vha_facilities_api_form_fields(array &$for
       // Prepoulate the title to warn it will be overwritten by api data.
       $form['title']['widget'][0]['value']['#default_value'] = t('May be overwritten by Facility API Data');
     }
+    // Only allow admins to alter vc titles.
+    elseif (Drupal::service('va_gov_user.user_perms')->hasAdminRole() && in_array($form_id, _va_gov_consumers_return_vet_center_form_names())) {
+      $form['title']['widget'][0]['value']['#attributes']['disabled'] = FALSE;
+    }
+    // Lockdown titles for all roles for all other types.
     else {
-      // Disable the title, it has content already.
       $form['title']['widget'][0]['value']['#attributes']['disabled'] = TRUE;
     }
+
     // Disable the facility locator API field if it is populated because it
     // should not be altered, or it will deviate from the API.
     if (!empty($form['field_facility_locator_api_id']['widget'][0]['value']['#default_value'])) {
@@ -106,7 +125,7 @@ function _vagov_consumers_disable_non_vha_facilities_api_form_fields(array &$for
  * @param \Drupal\Core\Form\FormStateInterface $form_state
  *   The form state by reference.
  */
-function _vagov_consumers_modify_va_form_fields(array &$form, $form_id, FormStateInterface &$form_state) {
+function _va_gov_consumers_modify_va_form_fields(array &$form, $form_id, FormStateInterface &$form_state) {
   if ($form_id === 'node_va_form_edit_form' || $form_id === 'node_va_form_form') {
     $node = $form_state->getformObject()->getEntity();
     $title = "<h1>{$node->getTitle()}</h1>";
@@ -150,14 +169,17 @@ function _vagov_consumers_modify_va_form_fields(array &$form, $form_id, FormStat
  * @param \Drupal\Core\Form\FormStateInterface $form_state
  *   The form state by reference.
  */
-function _vagov_consumers_modify_vet_center_fields(array &$form, $form_id, FormStateInterface &$form_state) {
-
+function _va_gov_consumers_modify_facility_fields(array &$form, $form_id, FormStateInterface &$form_state) {
   // We want to modify display of fields for specific form id's.
   $external_content_form_ids = [
+    'node_nca_facility_edit_form',
+    'node_nca_facility_form',
     'node_health_care_local_facility_form',
     'node_health_care_local_facility_edit_form',
-    'node_vet_center_edit_form',
+    'node_vba_facility_edit_form',
+    'node_vba_facility_form',
     'node_vet_center_form',
+    'node_vet_center_edit_form',
     'node_vet_center_mobile_vet_center_form',
     'node_vet_center_mobile_vet_center_edit_form',
     'node_vet_center_outstation_form',
@@ -167,22 +189,22 @@ function _vagov_consumers_modify_vet_center_fields(array &$form, $form_id, FormS
   // We want to confirm we are on a specific form.
   if (in_array($form_id, $external_content_form_ids)) {
     $node = $form_state->getformObject()->getEntity();
-    $get_help = '<div id="top-get-help-email">To request a correction or update to this centrally-managed data, <a class="admin-help-email-tpl" href="mailto:api@va.gov?bcc=vadrupalcms@va.gov&subject=Requested updates to [js_entry_facility_name] facility data&body=Dear API team,%0D%0A%0D%0AI would like to request an update to data for my facility.%0D%0A%0D%0AFacility%0D%0AFacility Name: [js_entry_facility_name]%0D%0AFacility ID: [js_entry_facility_id]%0D%0A%0D%0AAffected data%0D%0AThe following type of information needs to be updated:%0D%0A[Add your response here, for example: facility name, address, phone number, etc.]%0D%0A%0D%0ARequested Update%0D%0APlease make the following changes:%0D%0A[Add your response here, for example, \'change street address from 123 Fake Street to 456 Real Street.\']">email an administrator</a>.</div>';
-    $title = "<p>{$node->getTitle()}</p>";
-
-    // We want the form name in a different location, so remove it from here.
-    unset($form['field_name_of_facility']);
+    $title = "<h4>{$node->getTitle()}</h4>";
 
     $form['top_of_page_information'] = [
       '#weight' => 1,
-      '#prefix' => $get_help,
       'title' => [
         '#markup' => $title,
       ],
     ];
 
     // We want the title to appear within the page_title fieldgroup.
-    if ($node->getType() !== 'health_care_local_facility') {
+    $content_types_hiding_title = [
+      'health_care_local_facility',
+      'nca_facility',
+      'vet_center_outstation',
+    ];
+    if (!in_array($node->getType(), $content_types_hiding_title)) {
       $form['group_page_title_tooltip']['top_of_page_information'] = $form['top_of_page_information'];
     }
 
@@ -191,6 +213,43 @@ function _vagov_consumers_modify_vet_center_fields(array &$form, $form_id, FormS
 
     _va_gov_consumers_disable_external_content_editing($form, $form_state, 'field_facility_locator_api_id');
   }
+
+  if (in_array($form_id, _va_gov_consumers_return_vet_center_form_names())) {
+    $form['#attached']['library'][] = 'va_gov_consumers/text_field_tooltips';
+    $form['field_official_name']['#disabled'] = TRUE;
+    // If common name and title are the same, don't show both unless admin.
+    if (!\Drupal::service('va_gov_user.user_perms')->hasAdminRole() && strcmp($form['field_official_name']['widget'][0]['value']['#default_value'], $form['title']['widget'][0]['value']['#default_value']) === 0) {
+      $form['title']['#attributes']['class'][] = 'hidden css-tooltip-toggle';
+    }
+
+  }
+}
+
+/**
+ * Modify the display of the fields on vamc system form.
+ *
+ * @param array $form
+ *   A drupal form array by reference.
+ * @param string $form_id
+ *   The machine name for the form.
+ * @param \Drupal\Core\Form\FormStateInterface $form_state
+ *   The form state by reference.
+ */
+function _va_gov_consumers_modify_vamc_system_related_fields(array &$form, $form_id, FormStateInterface &$form_state) {
+
+  // We want to modify display of fields for specific form id's.
+  $external_content_form_ids = [
+    'node_health_care_region_page_form',
+    'node_health_care_region_page_edit_form',
+    'node_vamc_system_va_police_form',
+    'node_vamc_system_va_police_edit_form',
+  ];
+
+  // We want to confirm we are on a specific form.
+  if (in_array($form_id, $external_content_form_ids)) {
+    _va_gov_consumers_disable_external_content_editing($form, $form_state, TRUE);
+  }
+
 }
 
 /**
@@ -203,21 +262,30 @@ function _vagov_consumers_modify_vet_center_fields(array &$form, $form_id, FormS
  *   The form content.
  * @param \Drupal\Core\Form\FormStateInterface $form_state
  *   The form state.
- * @param string $display_if_empty_field
- *   The field to check for empty.  If empty, external content fields appear.
+ * @param string|bool $display_if_empty_field
+ *   The field to check for empty. If empty, external content fields appear.
+ *   TRUE indicates absence of field and external content should appear.
  */
 function _va_gov_consumers_disable_external_content_editing(array &$form, FormStateInterface $form_state, $display_if_empty_field) {
   $node = $form_state->getformObject()->getEntity();
 
-  $is_admin = in_array('administrator', \Drupal::currentUser()->getRoles());
-  $has_field_value = !empty($node->get($display_if_empty_field)->value);
+  $is_admin = \Drupal::service('va_gov_user.user_perms')->hasAdminRole(TRUE);
+  // TRUE means to skip field value check.
+  if ($display_if_empty_field === TRUE) {
+    // TRUE indicates we need to use external content.
+    $has_field_value = TRUE;
+  }
+  else {
+    $has_field_value = !empty($node->get($display_if_empty_field)->value);
+  }
 
   // If the user is not admin or and there is migrated data, hide the fields.
   // We want admins to have access to fields in case they have to temporarily
-  // fix bad data from the forms db. It will get wiped out each night.
+  // fix bad data from the data source. It will get wiped out the next time
+  // the source row changes.
   if ((!$is_admin) && ($has_field_value) && (!empty($form) && !empty($form['#fieldgroups']))) {
     // Hide the actual fields.
-    foreach ($form['#fieldgroups'] as &$fieldgroup) {
+    foreach ($form['#fieldgroups'] as $fieldgroup) {
       if (!empty($fieldgroup->format_settings['id']) && $fieldgroup->format_settings['id'] === 'external-content') {
         foreach ($fieldgroup->children as $field) {
           unset($form[$field]);
@@ -227,33 +295,31 @@ function _va_gov_consumers_disable_external_content_editing(array &$form, FormSt
       }
 
     }
-    // Break the reference from the foreach.
-    unset($fieldgroup);
+
     // Display the readonly version of the fields.
     $viewBuilder = \Drupal::entityTypeManager()->getViewBuilder('node');
     $readonly_content = $viewBuilder->view($node, 'external_content');
 
     $form['external_content'] = [
       '#markup' => \Drupal::service('renderer')->render($readonly_content),
-      '#weight' => 1,
-    ];
-
-    // We want to modify display of fields for specific node id's.
-    $external_content_node_ids = [
-      'health_care_local_facility',
-      'vet_center',
-      'vet_center_mobile_vet_center',
-      'vet_center_outstation',
     ];
 
     // We want the external content to appear in the fieldgroup
-    // group_locations_and_contact_info on specific node types.
-    if (in_array($node->getType(), $external_content_node_ids)) {
+    // group_ehr_info on the bottom of system forms.
+    if ($node->getType() === 'health_care_region_page') {
+      $form['group_ehr_info']['#weight'] = 10;
+      $form['group_ehr_info']['external_content'] = $form['external_content'];
+      unset($form['external_content']);
+    }
+    elseif (isset($form['external_content'])) {
+      // We want the external content to appear in the fieldgroup
+      // group_locations_and_contact_info on other node types
+      // and at the bottom when other elements are present.
       $form['group_locations_and_contact_info']['external_content'] = $form['external_content'];
+      $form['group_locations_and_contact_info']['external_content']['#weight'] = 10;
       unset($form['external_content']);
     }
   }
-
 }
 
 /**

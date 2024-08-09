@@ -17,17 +17,18 @@ bundle: document
 mode: embedded
 content:
   field_document:
-    weight: 0
+    type: file_default
     label: hidden
     settings: {  }
     third_party_settings: {  }
-    type: file_default
+    weight: 0
     region: content
 hidden:
   created: true
   field_media_in_library: true
   field_media_submission_guideline: true
   field_owner: true
+  langcode: true
   name: true
   search_api_excerpt: true
   thumbnail: true

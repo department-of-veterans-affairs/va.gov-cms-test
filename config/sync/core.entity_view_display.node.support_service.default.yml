@@ -4,9 +4,9 @@ status: true
 dependencies:
   config:
     - field.field.node.support_service.field_administration
+    - field.field.node.support_service.field_last_saved_by_an_editor
     - field.field.node.support_service.field_link
     - field.field.node.support_service.field_office
-    - field.field.node.support_service.field_page_last_built
     - field.field.node.support_service.field_phone_number
     - node.type.support_service
   module:
@@ -19,7 +19,7 @@ bundle: support_service
 mode: default
 content:
   field_link:
-    weight: 0
+    type: link
     label: above
     settings:
       trim_length: 80
@@ -28,20 +28,22 @@ content:
       rel: ''
       target: ''
     third_party_settings: {  }
-    type: link
+    weight: 0
     region: content
   field_phone_number:
-    weight: 1
+    type: telephone_link
     label: above
     settings:
       title: ''
     third_party_settings: {  }
-    type: telephone_link
+    weight: 1
     region: content
 hidden:
+  breadcrumbs: true
   content_moderation_control: true
   field_administration: true
+  field_last_saved_by_an_editor: true
   field_office: true
-  field_page_last_built: true
+  langcode: true
   links: true
   search_api_excerpt: true

@@ -54,7 +54,7 @@ function va_gov_media_entity_update(EntityInterface $entity) {
  * Should be removed as part of va.gov-cms#4425 .
  */
 function _va_gov_media_image_style_warmer_warm_up(EntityInterface $entity) {
-  if (!isset($entity) || !($entity instanceof FieldableEntityInterface)) {
+  if (!($entity instanceof FieldableEntityInterface)) {
     return;
   }
   $image_styles_config = \Drupal::configFactory()->get('image_style_warmer.settings');
@@ -71,4 +71,14 @@ function _va_gov_media_image_style_warmer_warm_up(EntityInterface $entity) {
       }
     }
   }
+}
+
+/**
+ * Implements hook_clientside_validation_validator_info_alter().
+ */
+function va_gov_media_clientside_validation_validator_info_alter(&$validators) {
+  foreach ($validators as &$validator) {
+    $validator['attachments']['library'][] = 'va_gov_media/cv.alt-text.validate';
+  }
+  unset($validator);
 }

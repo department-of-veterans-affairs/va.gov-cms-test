@@ -2,10 +2,10 @@
 
 namespace Drupal\va_gov_migrate\Paragraph;
 
+use Drupal\migration_tools\Message;
 use Drupal\paragraphs\Entity\Paragraph;
 use Drupal\va_gov_migrate\ParagraphType;
 use QueryPath\DOMQuery;
-use Drupal\migration_tools\Message;
 
 /**
  * Starred Horizontal Rule paragraph type.
@@ -19,7 +19,7 @@ class CollapsiblePanelItem extends ParagraphType {
    *
    * @var \QueryPath\DOMQuery
    */
-  protected  $tables;
+  protected $tables;
 
   /**
    * {@inheritdoc}

@@ -1,0 +1,12 @@
+magichead_tree_lines:
+  css:
+    component:
+      css/magichead.css: {}
+
+magichead:
+  js:
+    js/magichead.js: {}
+  dependencies:
+    - core/drupal
+    - core/jquery
+    - core/once

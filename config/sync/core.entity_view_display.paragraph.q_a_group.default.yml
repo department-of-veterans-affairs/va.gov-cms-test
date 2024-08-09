@@ -5,38 +5,48 @@ dependencies:
   config:
     - field.field.paragraph.q_a_group.field_accordion_display
     - field.field.paragraph.q_a_group.field_q_as
+    - field.field.paragraph.q_a_group.field_rich_wysiwyg
     - field.field.paragraph.q_a_group.field_section_header
     - paragraphs.paragraphs_type.q_a_group
+  module:
+    - text
 id: paragraph.q_a_group.default
 targetEntityType: paragraph
 bundle: q_a_group
 mode: default
 content:
   field_accordion_display:
-    weight: 1
+    type: boolean
     label: hidden
     settings:
       format: custom
-      format_custom_true: 'Q&A''s in this section will display as accordions'
       format_custom_false: ''
+      format_custom_true: "Q&A's in this section will display as accordions"
     third_party_settings: {  }
-    type: boolean
+    weight: 2
     region: content
   field_q_as:
-    weight: 2
+    type: entity_reference_label
     label: above
     settings:
       link: true
     third_party_settings: {  }
-    type: entity_reference_label
+    weight: 3
+    region: content
+  field_rich_wysiwyg:
+    type: text_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 1
     region: content
   field_section_header:
-    weight: 0
+    type: string
     label: above
     settings:
       link_to_entity: false
     third_party_settings: {  }
-    type: string
+    weight: 0
     region: content
 hidden:
   search_api_excerpt: true

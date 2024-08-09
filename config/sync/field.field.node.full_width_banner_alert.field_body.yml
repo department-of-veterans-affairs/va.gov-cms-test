@@ -6,7 +6,12 @@ dependencies:
     - field.storage.node.field_body
     - node.type.full_width_banner_alert
   module:
+    - allowed_formats
     - text
+    - tmgmt_content
+third_party_settings:
+  tmgmt_content:
+    excluded: false
 id: node.full_width_banner_alert.field_body
 field_name: field_body
 entity_type: node
@@ -14,8 +19,10 @@ bundle: full_width_banner_alert
 label: 'Alert body'
 description: ''
 required: true
-translatable: true
+translatable: false
 default_value: {  }
 default_value_callback: ''
-settings: {  }
+settings:
+  allowed_formats:
+    - rich_text_limited
 field_type: text_long

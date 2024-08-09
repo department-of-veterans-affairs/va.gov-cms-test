@@ -2,18 +2,19 @@
 
 namespace tests\phpunit\Security;
 
-use weitzman\DrupalTestTraits\ExistingSiteBase;
+use Tests\Support\Classes\VaGovExistingSiteBase;
 
 /**
  * A test to confirm node creation permissions.
+ *
+ * @group functional
+ * @group security
+ * @group all
  */
-class CreateNodeTest extends ExistingSiteBase {
+class CreateNodeTest extends VaGovExistingSiteBase {
 
   /**
    * A test method to deterine the amount of time it takes to create a node.
-   *
-   * @group security
-   * @group all
    *
    * @dataProvider getRoles
    */

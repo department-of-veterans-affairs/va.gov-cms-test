@@ -5,6 +5,7 @@
  * Update functions for the va_gov_migrate module.
  */
 
+use Drupal\content_model_documentation\CmDocumentMover\CmDocumentImport;
 use Drupal\Core\Database\Database;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\StreamWrapper\PublicStream;
@@ -36,7 +37,7 @@ function _va_gov_migrate_move_data_file($filename) {
   if (empty($new_location)) {
     // Something went wrong. Throw exception.
     throw new UpdateException(
-      t("Failed to move data source file: @file", ['@file' => $file_source])
+      "Failed to move data source file: $file_source"
     );
   }
   else {
@@ -174,4 +175,64 @@ function _va_gov_migrate_add_nodes_to_migrate_map(string $migration_name, array 
 function va_gov_migrate_update_8009(&$sandbox) {
 
   return _va_gov_migrate_move_data_file('vet-center-facility-status.csv');
+}
+
+/**
+ * Remove migrate map tables that are no longer needed for status migrations.
+ */
+function va_gov_migrate_update_8010() {
+  $database = \Drupal::database();
+  $table_names = [
+    'migrate_map_va_node_health_care_local_facility_status',
+    'migrate_message_va_node_health_care_local_facility_status',
+    'migrate_map_va_node_facility_vet_centers_status',
+    'migrate_message_va_node_facility_vet_centers_status',
+  ];
+
+  $messages = '';
+  foreach ($table_names as $table_name) {
+    $dropped = $database->schema()->dropTable($table_name);
+    if ($dropped) {
+      $messages .= " Dropped table {$table_name}.\n";
+    }
+    else {
+      $messages .= "Did not drop {$table_name} because it did not exist.\n";
+    }
+  }
+
+  return $messages;
+}
+
+/**
+ * Update Content Model Documentation ahead of config import.
+ */
+function va_gov_migrate_update_9001() {
+  $config_factory = \Drupal::configFactory();
+  $config = $config_factory->getEditable('content_model_documentation.settings');
+  $config->set('export_location', 'va_gov_migrate');
+  $config->save(TRUE);
+  return 'Added storage location for Content Model Documentation module.';
+}
+
+/**
+ * Import documentation about Importing documentation.
+ */
+function va_gov_migrate_update_9002() {
+  $cm_documents_to_import = [
+    '/admin/structure/cm_document/process/125/importing-site-documentation',
+  ];
+  // Consider using TRUE for new CM Documents, and FALSE for updating existing.
+  $strict = TRUE;
+  return CmDocumentImport::import($cm_documents_to_import, $strict);
+}
+
+/**
+ * Import documentation about VAMC VA Police.
+ */
+function va_gov_migrate_update_9003() {
+  $cm_documents_to_import = [
+    '/admin/structure/types/manage/vamc_system_va_police/document',
+  ];
+  $strict = TRUE;
+  return CmDocumentImport::import($cm_documents_to_import, $strict);
 }

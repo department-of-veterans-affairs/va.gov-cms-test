@@ -8,11 +8,6 @@ dependencies:
   module:
     - allowed_formats
     - text
-third_party_settings:
-  allowed_formats:
-    rich_text: rich_text
-    rich_text_limited: '0'
-    plain_text: '0'
 id: paragraph.process.field_steps
 field_name: field_steps
 entity_type: paragraph
@@ -20,8 +15,10 @@ bundle: process
 label: Steps
 description: ''
 required: true
-translatable: false
+translatable: true
 default_value: {  }
 default_value_callback: ''
-settings: {  }
+settings:
+  allowed_formats:
+    - rich_text
 field_type: text_long

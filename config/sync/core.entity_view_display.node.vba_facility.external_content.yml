@@ -1,0 +1,285 @@
+uuid: 9fef22f9-6384-40b8-987e-2b47c5ca2643
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.external_content
+    - field.field.node.vba_facility.field_address
+    - field.field.node.vba_facility.field_administration
+    - field.field.node.vba_facility.field_alert_type
+    - field.field.node.vba_facility.field_banner_content
+    - field.field.node.vba_facility.field_banner_title
+    - field.field.node.vba_facility.field_banner_types_description
+    - field.field.node.vba_facility.field_cc_benefit_office_hours_va
+    - field.field.node.vba_facility.field_cc_benefits_hotline
+    - field.field.node.vba_facility.field_cc_cant_find_benefits
+    - field.field.node.vba_facility.field_cc_get_updates_from_vba
+    - field.field.node.vba_facility.field_cc_meta_tags
+    - field.field.node.vba_facility.field_cc_national_spotlight_1
+    - field.field.node.vba_facility.field_cc_vba_facility_overview
+    - field.field.node.vba_facility.field_dismissible_option
+    - field.field.node.vba_facility.field_facility_locator_api_id
+    - field.field.node.vba_facility.field_facility_vba_classificatio
+    - field.field.node.vba_facility.field_geolocation
+    - field.field.node.vba_facility.field_intro_text
+    - field.field.node.vba_facility.field_last_saved_by_an_editor
+    - field.field.node.vba_facility.field_local_spotlight
+    - field.field.node.vba_facility.field_media
+    - field.field.node.vba_facility.field_non_va_location_url
+    - field.field.node.vba_facility.field_non_va_official_name
+    - field.field.node.vba_facility.field_office
+    - field.field.node.vba_facility.field_office_hours
+    - field.field.node.vba_facility.field_operating_status_facility
+    - field.field.node.vba_facility.field_operating_status_more_info
+    - field.field.node.vba_facility.field_phone_number
+    - field.field.node.vba_facility.field_prepare_for_visit
+    - field.field.node.vba_facility.field_shared_vha_location
+    - field.field.node.vba_facility.field_show_banner
+    - field.field.node.vba_facility.field_table_of_contents
+    - field.field.node.vba_facility.field_timezone
+    - node.type.vba_facility
+  module:
+    - address
+    - field_group
+    - geofield
+    - layout_builder
+    - link
+    - office_hours
+    - options
+    - telephone
+    - user
+third_party_settings:
+  field_group:
+    group_operating_status:
+      children:
+        - field_operating_status_facility
+        - field_operating_status_more_info
+      label: 'Operating status'
+      parent_name: group_locations_and_contact_info
+      region: hidden
+      weight: 3
+      format_type: fieldset
+      format_settings:
+        classes: ''
+        show_empty_fields: false
+        id: ''
+        description: ''
+        description_display: after
+    group_locations_and_contact_info:
+      children:
+        - group_facility_data
+        - group_operating_status
+      label: ''
+      parent_name: ''
+      region: hidden
+      weight: 19
+      format_type: fieldset
+      format_settings:
+        classes: ''
+        show_empty_fields: false
+        id: locations-and-contact-information
+        description: ''
+        description_display: after
+    group_facility_data:
+      children:
+        - field_facility_locator_api_id
+        - field_facility_vba_classificatio
+        - field_address
+        - field_phone_number
+        - field_office_hours
+        - field_timezone
+        - field_geolocation
+        - group_db_data
+      label: 'Location information'
+      parent_name: group_locations_and_contact_info
+      region: content
+      weight: 0
+      format_type: tooltip
+      format_settings:
+        show_label: '0'
+        tooltip_description: "Why can’t I edit this?\r\nThis content is automatically populated from centralized databases, and helps maintain consistent information across all of VA.gov."
+        description: ''
+        id: ''
+        classes: not-editable
+        show_empty_fields: 0
+        element: div
+        label_element: h3
+        attributes: ''
+    group_db_data:
+      children:
+        - field_non_va_official_name
+        - field_non_va_location_url
+        - field_office
+        - field_shared_vha_location
+      label: 'Facility CMS data'
+      parent_name: group_facility_data
+      region: content
+      weight: 10
+      format_type: fieldset
+      format_settings:
+        classes: not-editable
+        show_empty_fields: true
+        id: ''
+        description: '<p>These fields are not shown on <a href="https://www.va.gov" target="_blank">VA.gov</a>.</p>'
+        description_display: after
+  layout_builder:
+    enabled: false
+    allow_custom: false
+id: node.vba_facility.external_content
+targetEntityType: node
+bundle: vba_facility
+mode: external_content
+content:
+  field_address:
+    type: address_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 5
+    region: content
+  field_facility_locator_api_id:
+    type: string
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 3
+    region: content
+  field_facility_vba_classificatio:
+    type: list_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 4
+    region: content
+  field_geolocation:
+    type: geofield_default
+    label: above
+    settings:
+      output_format: wkt
+      output_escape: true
+    third_party_settings: {  }
+    weight: 9
+    region: content
+  field_non_va_location_url:
+    type: link
+    label: above
+    settings:
+      trim_length: 80
+      url_only: false
+      url_plain: false
+      rel: ''
+      target: ''
+    third_party_settings: {  }
+    weight: 8
+    region: content
+  field_non_va_official_name:
+    type: string
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 7
+    region: content
+  field_office:
+    type: entity_reference_label
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
+    weight: 9
+    region: content
+  field_office_hours:
+    type: office_hours
+    label: above
+    settings:
+      day_format: long
+      time_format: g
+      compress: false
+      grouped: false
+      show_empty: true
+      show_closed: all
+      closed_format: Closed
+      all_day_format: 'All day open'
+      separator:
+        days: '<br />'
+        grouped_days: ' - '
+        day_hours: ': '
+        hours_hours: '-'
+        more_hours: ', '
+      current_status:
+        position: ''
+        open_text: 'Currently open!'
+        closed_text: 'Currently closed'
+      exceptions:
+        title: 'Exception hours'
+        replace_exceptions: false
+        restrict_exceptions_to_num_days: 7
+        date_format: long
+        all_day_format: 'All day open'
+      timezone_field: ''
+      office_hours_first_day: ''
+      schema:
+        enabled: false
+    third_party_settings: {  }
+    weight: 7
+    region: content
+  field_phone_number:
+    type: telephone_link
+    label: above
+    settings:
+      title: ''
+    third_party_settings: {  }
+    weight: 6
+    region: content
+  field_shared_vha_location:
+    type: entity_reference_label
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
+    weight: 10
+    region: content
+  field_timezone:
+    type: basic_string
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 8
+    region: content
+hidden:
+  breadcrumbs: true
+  content_moderation_control: true
+  field_administration: true
+  field_alert_type: true
+  field_banner_content: true
+  field_banner_title: true
+  field_banner_types_description: true
+  field_cc_benefit_office_hours_va: true
+  field_cc_benefits_hotline: true
+  field_cc_cant_find_benefits: true
+  field_cc_get_updates_from_vba: true
+  field_cc_meta_tags: true
+  field_cc_national_spotlight_1: true
+  field_cc_vba_facility_overview: true
+  field_dismissible_option: true
+  field_intro_text: true
+  field_last_saved_by_an_editor: true
+  field_local_spotlight: true
+  field_location_services: true
+  field_media: true
+  field_operating_status_facility: true
+  field_operating_status_more_info: true
+  field_prepare_for_visit: true
+  field_show_banner: true
+  field_table_of_contents: true
+  flag_awaiting_csv: true
+  flag_awaiting_editor: true
+  flag_awaiting_redirect: true
+  flag_changed_name: true
+  flag_changed_title: true
+  flag_new: true
+  flag_removed_from_source: true
+  langcode: true
+  links: true
+  search_api_excerpt: true

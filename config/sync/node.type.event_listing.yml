@@ -10,6 +10,7 @@ dependencies:
 third_party_settings:
   menu_ui:
     available_menus:
+      - lovell-federal-health-care
       - outreach-and-events
       - va-alaska-health-care
       - va-albany-health-care
@@ -80,7 +81,6 @@ third_party_settings:
       - va-loma-linda-health-care
       - va-long-beach-health-care
       - va-louisville-health-care
-      - va-lovell-federal-health-care
       - va-madison-health-care
       - va-maine-health-care
       - va-manchester-health-care
@@ -154,7 +154,7 @@ third_party_settings:
       - va-wilmington-health-care
     parent: 'outreach-and-events:'
   node_title_help_text:
-    title_help: 'Add a page title with sentence case capitalization. (<a href="https://design.va.gov/content-style-guide/capitalization" target="_blank">See further guidelines</a>)'
+    title_help: ''
   node_revision_delete:
     minimum_revisions_to_keep: 50
     minimum_age_to_delete: 0

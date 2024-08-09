@@ -10,13 +10,13 @@ type: 'canonical_entities:node'
 pattern: '[node:field_office:entity:url:path]/[node:title]'
 selection_criteria:
   0b6e0428-a503-48ae-89c1-2e507c487efe:
-    id: node_type
-    bundles:
-      publication_listing: publication_listing
+    id: 'entity_bundle:node'
     negate: false
+    uuid: 0b6e0428-a503-48ae-89c1-2e507c487efe
     context_mapping:
       node: node
-    uuid: 0b6e0428-a503-48ae-89c1-2e507c487efe
+    bundles:
+      publication_listing: publication_listing
 selection_logic: and
 weight: -5
 relationships: {  }

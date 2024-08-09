@@ -9,6 +9,7 @@ dependencies:
     - field.field.node.q_a.field_answer
     - field.field.node.q_a.field_buttons
     - field.field.node.q_a.field_contact_information
+    - field.field.node.q_a.field_last_saved_by_an_editor
     - field.field.node.q_a.field_other_categories
     - field.field.node.q_a.field_primary_category
     - field.field.node.q_a.field_related_benefit_hubs
@@ -25,65 +26,68 @@ bundle: q_a
 mode: support_services_listing
 content:
   content_moderation_control:
-    weight: 0
-    region: content
     settings: {  }
     third_party_settings: {  }
+    weight: 0
+    region: content
   field_administration:
-    weight: 5
+    type: entity_reference_label
     label: above
     settings:
       link: true
     third_party_settings: {  }
-    type: entity_reference_label
+    weight: 5
     region: content
   field_alert_single:
-    weight: 2
+    type: entity_reference_revisions_entity_view
     label: above
     settings:
       view_mode: default
       link: ''
     third_party_settings: {  }
-    type: entity_reference_revisions_entity_view
+    weight: 2
     region: content
   field_answer:
     type: entity_reference_revisions_entity_view
-    weight: 1
     label: above
     settings:
       view_mode: default
       link: ''
     third_party_settings: {  }
+    weight: 1
     region: content
   field_buttons:
-    weight: 3
+    type: entity_reference_revisions_entity_view
     label: above
     settings:
       view_mode: default
       link: ''
     third_party_settings: {  }
-    type: entity_reference_revisions_entity_view
+    weight: 3
     region: content
   field_contact_information:
     type: entity_reference_revisions_entity_view
-    weight: 7
     label: above
     settings:
       view_mode: default
       link: ''
     third_party_settings: {  }
+    weight: 7
     region: content
   links:
-    weight: 6
-    region: content
     settings: {  }
     third_party_settings: {  }
+    weight: 6
+    region: content
 hidden:
+  breadcrumbs: true
   field_administration: true
+  field_last_saved_by_an_editor: true
   field_other_categories: true
   field_primary_category: true
   field_related_benefit_hubs: true
   field_related_information: true
   field_standalone_page: true
   field_tags: true
+  langcode: true
   search_api_excerpt: true

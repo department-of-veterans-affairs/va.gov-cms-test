@@ -2,7 +2,16 @@ uuid: bbd2be72-5d09-4e7d-94c8-ddecbcc1f481
 langcode: en
 status: true
 dependencies:
+  config:
+    - block_content.type.promo
+    - node.type.landing_page
+    - node.type.page
+    - node.type.support_service
   module:
+    - block_content
+    - file
+    - node
+    - node_link_report
     - va_gov_backend
 third_party_settings:
   va_gov_backend:
@@ -12,6 +21,7 @@ label: 'Content creator - Benefits hubs'
 weight: -7
 is_admin: null
 permissions:
+  - 'access block library'
   - 'access files overview'
   - 'create landing_page content'
   - 'create page content'

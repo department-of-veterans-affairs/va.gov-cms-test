@@ -9,7 +9,7 @@ dependencies:
     - field.field.media.image.field_media_submission_guideline
     - field.field.media.image.field_owner
     - field.field.media.image.image
-    - image.style.full_content_width
+    - image.style.large
     - media.type.image
   module:
     - image
@@ -22,12 +22,14 @@ mode: embedded
 content:
   image:
     type: image
-    weight: 0
     label: hidden
     settings:
-      image_style: full_content_width
       image_link: ''
+      image_style: large
+      image_loading:
+        attribute: lazy
     third_party_settings: {  }
+    weight: 0
     region: content
 hidden:
   created: true
@@ -35,6 +37,7 @@ hidden:
   field_media_in_library: true
   field_media_submission_guideline: true
   field_owner: true
+  langcode: true
   name: true
   search_api_excerpt: true
   thumbnail: true

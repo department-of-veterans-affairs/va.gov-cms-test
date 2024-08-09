@@ -1,0 +1,18 @@
+on:
+  workflow_run:
+    workflows:
+      - '**'
+    types:
+      - completed
+
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Send GitHub Actions metrics to DataDog
+        uses: int128/datadog-actions-metrics@4460acd508a4c5aa13f859f0e9d7daa95eb04a1c # v1.89.0
+        with:
+          datadog-api-key: ${{ secrets.DATADOG_API_KEY }}
+          collect-job-metrics: true
+          datadog-site: ddog-gov.com

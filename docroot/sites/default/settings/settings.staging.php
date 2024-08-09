@@ -2,6 +2,8 @@
 
 // phpcs:ignoreFile
 
+$settings['va_gov_environment']['environment'] = 'staging';
+
 include dirname(__FILE__) . '/settings.brd_common.php';
 
 $settings['jenkins_build_job_path'] = '/job/builds/job/content-build-content-only-vagov' . $settings['jenkins_build_env'];
@@ -15,26 +17,27 @@ $config['config_split.config_split.local']['status'] = FALSE;
 $config['config_split.config_split.tugboat']['status'] = FALSE;
 
 $config['system.performance']['cache']['page']['use_internal'] = TRUE;
-$config['system.performance']['css']['preprocess'] = TRUE;
-$config['system.performance']['css']['gzip'] = TRUE;
-$config['system.performance']['js']['preprocess'] = TRUE;
-$config['system.performance']['js']['gzip'] = TRUE;
+$config['system.performance']['css']['preprocess'] = FALSE;
+$config['system.performance']['css']['gzip'] = FALSE;
+$config['system.performance']['js']['preprocess'] = FALSE;
+$config['system.performance']['js']['gzip'] = FALSE;
 $config['system.performance']['response']['gzip'] = TRUE;
 $config['views.settings']['ui']['show']['sql_query']['enabled'] = FALSE;
 $config['views.settings']['ui']['show']['performance_statistics'] = FALSE;
 $config['system.logging']['error_level'] = 'none';
-$config['environment_indicator.indicator']['bg_color'] = '#FEBB08'; // $color-gold-light.
-$config['environment_indicator.indicator']['fg_color'] = '#000000';
+$config['environment_indicator.indicator']['bg_color'] = '#F9C642';
+$config['environment_indicator.indicator']['fg_color'] = '#212121';
 $config['environment_indicator.indicator']['name'] = 'Staging';
 
 $webhost_on_cli = 'https://staging.cms.va.gov';
+$settings['webhost'] = $webhost_on_cli;
 
 $settings['trusted_host_patterns'] = [
     // For ALB/ELB Healthchecks.
     '10\.199.*',
     '10\.247.*',
     'localhost',
-    'va-gov-cms.lndo.site',
+    'va-gov-cms.ddev.site',
     'stg.cms.va.gov',
     'staging.cms.va.gov',
     'test.staging.cms.va.gov',
@@ -43,3 +46,7 @@ $settings['trusted_host_patterns'] = [
 
 $settings['va_gov_frontend_url'] = 'https://staging.va.gov';
 $settings['va_gov_frontend_build_type'] = 'brd';
+$settings['github_actions_deploy_env'] = 'staging';
+
+// Public asset S3 location
+$public_asset_s3_base_url = "https://dsva-vagov-staging-cms-files.s3.us-gov-west-1.amazonaws.com";

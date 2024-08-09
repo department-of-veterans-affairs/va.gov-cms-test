@@ -8,6 +8,7 @@ dependencies:
     - field.field.node.centralized_content.field_administration
     - field.field.node.centralized_content.field_applied_to
     - field.field.node.centralized_content.field_content_block
+    - field.field.node.centralized_content.field_last_saved_by_an_editor
     - field.field.node.centralized_content.field_product
     - node.type.centralized_content
   module:
@@ -19,27 +20,30 @@ bundle: centralized_content
 mode: teaser
 content:
   content_moderation_control:
-    weight: -20
     settings: {  }
     third_party_settings: {  }
+    weight: -20
     region: content
   field_content_block:
     type: entity_reference_revisions_entity_view
-    weight: 1
-    region: content
     label: above
     settings:
       view_mode: default
       link: ''
     third_party_settings: {  }
-  links:
-    weight: 0
+    weight: 1
     region: content
+  links:
     settings: {  }
     third_party_settings: {  }
+    weight: 0
+    region: content
 hidden:
   body: true
+  breadcrumbs: true
   field_administration: true
   field_applied_to: true
+  field_last_saved_by_an_editor: true
   field_product: true
+  langcode: true
   search_api_excerpt: true

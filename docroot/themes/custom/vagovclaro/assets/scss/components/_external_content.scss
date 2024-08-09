@@ -1,0 +1,34 @@
+#block-vagovclaro-content {
+  .external-content {
+    .external-content--message {
+      margin-bottom: 1rem;
+    }
+
+    .field--label-above {
+      margin-bottom: 0.25rem;
+
+      .field__label {
+        text-transform: none;
+      }
+    }
+  }
+}
+
+#block-vagovclaro-content {
+  .field--name-field-va-health-connect-phone,
+  .field--name-field-vamc-ehr-system {
+    .field__label {
+      text-transform: none;
+    }
+  }
+}
+
+.role-not-admin {
+  .admin-editable {
+    display: none;
+  }
+}
+
+#edit-field-va-health-connect-phone-0-value--description {
+  color: #000;
+}

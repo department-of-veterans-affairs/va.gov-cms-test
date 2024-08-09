@@ -2,6 +2,8 @@
 
 // phpcs:ignoreFile
 
+$settings['va_gov_environment']['environment'] = 'prod';
+
 include dirname(__FILE__) . '/settings.brd_common.php';
 
 $settings['jenkins_build_job_path'] = '/job/deploys/job/vets-gov-autodeploy-content-build';
@@ -23,23 +25,31 @@ $config['system.performance']['response']['gzip'] = TRUE;
 $config['views.settings']['ui']['show']['sql_query']['enabled'] = FALSE;
 $config['views.settings']['ui']['show']['performance_statistics'] = FALSE;
 $config['system.logging']['error_level'] = 'none';
-$config['environment_indicator.indicator']['bg_color'] = '#082142'; // Dark blue.
+$config['environment_indicator.indicator']['bg_color'] = '#112E51';
 $config['environment_indicator.indicator']['fg_color'] = '#ffffff';
 $config['environment_indicator.indicator']['name'] = 'Production';
 
 $webhost_on_cli = 'https://prod.cms.va.gov';
+$settings['webhost'] = $webhost_on_cli;
 
 $settings['trusted_host_patterns'] = [
     // For ALB/ELB Healthchecks.
     '10\.199.*',
     '10\.247.*',
     'localhost',
-    'va-gov-cms.lndo.site',
+    'va-gov-cms.ddev.site',
     'prod.cms.va.gov',
     'test.prod.cms.va.gov',
     'cms.va.gov',
     '.*\.us-gov-west-1\.elb\.amazonaws\.com',
 ];
 
-$settings['va_gov_frontend_build_type'] = 'brd';
 $settings['va_gov_frontend_url'] = 'https://www.va.gov';
+$settings['va_gov_frontend_build_type'] = 'brd';
+$settings['github_actions_deploy_env'] = 'prod';
+
+// Settings supporting broken link report import.
+$settings['broken_link_report_import_enabled'] = TRUE;
+
+// Public asset S3 location
+$public_asset_s3_base_url = "https://dsva-vagov-prod-cms-files.s3.us-gov-west-1.amazonaws.com";

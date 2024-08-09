@@ -1,0 +1,20 @@
+uuid: 4a5dd01c-cf15-4124-89f7-535d1a063bdc
+langcode: en
+status: true
+dependencies:
+  module:
+    - va_gov_user
+  theme:
+    - vagovclaro
+id: vagovclaro_user_sections
+theme: vagovclaro
+region: content
+weight: -10
+provider: null
+plugin: va_gov_user_sections
+settings:
+  id: va_gov_user_sections
+  label: Sections
+  label_display: visible
+  provider: va_gov_user
+visibility: {  }

@@ -1,0 +1,243 @@
+.field--name-field-phone-number {
+  .form-type-textfield {
+    float: left;
+  }
+}
+
+.field--name-field-phone-extension {
+  .form-type-textfield {
+    float: left;
+    margin-left: 20px;
+  }
+}
+
+.field--name-field-phone-label {
+  clear: both;
+}
+
+.paragraph-type--service-location-address {
+  .field--type-address {
+    display: none;
+  }
+}
+
+.field--type-smartdate {
+  .smartdate--widget {
+    .allday-label {
+      clear: both;
+      display: block;
+      float: none;
+
+      input.allday {
+        margin: 0.65em 0.5em 0 6em;
+      }
+    }
+  }
+}
+
+#field-clp-spotlight-cta-add-more-wrapper,
+#field-clp-spotlight-cta-add-more-wrapper,
+.field--name-field-primary-call-to-action,
+.field--name-field-clp-faq-paragraphs {
+  .clearfix::after {
+    clear: none;
+  }
+
+  [id^='edit-field-tags-0-subform-field-non-beneficiares-wrapper'] {
+    display: none;
+  }
+}
+
+.field--name-field-service-location .paragraph-type-title {
+  display: none;
+}
+
+.field--name-field-facility-service-hours {
+  .tablefield-addrow.button,
+  .seven-details {
+    display: none;
+  }
+}
+
+#edit-group-facility-api {
+  .field--name-field-facility-hours {
+    input {
+      pointer-events: none;
+    }
+  }
+}
+
+.field--name-field-facility-hours table tr td p {
+  margin: 0;
+}
+
+// Fix autocomplete fields breaking container on smaller screens
+.claro-autocomplete input {
+  width: 100%;
+}
+
+// Right rail field fixes
+#edit-field-links-wrapper {
+  .claro-autocomplete input {
+    width: 100%;
+  }
+}
+
+#edit-field-support-services {
+  .ief-entity-table {
+    margin-left: calc(var(--space-l) * -1);
+    margin-right: calc(var(--space-l) * -1);
+  }
+
+  .ief-row-entity td:last-child {
+    padding-right: 0;
+  }
+}
+
+.field--widget-inline-entity-form-complex-table-view-mode .container-inline {
+  input {
+    margin-top: 0;
+  }
+}
+
+// Adjusting wrapper around office hours fields
+#locations-and-contact-information {
+  .fieldset__wrapper {
+    margin: var(--space-xs);
+  }
+}
+
+// Hide old office hours field on node view
+.vha-facility-nonclinical-service .field--name-field-facility-service-hours {
+  display: none;
+}
+
+// Adjusting spacing on office hours fields
+#edit-field-office-hours,
+#edit-field-hours-for-copay-inquiries-,
+#edit-field-service-location-0-subform-field-office-hours,
+.field--type-office-hours.form-wrapper {
+  margin-bottom: 0;
+
+  tr {
+    th:last-child,
+    td:last-child {
+      display: none;
+    }
+  }
+
+  td {
+    padding: 0;
+
+    &:nth-child(4) label {
+      border: 0;
+      clip: rect(1px, 1px, 1px, 1px);
+      height: 1px;
+      margin: -1px;
+      overflow: hidden;
+      padding: 0;
+      position: absolute;
+      width: 1px;
+    }
+  }
+
+  table,
+  .claro-details__wrapper {
+    margin: 0;
+  }
+
+  .form-item__label {
+    margin-left: var(--space-s);
+    margin-right: var(--space-s);
+  }
+
+  .form-type--textfield {
+    margin-right: var(--space-s);
+  }
+
+  .form-element {
+    font-size: var(--va-subsection-xs);
+    height: calc(var(--spacing-xs)*2 + var(--input-border-size)*2 + var(--va-subsection-xs));
+    line-height: var(--va-subsection-xs);
+    min-height: calc(var(--spacing-xs)*2 + var(--input-border-size)*2 + var(--va-subsection-xs));
+    padding: var(--spacing-xs);
+  }
+
+  .form-element--type-select {
+    background-position: 124% 50%;
+    padding-right: calc(2rem - var(--spacing-xxs));
+  }
+
+  .form-items-inline {
+    display: flex;
+    flex-direction: column;
+
+    @include breakpoint('lg') {
+      flex-direction: row;
+    }
+  }
+
+  .form-items-inline > .form-item {
+    margin: 0 0 var(--space-xs);
+
+    @include breakpoint('lg') {
+      margin: 0 var(--space-xs) 0 0;
+    }
+  }
+}
+
+#edit-field-cc-above-top-of-page-wrapper {
+  label {
+    display: none;
+  }
+}
+//Geofield Map 'permissions' visibility
+.field--widget-geofield-map {
+  .geofield-map-message {
+    display: none;
+  }
+}
+
+body:not(.role-admin) {
+  .field--widget-geofield-map {
+    .geofield-map-widget,
+    .leaflet-marker-icon {
+      pointer-events: none;
+    }
+
+    .js-form-type-textfield {
+      display: none;
+    }
+  }
+
+  .field--widget-geofield-latlon {
+    display: none;
+  }
+}
+
+.field--name-field-magichead-heading {
+  font-weight: 600;
+}
+
+.magichead .fieldset__label {
+  @include va-subsection-heading;
+}
+
+.magichead .fieldset__wrapper {
+  margin-left: var(--spacing-xl);
+}
+
+.form-item--media-0-fields-image-0-alt,
+.form-item--image-0-alt {
+  .form-item--error-message {
+    margin: 5px 0;
+  }
+}
+
+#edit-field-publish-to-outreach-cal-wrapper div.form-item--field-publish-to-outreach-cal-value {
+  margin-left: auto;
+}
+
+#edit-field-publish-to-outreach-cal-wrapper label {
+  margin-left: var(--spacing-xs);
+}
