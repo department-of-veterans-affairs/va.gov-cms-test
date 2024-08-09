@@ -11,6 +11,11 @@ def shouldBail() {
 pipeline {
   agent any
 
+  parameters {
+      booleanParam(name: 'SKIP_BUILD', defaultValue: false, description: 'Set to true to skip the stage')
+      booleanParam(name: 'SKIP_DEPLOY', defaultValue: false, description: 'Set to true to skip the stage')
+  }
+
   stages {
     stage('Checkout Code') {
       steps {
@@ -22,7 +27,7 @@ pipeline {
 
       when {
         expression {
-          !shouldBail()
+          !shouldBail() || return !params.SKIP_BUILD
         }
       }
 
@@ -60,7 +65,7 @@ pipeline {
     stage('Deploy to staging') {
       when {
         expression {
-          !shouldBail()
+          !shouldBail() || return !params.SKIP_DEPLOY
         }
       }
       steps {
