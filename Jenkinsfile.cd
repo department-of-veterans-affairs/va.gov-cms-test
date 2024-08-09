@@ -27,7 +27,7 @@ pipeline {
 
       when {
         expression {
-          !shouldBail() || !params.SKIP_BUILD
+          !shouldBail() || params.SKIP_BUILD
         }
       }
 
@@ -65,7 +65,7 @@ pipeline {
     stage('Deploy to staging') {
       when {
         expression {
-          !shouldBail() || !params.SKIP_DEPLOY
+          !shouldBail() || params.SKIP_DEPLOY
         }
       }
       steps {
