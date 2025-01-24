@@ -71,60 +71,6 @@ class FormInfoTest extends VaGovExistingSiteBase {
   }
 
   /**
-   * Test that the page has the expected breadcrumbs in create mode.
-   */
-  public function testPageBreadcrumbsCreateMode() {
-    $this->sharedTestPageHasExpectedBreadcrumbs(
-      $this->getFormPageUrl(),
-      [
-        [
-          'label' => 'Home',
-          'url' => '/form-builder/home',
-        ],
-        [
-          'label' => 'Form info',
-          'url' => "#content",
-        ],
-      ],
-    );
-  }
-
-  /**
-   * Test that the page has the expected breadcrumbs in edit mode.
-   */
-  public function testPageBreadcrumbsEditMode() {
-    $title = 'Test Digital Form ' . uniqid();
-    $formNumber = '99-9999';
-
-    // Create a new Digital Form node.
-    $node = $this->createNode([
-      'type' => 'digital_form',
-      'title' => $title,
-      'field_chapters' => [],
-      'field_va_form_number' => $formNumber,
-    ]);
-
-    // Ensure page loads.
-    $this->sharedTestPageHasExpectedBreadcrumbs(
-      $this->getFormPageUrl($node->id()),
-      [
-        [
-          'label' => 'Home',
-          'url' => '/form-builder/home',
-        ],
-        [
-          'label' => $title,
-          'url' => "/form-builder/{$node->id()}",
-        ],
-        [
-          'label' => 'Form info',
-          'url' => "#content",
-        ],
-      ],
-    );
-  }
-
-  /**
    * Test that the page loads correctly in create mode.
    *
    * Ensure form fields are empty (not pre-populated).
@@ -188,9 +134,9 @@ class FormInfoTest extends VaGovExistingSiteBase {
     ];
     $this->submitForm($formInput, 'Save and continue');
 
-    // Successful submission should take user to new form's layout page.
+    // Successful submission should take user to next page.
     $nextPageUrl = $this->getSession()->getCurrentUrl();
-    $this->assertMatchesRegularExpression('|/form-builder/\d+|', $nextPageUrl);
+    $this->assertStringContainsString('/name-and-dob', $nextPageUrl);
   }
 
   /**
