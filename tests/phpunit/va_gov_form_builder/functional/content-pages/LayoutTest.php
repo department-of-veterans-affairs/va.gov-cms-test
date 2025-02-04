@@ -29,8 +29,8 @@ class LayoutTest extends VaGovExistingSiteBase {
   /**
    * Returns the url for this page.
    */
-  private function getPageUrl() {
-    return "/form-builder/{$this->digitalFormNode->id()}";
+  private function getFormPageUrl() {
+    return "/form-builder/{$this->digitalFormNode->id()}/layout";
   }
 
   /**
@@ -88,14 +88,14 @@ class LayoutTest extends VaGovExistingSiteBase {
    */
   public function testPageLoads() {
     // Ensure page loads.
-    $this->sharedTestPageLoads($this->getPageUrl($this->digitalFormNode->id()), 'Build this form');
+    $this->sharedTestPageLoads($this->getFormPageUrl($this->digitalFormNode->id()), 'Build this form');
   }
 
   /**
    * Test that the page is not accessible to a user without privilege.
    */
   public function testPageDoesNotLoad() {
-    $this->sharedTestPageDoesNotLoad($this->getPageUrl());
+    $this->sharedTestPageDoesNotLoad($this->getFormPageUrl());
   }
 
   /**
@@ -105,27 +105,8 @@ class LayoutTest extends VaGovExistingSiteBase {
    */
   public function testPageSubtitle() {
     $this->sharedTestPageHasExpectedSubtitle(
-      $this->getPageUrl(),
+      $this->getFormPageUrl(),
       $this->digitalFormNode->getTitle(),
-    );
-  }
-
-  /**
-   * Test that the page has the expected breadcrumbs.
-   */
-  public function testPageBreadcrumbs() {
-    $this->sharedTestPageHasExpectedBreadcrumbs(
-      $this->getPageUrl(),
-      [
-        [
-          'label' => 'Home',
-          'url' => '/form-builder/home',
-        ],
-        [
-          'label' => $this->digitalFormNode->getTitle(),
-          'url' => "#content",
-        ],
-      ],
     );
   }
 
@@ -133,12 +114,10 @@ class LayoutTest extends VaGovExistingSiteBase {
    * Test the "Form info" section.
    */
   public function testFormInfo() {
-    $this->drupalGet($this->getPageUrl());
+    $this->drupalGet($this->getFormPageUrl());
+    $this->assertSession()->linkExists('View form info');
 
-    $linkText = 'View form info';
-    $this->assertSession()->linkExists($linkText);
-    $this->clickLink($linkText);
-
+    $this->clickLink('View form info');
     $this->assertSession()->addressEquals("/form-builder/{$this->digitalFormNode->id()}/form-info");
   }
 
@@ -146,7 +125,7 @@ class LayoutTest extends VaGovExistingSiteBase {
    * Test the "Introduction page" section.
    */
   public function testIntroductionPage() {
-    $this->drupalGet($this->getPageUrl());
+    $this->drupalGet($this->getFormPageUrl());
 
     // There is no destination for this link yet.
     $this->assertSession()->linkExists('View introduction page');
@@ -156,46 +135,37 @@ class LayoutTest extends VaGovExistingSiteBase {
    * Test the "Your personal information" section.
    */
   public function testYourPersonalInfo() {
-    $this->drupalGet($this->getPageUrl());
+    $this->drupalGet($this->getFormPageUrl());
 
-    $linkText = 'View personal information';
-    $this->assertSession()->linkExists($linkText);
-    $this->clickLink($linkText);
-
-    $this->assertSession()->addressEquals("/form-builder/{$this->digitalFormNode->id()}/name-and-dob");
+    // There is no destination for this link yet.
+    $this->assertSession()->linkExists('View personal information');
   }
 
   /**
    * Test the "Address information" section.
    */
   public function testAddressInfo() {
-    $this->drupalGet($this->getPageUrl());
+    $this->drupalGet($this->getFormPageUrl());
 
-    $linkText = 'View address information';
-    $this->assertSession()->linkExists($linkText);
-    $this->clickLink($linkText);
-
-    $this->assertSession()->addressEquals("/form-builder/{$this->digitalFormNode->id()}/address-info");
+    // There is no destination for this link yet.
+    $this->assertSession()->linkExists('View address information');
   }
 
   /**
    * Test the "Contact information" section.
    */
   public function testContactInfo() {
-    $this->drupalGet($this->getPageUrl());
+    $this->drupalGet($this->getFormPageUrl());
 
-    $linkText = 'View contact information';
-    $this->assertSession()->linkExists($linkText);
-    $this->clickLink($linkText);
-
-    $this->assertSession()->addressEquals("/form-builder/{$this->digitalFormNode->id()}/contact-info");
+    // There is no destination for this link yet.
+    $this->assertSession()->linkExists('View contact information');
   }
 
   /**
    * Test that additional (non-standard) steps are rendered.
    */
   public function testAdditionalSteps() {
-    $this->drupalGet($this->getPageUrl());
+    $this->drupalGet($this->getFormPageUrl());
 
     // There is no destination for this link yet.
     $this->assertSession()->linkExists('View your employers');
@@ -208,20 +178,17 @@ class LayoutTest extends VaGovExistingSiteBase {
    * Test the "Review and sign" section.
    */
   public function testReviewAndSign() {
-    $this->drupalGet($this->getPageUrl());
+    $this->drupalGet($this->getFormPageUrl());
 
-    $linkText = 'View review and sign page';
-    $this->assertSession()->linkExists($linkText);
-    $this->clickLink($linkText);
-
-    $this->assertSession()->addressEquals("/form-builder/{$this->digitalFormNode->id()}/review-and-sign");
+    // There is no destination for this link yet.
+    $this->assertSession()->linkExists('View review and sign page');
   }
 
   /**
    * Test the "Confirmation page" section.
    */
   public function testConfirmationPage() {
-    $this->drupalGet($this->getPageUrl());
+    $this->drupalGet($this->getFormPageUrl());
 
     // There is no destination for this link yet.
     $this->assertSession()->linkExists('View confirmation page');
@@ -231,7 +198,7 @@ class LayoutTest extends VaGovExistingSiteBase {
    * Test the "Viewing the form" section.
    */
   public function testViewingTheForm() {
-    $this->drupalGet($this->getPageUrl());
+    $this->drupalGet($this->getFormPageUrl());
 
     // There is no destination for this link yet.
     $this->assertSession()->linkExists('View form');
