@@ -6,7 +6,7 @@ use tests\phpunit\va_gov_form_builder\Traits\TestPageLoads;
 use Tests\Support\Classes\VaGovExistingSiteBase;
 
 /**
- * Functional test of the Review and Sign page.
+ * Functional test of the Review-and-sign page.
  *
  * @group functional
  * @group all
@@ -73,7 +73,7 @@ class ReviewAndSignTest extends VaGovExistingSiteBase {
    */
   public function testPageLoads() {
     // Ensure page loads.
-    $this->sharedTestPageLoads($this->getPageUrl($this->digitalFormNode->id()), 'Reviewing the submission');
+    $this->sharedTestPageLoads($this->getPageUrl(), 'Reviewing the submission');
   }
 
   /**
@@ -100,7 +100,7 @@ class ReviewAndSignTest extends VaGovExistingSiteBase {
    */
   public function testPageBreadcrumbs() {
     $this->sharedTestPageHasExpectedBreadcrumbs(
-      $this->getPageUrl($this->digitalFormNode->id()),
+      $this->getPageUrl(),
       [
         [
           'label' => 'Home',
@@ -119,11 +119,11 @@ class ReviewAndSignTest extends VaGovExistingSiteBase {
   }
 
   /**
-   * Test the button.
+   * Test the primary button.
    */
-  public function testButton() {
+  public function testPrimaryButton() {
     $this->drupalGet($this->getPageUrl());
-    $this->click('a#form-builder-return-to-layout-button');
+    $this->click('a#form-builder-non-editable-pattern-primary-button');
     $this->assertSession()->addressEquals("/form-builder/{$this->digitalFormNode->id()}");
   }
 
