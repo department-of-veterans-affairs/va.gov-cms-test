@@ -4,7 +4,6 @@ namespace Drupal\va_gov_backend\Deploy\Plugin;
 
 use Drupal\va_gov_backend\Deploy\LoadMaintenanceFileTrait;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
 
 /**
@@ -31,12 +30,8 @@ class MaintenanceMode implements DeployPluginInterface {
     $html = preg_replace('/\{\{\s*update_duration\s*\}\}/', $expected_update_duration, $html);
     $headers = [
       'Content-Type' => 'text/html',
-      'Retry-After' => 120,
     ];
-    $response = new Response($html, 503, $headers);
-    $response->send();
-    // We need to throw an exception to stop the request.
-    throw new ServiceUnavailableHttpException();
+    throw new ServiceUnavailableHttpException(120, $html, NULL, 503, $headers);
   }
 
 }
