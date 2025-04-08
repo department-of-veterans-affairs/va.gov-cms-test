@@ -46,9 +46,9 @@ class DigitalFormsServiceTest extends VaGovUnitTestBase {
   }
 
   /**
-   * Helper function to DRY up expectation setup.
+   * Helper function to DRY up expectation setup for getDigitalForms.
    */
-  private function setUpMockQuery($publishedOnly, $hasResults = TRUE) {
+  private function setUpMockQueryGetDigitalForms($publishedOnly, $hasResults = TRUE) {
     // Mock the entity storage.
     $entityStorage = $this->createMock(EntityStorageInterface::class);
 
@@ -77,9 +77,16 @@ class DigitalFormsServiceTest extends VaGovUnitTestBase {
     }
 
     if ($hasResults) {
-      $query->expects($this->once())
-        ->method('execute')
-        ->willReturn([1, 2]);
+      if ($publishedOnly) {
+        $query->expects($this->once())
+          ->method('execute')
+          ->willReturn([1]);
+      }
+      else {
+        $query->expects($this->once())
+          ->method('execute')
+          ->willReturn([1, 2]);
+      }
     }
     else {
       $query->expects($this->once())
@@ -93,13 +100,31 @@ class DigitalFormsServiceTest extends VaGovUnitTestBase {
       ->willReturn($query);
 
     if ($hasResults) {
-      $entityStorage->expects($this->once())
-        ->method('loadMultiple')
-        ->with([1, 2])
-        ->willReturn([
-          1 => $this->createMock('Drupal\node\NodeInterface'),
-          2 => $this->createMock('Drupal\node\NodeInterface'),
-        ]);
+      $node1 = $this->createMock('Drupal\node\NodeInterface');
+      $node1->method('getType')
+        ->willReturn('digital_form');
+
+      $node2 = $this->createMock('Drupal\node\NodeInterface');
+      $node2->method('getType')
+        ->willReturn('digital_form');
+
+      if ($publishedOnly) {
+        $entityStorage->expects($this->once())
+          ->method('loadMultiple')
+          ->with([1])
+          ->willReturn([
+            1 => $node1,
+          ]);
+      }
+      else {
+        $entityStorage->expects($this->once())
+          ->method('loadMultiple')
+          ->with([1, 2])
+          ->willReturn([
+            1 => $node1,
+            2 => $node2,
+          ]);
+      }
     }
 
     // Mock the entity type manager.
@@ -127,10 +152,12 @@ class DigitalFormsServiceTest extends VaGovUnitTestBase {
   public function testGetDigitalFormsPublishedOnlyTrue() {
     // We will call the method with $publishedOnly = TRUE,
     // so we set up expectations accordingly.
-    $this->setUpMockQuery(TRUE);
+    $this->setUpMockQueryGetDigitalForms(TRUE);
 
     // Call the method, which asserts expectations set in setup.
-    $this->digitalFormsService->getDigitalForms(TRUE);
+    $result = $this->digitalFormsService->getDigitalForms(TRUE);
+    // Assert one result is returned.
+    $this->assertCount(1, $result);
   }
 
   /**
@@ -143,10 +170,12 @@ class DigitalFormsServiceTest extends VaGovUnitTestBase {
   public function testGetDigitalFormsPublishedOnlyFalse() {
     // We will call the method with $publishedOnly = FALSE,
     // so we set up expectations accordingly.
-    $this->setUpMockQuery(FALSE);
+    $this->setUpMockQueryGetDigitalForms(FALSE);
 
     // Call the method, which asserts expectations set in setup.
-    $this->digitalFormsService->getDigitalForms(FALSE);
+    $result = $this->digitalFormsService->getDigitalForms(FALSE);
+    // Assert two results are returned.
+    $this->assertCount(2, $result);
   }
 
   /**
@@ -159,10 +188,12 @@ class DigitalFormsServiceTest extends VaGovUnitTestBase {
     // and we want to ensure that the expectations are set up
     // as though the value were set to TRUE, which is the
     // expected default.
-    $this->setUpMockQuery(TRUE);
+    $this->setUpMockQueryGetDigitalForms(TRUE);
 
     // Call the method, which asserts expectations set in setup.
-    $this->digitalFormsService->getDigitalForms();
+    $result = $this->digitalFormsService->getDigitalForms();
+    // Assert one result is returned.
+    $this->assertcount(1, $result);
   }
 
   /**
@@ -183,13 +214,165 @@ class DigitalFormsServiceTest extends VaGovUnitTestBase {
     // 2. That `$this->entityTypeManager->getStorage('node')`
     // will be called only once, rather than twice,
     // since there will be no need to call `loadMultiple`.
-    $this->setUpMockQuery(TRUE, FALSE);
+    $this->setUpMockQueryGetDigitalForms(TRUE, FALSE);
 
     // Call the method, which asserts expectations set in setup.
     $result = $this->digitalFormsService->getDigitalForms(TRUE);
-
-    // Additionally, assert the function returns no results.
+    // Assert the function returns no results.
     $this->assertCount(0, $result);
+  }
+
+  /**
+   * Helper function to DRY up expectation setup for getDigitalForm.
+   *
+   * @param \Drupal\node\NodeInterface $node
+   *   The mock node to return from entity storage.
+   */
+  private function setUpMockQueryGetDigitalForm($node = NULL) {
+    if (!$node) {
+      $node = $this->createMock('Drupal\node\NodeInterface');
+    }
+
+    // Mock the entity storage.
+    $entityStorage = $this->createMock(EntityStorageInterface::class);
+    $entityStorage->expects($this->once())
+      ->method('load')
+      ->willReturnMap([
+        ['1', $node],
+      ]);
+
+    // Mock the entity type manager.
+    $this->entityTypeManager->expects($this->once())
+      ->method('getStorage')
+      ->with('node')
+      ->willReturn($entityStorage);
+  }
+
+  /**
+   * Tests getDigitalForm() with $nid of digital_form node.
+   */
+  public function testGetDigitalFormWithCorrectNodeType() {
+    $node = $this->createMock('Drupal\node\NodeInterface');
+    $node->method('getType')
+      ->willReturn('digital_form');
+
+    $this->setUpMockQueryGetDigitalForm($node);
+
+    // Call the method with a nid that exists.
+    $digitalForm = $this->digitalFormsService->getDigitalForm('1');
+    $this->assertNotEmpty($digitalForm);
+  }
+
+  /**
+   * Tests getDigitalForm() with $nid of some other node type.
+   */
+  public function testGetDigitalFormWithIncorrectNodeType() {
+    $node = $this->createMock('Drupal\node\NodeInterface');
+    $node->method('getType')
+      ->willReturn('some_other_node_type');
+
+    $this->setUpMockQueryGetDigitalForm($node);
+
+    // Call the method with a nid that exists.
+    $digitalForm = $this->digitalFormsService->getDigitalForm('1');
+    $this->assertEmpty($digitalForm);
+  }
+
+  /**
+   * Tests getDigitalForm() with $nid of non-existent node.
+   */
+  public function testGetDigitalFormReturnsNull() {
+    $this->setUpMockQueryGetDigitalForm();
+
+    // Call the method with a nid that does not exist.
+    $digitalForm = $this->digitalFormsService->getDigitalForm('99999');
+    $this->assertEmpty($digitalForm);
+  }
+
+  /**
+   * Tests wrapDigitalForm() with `digital_form` $node passed in.
+   */
+  public function testWrapDigitalFormCorrectNodeType() {
+    $node = $this->createMock('Drupal\node\NodeInterface');
+    $node->method('getType')
+      ->willReturn('digital_form');
+
+    // Call the method and assert a DigitalForm object is returned.
+    $digitalForm = $this->digitalFormsService->wrapDigitalForm($node);
+    $this->assertNotEmpty($digitalForm);
+  }
+
+  /**
+   * Tests wrapDigitalForm() with other type of $node passed in.
+   */
+  public function testWrapDigitalFormIncorrectNodeType() {
+    $node = $this->createMock('Drupal\node\NodeInterface');
+    $node->method('getType')
+      ->willReturn('some_other_node_type');
+
+    // Call the method and assert a DigitalForm object is returned.
+    $digitalForm = $this->digitalFormsService->wrapDigitalForm($node);
+    $this->assertEmpty($digitalForm);
+  }
+
+  /**
+   * Helper function to DRY up expectation setup for createDigitalForm.
+   *
+   * @param array|null $fields
+   *   The fields that should be on the call to `create`.
+   */
+  private function setUpMockQueryCreateDigitalForm($fields = NULL) {
+    // Mock the entity storage.
+    $entityStorage = $this->createMock(EntityStorageInterface::class);
+    if (empty($fields)) {
+      $entityStorage->expects($this->once())
+        ->method('create')
+        ->willReturn(NULL);
+    }
+    else {
+      $node = $this->createMock('Drupal\node\NodeInterface');
+      $node->method('getType')
+        ->willReturn('digital_form');
+
+      $entityStorage->expects($this->once())
+        ->method('create')
+        ->with($this->equalTo(['type' => 'digital_form'] + $fields))
+        ->willReturn($node);
+    }
+
+    // Mock the entity type manager.
+    $this->entityTypeManager->expects($this->once())
+      ->method('getStorage')
+      ->with('node')
+      ->willReturn($entityStorage);
+  }
+
+  /**
+   * Tests createDigitalForm() with good data.
+   */
+  public function testCreateDigitalFormGoodData() {
+    $fields = [
+      'title' => 'My title',
+      'field_va_form_number' => '99-1234',
+    ];
+    $this->setUpMockQueryCreateDigitalForm($fields);
+
+    $digitalForm = $this->digitalFormsService->createDigitalForm($fields);
+    $this->assertNotEmpty($digitalForm);
+  }
+
+  /**
+   * Tests createDigitalForm() catches exception.
+   */
+  public function testCreateDigitalFormCatchesException() {
+    $fields = [
+      'some_field' => 'Some value',
+    ];
+    // Mock query will throw an exception if we don't pass in any fields.
+    $this->setUpMockQueryCreateDigitalForm();
+
+    $digitalForm = $this->digitalFormsService->createDigitalForm($fields);
+    $this->assertEmpty($digitalForm);
   }
 
 }

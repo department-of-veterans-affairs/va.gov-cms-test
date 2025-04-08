@@ -23,10 +23,14 @@ trait TestPageLoads {
    *   The  page to load.
    * @param string $expectedText
    *   The text expected to show on the loaded page.
+   * @param bool $login
+   *   Whether a new user should be logged in.
    */
-  private function sharedTestPageLoads($url, $expectedText) {
-    // Log in a user with permission.
-    $this->loginFormBuilderUser();
+  private function sharedTestPageLoads($url, $expectedText, $login = TRUE) {
+    if ($login) {
+      // Log in a user with permission.
+      $this->loginFormBuilderUser();
+    }
 
     // Navigate to page.
     $this->drupalGet($url);
@@ -49,6 +53,60 @@ trait TestPageLoads {
     $this->drupalGet($url);
 
     $this->assertSession()->statusCodeNotEquals(200);
+  }
+
+  /**
+   * Test the page has the expected subtitle.
+   *
+   * @param string $url
+   *   The  page to load.
+   * @param string $expectedSubtitle
+   *   The expected subtitle.
+   * @param bool $login
+   *   Whether a new user should be logged in.
+   */
+  private function sharedTestPageHasExpectedSubtitle($url, $expectedSubtitle, $login = TRUE) {
+    if ($login) {
+      // Log in a user with permission.
+      $this->loginFormBuilderUser();
+    }
+
+    // Navigate to page.
+    $this->drupalGet($url);
+
+    $page = $this->getSession()->getPage();
+    $subtitleElement = $page->find('css', '.form-builder-subtitle');
+    $this->assertEquals($subtitleElement->getText(), $expectedSubtitle);
+  }
+
+  /**
+   * Test the page has the expected breadcrumbs.
+   *
+   * @param string $url
+   *   The  page to load.
+   * @param string[] $expectedBreadcrumbs
+   *   The expected breadcrumbs.
+   * @param bool $login
+   *   Whether a new user should be logged in.
+   */
+  private function sharedTestPageHasExpectedBreadcrumbs($url, $expectedBreadcrumbs, $login = TRUE) {
+    if ($login) {
+      // Log in a user with permission.
+      $this->loginFormBuilderUser();
+    }
+
+    // Navigate to page.
+    $this->drupalGet($url);
+
+    $page = $this->getSession()->getPage();
+    $breadcrumbLinks = $page->findAll('css', '.form-builder-breadcrumbs__link');
+    foreach ($breadcrumbLinks as $index => $breadcrumbLink) {
+      $label = $breadcrumbLink->getText();
+      $this->assertEquals($expectedBreadcrumbs[$index]['label'], $label);
+
+      $url = $breadcrumbLink->getAttribute('href');
+      $this->assertEquals($expectedBreadcrumbs[$index]['url'], $url);
+    }
   }
 
 }

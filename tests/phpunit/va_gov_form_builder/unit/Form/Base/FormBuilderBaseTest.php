@@ -2,8 +2,11 @@
 
 namespace tests\phpunit\va_gov_form_builder\unit\Form\Base;
 
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\va_gov_form_builder\Form\Base\FormBuilderBase;
+use Drupal\va_gov_form_builder\Service\DigitalFormsService;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use tests\phpunit\va_gov_form_builder\Traits\AnonymousFormClass;
 use Tests\Support\Classes\VaGovUnitTestBase;
 
@@ -18,6 +21,13 @@ use Tests\Support\Classes\VaGovUnitTestBase;
 class FormBuilderBaseTest extends VaGovUnitTestBase {
 
   /**
+   * The Digital Forms service.
+   *
+   * @var \Drupal\va_gov_form_builder\Service\DigitalFormsService
+   */
+  protected $digitalFormsService;
+
+  /**
    * An instance of an anonymous class that extends the abstract class.
    *
    * @var \Drupal\Core\Form\FormBuilderBase
@@ -28,24 +38,47 @@ class FormBuilderBaseTest extends VaGovUnitTestBase {
    * Setup the environment for each test.
    */
   public function setUp(): void {
-    $this->markTestSkipped('Skipping all tests in this file.');
-
     parent::setUp();
 
+    $entityTypeManager = $this->createMock(EntityTypeManagerInterface::class);
+    $this->digitalFormsService = $this->createMock(DigitalFormsService::class);
+    $session = $this->createMock(SessionInterface::class);
+
     // Create an anonymous instance of a class that extends our abstract class.
-    $this->classInstance = new class() extends FormBuilderBase {
+    $this->classInstance = new class(
+      $entityTypeManager,
+      $this->digitalFormsService,
+      $session,
+    ) extends FormBuilderBase {
       use AnonymousFormClass;
+
+      /**
+       * getFields.
+       */
+      protected function getFields() {
+        return [];
+      }
+
+      /**
+       * buildForm.
+       */
+      public function buildForm(array $form, FormStateInterface $form_state) {
+        // No need to do anything here. Just need to implement the method.
+      }
+
     };
   }
 
   /**
-   * Test the buildForm method.
+   * Test that the constructor initializes `isCreate` to false.
    */
-  public function testBuildForm() {
-    $form = [];
-    $formStateMock = $this->createMock(FormStateInterface::class);
+  public function testConstructorInitializesIsCreate() {
+    $reflection = new \ReflectionClass($this->classInstance);
+    $property = $reflection->getProperty('isCreate');
+    $property->setAccessible(TRUE);
+    $isCreateValue = $property->getValue($this->classInstance);
 
-    $form = $this->classInstance->buildForm($form, $formStateMock);
+    $this->assertFalse($isCreateValue, 'The isCreate property should be initialized to false.');
   }
 
 }
