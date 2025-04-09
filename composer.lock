@@ -5372,17 +5372,17 @@
         },
         {
             "name": "drupal/eca",
-            "version": "2.1.0",
+            "version": "2.1.6",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/eca.git",
-                "reference": "2.1.0"
+                "reference": "2.1.6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/eca-2.1.0.zip",
-                "reference": "2.1.0",
-                "shasum": "951ed788ba1d0074dda71f970fd3721b4490e95f"
+                "url": "https://ftp.drupal.org/files/projects/eca-2.1.6.zip",
+                "reference": "2.1.6",
+                "shasum": "fa73d915bff966d2e27c5255de32b6bef13beff8"
             },
             "require": {
                 "dragonmantank/cron-expression": "^3.1",
@@ -5397,14 +5397,15 @@
                 "drupal/entity_reference_revisions": "^1.12",
                 "drupal/inline_entity_form": "^3.0",
                 "drupal/paragraphs": "^1.18",
+                "drupal/project_browser": "^2.0",
                 "drupal/token": "^1.15",
                 "drupal/webform": "dev-3465838-drupal-11-compatibility"
             },
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "2.1.0",
-                    "datestamp": "1734451883",
+                    "version": "2.1.6",
+                    "datestamp": "1741965579",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -14083,26 +14084,29 @@
         },
         {
             "name": "drupal/toolbar_menu",
-            "version": "3.0.0",
+            "version": "3.1.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/toolbar_menu.git",
-                "reference": "3.0.0"
+                "reference": "3.1.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/toolbar_menu-3.0.0.zip",
-                "reference": "3.0.0",
-                "shasum": "5dc890b925392afaa24791ee46bdb436d6023f17"
+                "url": "https://ftp.drupal.org/files/projects/toolbar_menu-3.1.0.zip",
+                "reference": "3.1.0",
+                "shasum": "52cca3162055d6b00f102e7c2e29db713ad76971"
             },
             "require": {
-                "drupal/core": "^9.2 || ^10"
+                "drupal/core": "^9.2 || ^10 || ^11"
+            },
+            "suggest": {
+                "drupal/admin_toolbar": "Integrate additional Menu Toolbar items within the Admin Toolbar and combine mutliple menus."
             },
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "3.0.0",
-                    "datestamp": "1675695084",
+                    "version": "3.1.0",
+                    "datestamp": "1743464227",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -14115,14 +14119,26 @@
             ],
             "authors": [
                 {
-                    "name": "vpeltot",
-                    "homepage": "https://www.drupal.org/user/1361586"
+                    "name": "David Suissa (dydave)",
+                    "homepage": "https://www.drupal.org/u/dydave",
+                    "role": "Maintainer"
+                },
+                {
+                    "name": "Vincent Peltot (vpeltot)",
+                    "homepage": "https://www.drupal.org/u/vpeltot",
+                    "role": "Maintainer"
                 }
             ],
-            "description": "Add your favorite menu (Structure > Menu) in the Drupal Toolbar",
+            "description": "Add your favorite menu (Structure > Menu) in the Drupal Toolbar.",
             "homepage": "https://www.drupal.org/project/toolbar_menu",
+            "keywords": [
+                "Drupal",
+                "Menu",
+                "Toolbar"
+            ],
             "support": {
-                "source": "https://git.drupalcode.org/project/toolbar_menu"
+                "source": "https://git.drupalcode.org/project/toolbar_menu",
+                "issues": "https://www.drupal.org/project/issues/toolbar_menu"
             }
         },
         {
