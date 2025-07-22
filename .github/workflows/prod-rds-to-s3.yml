@@ -22,8 +22,6 @@ jobs:
     - name: Configure AWS credentials (1)
       uses: aws-actions/configure-aws-credentials@b47578312673ae6fa5b5096b330d9fbac3d116df # v4.2.1
       with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: us-gov-west-1
         role-to-assume: ${{ secrets.AWS_VAGOV_CMS_PROD_S3_ROLE }}
         role-duration-seconds: 900
@@ -62,13 +60,13 @@ jobs:
         cd $tempdir
 
         # UTF8MB4 is so that emoji make it downstream!
-        mysqldump --default-character-set=utf8mb4 --single-transaction -h ${{ vars.DATABASE_HOST }} -u master -p${{ vars.MARIADB_MASTER_PASSWORD }} dsva_cms_prod > drupal8-db-prod-$(date "+%Y-%m-%d-%H-%M").sql
+        mysqldump --default-character-set=utf8mb4 --single-transaction -h ${{ env.DATABASE_HOST }} -u master -p${{ env.MARIADB_MASTER_PASSWORD }} dsva_cms_prod > drupal8-db-prod-$(date "+%Y-%m-%d-%H-%M").sql
 
         gzip drupal8-db-prod-*.sql
 
-        aws s3 cp drupal8-db-prod-*.sql.gz s3://${{ secrets.S3BackupBucketPriv }}/${{ secrets.S3BackupPath }}/ --region ${{ secrets.REGION }}
+        aws s3 cp drupal8-db-prod-*.sql.gz s3://${{ env.S3_PRIVATE_BUCKET }}/${{ env.S3_BACKUP_PATH }}/ --region ${{ env.REGION }}
 
-        aws s3api put-object-tagging --bucket ${{ secrets.S3BackupBucketPriv }} --key ${{ secrets.S3BackupPath }}/drupal8-db-prod-*.sql.gz --region ${{ secrets.REGION }} --tagging 'TagSet=[{Key=Env,Value=prod}]'
+        aws s3api put-object-tagging --bucket ${{ env.S3_PRIVATE_BUCKET }} --key ${{ env.S3_BACKUP_PATH }}/LV-test-drupal8-db-prod-*.sql.gz --region ${{ env.REGION }} --tagging 'TagSet=[{Key=Env,Value=prod}]'
 
         cd
         rm -rf ${tempdir}
