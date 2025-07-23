@@ -11,6 +11,11 @@ env:
   # May put this in SSM but for now
   REGION: "us-gov-west-1" # Define the region for AWS operations
 
+
+permissions:
+  id-token: write
+  contents: write
+  
 jobs:
   run-ansible-shell:
     runs-on: ubuntu-latest # Or your desired runner OS
@@ -19,13 +24,26 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4 # Use the latest version of the checkout action
 
-    - name: Configure AWS credentials (1)
-      uses: aws-actions/configure-aws-credentials@b47578312673ae6fa5b5096b330d9fbac3d116df # v4.2.1
+
+    - name: Configure AWS Credentials (1)
+      uses: aws-actions/configure-aws-credentials@4fc4975a852c8cd99761e2de1f4ba73402e44dd9 # v4.0.3
       with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-gov-west-1
+
+
+    - name: Configure AWS credentials (1)
+      uses: aws-actions/configure-aws-credentials@ececac1a45f3b08a01d2dd070d28d111c5fe6722 # v4.1.0
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: us-gov-west-1
         role-to-assume: ${{ secrets.AWS_VAGOV_CMS_PROD_S3_ROLE }}
         role-duration-seconds: 900
         role-session-name: vsp-vagov-cms-githubaction
+        output-credentials: true
+
 
     - name: Set Drupal DB master password
       uses: department-of-veterans-affairs/action-inject-ssm-secrets@d8e6de3bde4dd728c9d732baef58b3c854b8c4bb # latest
