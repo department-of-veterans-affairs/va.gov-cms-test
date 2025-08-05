@@ -10,6 +10,7 @@ env:
   # Define environment variables directly in the workflow
   # May put this in SSM but for now
   REGION: "us-gov-west-1" # Define the region for AWS operations
+  ROLE: "arn:aws-us-gov:iam::008577686731:role/gha_prod_rds_s3_oidc" # Testing with your actual role ARN
 
 
 permissions:
