@@ -12,7 +12,6 @@ env:
   REGION: "us-gov-west-1" # Define the region for AWS operations
   ROLE: "arn:aws-us-gov:iam::008577686731:role/gha-cms-oidc-role" # Testing with your actual role ARN
 
-
 permissions:
   id-token: write
   contents: write
