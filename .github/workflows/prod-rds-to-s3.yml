@@ -67,6 +67,11 @@ jobs:
         ssm_parameter: /cms/prod/s3_backup_path
         env_variable_name: S3_BACKUP_PATH
 
+    - name: Install MySQL client
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y mysql-client awscli
+
     - name: Copy DB from RDS and Store in S3
       run: |
         # Exit immediately if a command fails with a non-zero status code
