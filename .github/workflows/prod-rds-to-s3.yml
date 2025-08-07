@@ -31,9 +31,11 @@ jobs:
 
     - name: Install awscli
       run: |
-        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-        unzip -o awscliv2.zip
-        ./aws/install
+        if ! command -v aws &> /dev/null; then
+          sudo apt-get update
+          sudo apt-get install -y awscli
+        else
+          echo "awscli already installed, skipping."
 
     - name: Configure AWS Credentials (1)
       uses: aws-actions/configure-aws-credentials@4fc4975a852c8cd99761e2de1f4ba73402e44dd9 # v4.0.3
@@ -42,8 +44,7 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: us-gov-west-1
 
-
-    - name: Configure AWS credentials (1)
+    - name: Configure AWS credentials (2)
       uses: aws-actions/configure-aws-credentials@ececac1a45f3b08a01d2dd070d28d111c5fe6722 # v4.1.0
       with:
         aws-region: us-gov-west-1
