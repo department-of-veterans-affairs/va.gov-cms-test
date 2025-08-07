@@ -33,9 +33,11 @@ jobs:
 
     - name: Install awscli
       run: |
-        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-        unzip -o awscliv2.zip
-        ./aws/install
+        if ! command -v aws &> /dev/null; then
+          sudo apt-get update
+          sudo apt-get install -y awscli
+        else
+          echo "awscli already installed, skipping."
 
     - name: Configure AWS Credentials (1)
       uses: aws-actions/configure-aws-credentials@4fc4975a852c8cd99761e2de1f4ba73402e44dd9 # v4.0.3
