@@ -23,7 +23,17 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4 # Use the latest version of the checkout action
+  
+    - name: Install MySQL client
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y mysql-client
 
+    - name: Install awscli
+      run: |
+        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+        unzip -o awscliv2.zip
+        ./aws/install
 
     - name: Configure AWS Credentials (1)
       uses: aws-actions/configure-aws-credentials@4fc4975a852c8cd99761e2de1f4ba73402e44dd9 # v4.0.3
@@ -41,7 +51,6 @@ jobs:
         role-duration-seconds: 900
         role-session-name: vsp-vagov-cms-githubaction
         output-credentials: true
-
 
     - name: Set Drupal DB master password
       uses: department-of-veterans-affairs/action-inject-ssm-secrets@d8e6de3bde4dd728c9d732baef58b3c854b8c4bb # latest
@@ -66,11 +75,6 @@ jobs:
       with:
         ssm_parameter: /cms/prod/s3_backup_path
         env_variable_name: S3_BACKUP_PATH
-
-    - name: Install MySQL client
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y mysql-client awscli
 
     - name: Copy DB from RDS and Store in S3
       run: |
