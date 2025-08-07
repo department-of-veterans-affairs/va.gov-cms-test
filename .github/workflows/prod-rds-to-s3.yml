@@ -12,7 +12,6 @@ env:
   REGION: "us-gov-west-1" # Define the region for AWS operations
   ROLE: "arn:aws-us-gov:iam::008577686731:role/gha-cms-oidc-role" # Testing with your actual role ARN
 
-
 permissions:
   id-token: write
   contents: write
@@ -24,8 +23,7 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4 # Use the latest version of the checkout action
-
-    
+  
     - name: Install MySQL client
       run: |
         sudo apt-get update
@@ -53,7 +51,6 @@ jobs:
         role-duration-seconds: 900
         role-session-name: vsp-vagov-cms-githubaction
         output-credentials: true
-
 
     - name: Set Drupal DB master password
       uses: department-of-veterans-affairs/action-inject-ssm-secrets@d8e6de3bde4dd728c9d732baef58b3c854b8c4bb # latest
