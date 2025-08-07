@@ -36,6 +36,7 @@ jobs:
           sudo apt-get install -y awscli
         else
           echo "awscli already installed, skipping."
+        fi
 
     - name: Configure AWS Credentials (1)
       uses: aws-actions/configure-aws-credentials@4fc4975a852c8cd99761e2de1f4ba73402e44dd9 # v4.0.3
