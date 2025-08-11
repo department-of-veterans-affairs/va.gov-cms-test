@@ -90,13 +90,19 @@ jobs:
         cd $tempdir
 
         # UTF8MB4 is so that emoji make it downstream!
-        mysqldump --default-character-set=utf8mb4 --single-transaction -h ${{ env.DATABASE_HOST }} -u master -p${{ env.MARIADB_MASTER_PASSWORD }} dsva_cms_prod > drupal8-db-prod-$(date "+%Y-%m-%d-%H-%M").sql
+        mysqldump --default-character-set=utf8mb4 --single-transaction -h $DATABASE_HOST -u master -p$MARIADB_MASTER_PASSWORD dsva_cms_prod > drupal8-db-prod-$(date "+%Y-%m-%d-%H-%M").sql
 
         gzip drupal8-db-prod-*.sql
 
-        aws s3 cp drupal8-db-prod-*.sql.gz s3://${{ env.S3_PRIVATE_BUCKET }}/${{ env.S3_BACKUP_PATH }}/ --region ${{ env.REGION }}
+        aws s3 cp drupal8-db-prod-*.sql.gz s3://$S3_PRIVATE_BUCKET/$S3_BACKUP_PATH/ --region $REGION
 
-        aws s3api put-object-tagging --bucket ${{ env.S3_PRIVATE_BUCKET }} --key ${{ env.S3_BACKUP_PATH }}/LV-test-drupal8-db-prod-*.sql.gz --region ${{ env.REGION }} --tagging 'TagSet=[{Key=Env,Value=prod}]'
+        aws s3api put-object-tagging --bucket $S3_PRIVATE_BUCKET --key $S3_BACKUP_PATH/LV-test-drupal8-db-prod-*.sql.gz --region $REGION --tagging 'TagSet=[{Key=Env,Value=prod}]'
 
         cd
         rm -rf ${tempdir}
+      env:
+        MARIADB_MASTER_PASSWORD: ${{ env.MARIADB_MASTER_PASSWORD }}
+        DATABASE_HOST: ${{ env.DATABASE_HOST }}
+        S3_PRIVATE_BUCKET: ${{ env.S3_PRIVATE_BUCKET }}
+        S3_BACKUP_PATH: ${{ env.S3_BACKUP_PATH }}
+        REGION: ${{ env.REGION }}
