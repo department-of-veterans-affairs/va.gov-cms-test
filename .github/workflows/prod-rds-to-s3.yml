@@ -18,7 +18,7 @@ permissions:
   
 jobs:
   run-ansible-shell:
-    runs-on: ubuntu-latest # Or your desired runner OS
+    runs-on: self-hosted # Or your desired runner OS
 
     steps:
     - name: Checkout repository
