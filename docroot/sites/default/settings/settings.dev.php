@@ -16,12 +16,12 @@ $config['config_split.config_split.prod']['status'] = FALSE;
 $config['config_split.config_split.local']['status'] = FALSE;
 $config['config_split.config_split.tugboat']['status'] = FALSE;
 
-$config['system.performance']['cache']['page']['use_internal'] = FALSE;
-$config['system.performance']['css']['preprocess'] = FALSE;
-$config['system.performance']['css']['gzip'] = FALSE;
-$config['system.performance']['js']['preprocess'] = FALSE;
-$config['system.performance']['js']['gzip'] = FALSE;
-$config['system.performance']['response']['gzip'] = FALSE;
+$config['system.performance']['cache']['page']['use_internal'] = TRUE;
+$config['system.performance']['css']['preprocess'] = TRUE;
+$config['system.performance']['css']['gzip'] = TRUE;
+$config['system.performance']['js']['preprocess'] = TRUE;
+$config['system.performance']['js']['gzip'] = TRUE;
+$config['system.performance']['response']['gzip'] = TRUE;
 $config['views.settings']['ui']['show']['sql_query']['enabled'] = TRUE;
 $config['views.settings']['ui']['show']['performance_statistics'] = TRUE;
 $config['system.logging']['error_level'] = 'all';
@@ -49,3 +49,30 @@ $settings['github_actions_deploy_env'] = 'dev';
 
 // Public asset S3 location
 $public_asset_s3_base_url = "https://dsva-vagov-staging-cms-files.s3.us-gov-west-1.amazonaws.com";
+
+// Entra ID settings
+$settings['microsoft_entra_id_client_id'] = getenv('MICROSOFT_ENTRA_ID_CLIENT_ID');
+$settings['microsoft_entra_id_client_secret'] = getenv('MICROSOFT_ENTRA_ID_CLIENT_SECRET');
+$settings['microsoft_entra_id_tenant_id'] = getenv('MICROSOFT_ENTRA_ID_TENANT_ID');
+
+# Trust the reverse proxy.
+# You may need to replace '127.0.0.1' with your Traefik pod's IP or a broader internal network range.
+$settings['reverse_proxy'] = TRUE;
+// Allow trusted proxy addresses to be set via environment variable, or use common internal ranges by default.
+$trusted_proxy_env = getenv('TRUSTED_PROXY_ADDRESSES');
+if ($trusted_proxy_env) {
+  $settings['reverse_proxy_addresses'] = array_map('trim', explode(',', $trusted_proxy_env));
+} else {
+  $settings['reverse_proxy_addresses'] = [
+    '127.0.0.1',
+    '10.0.0.0/8',
+    '172.16.0.0/12',
+    '192.168.0.0/16',
+  ];
+}
+
+# Set the HTTP protocol to use the X-Forwarded-Proto header.
+if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https') {
+  $_SERVER['HTTPS'] = 'on';
+  $_SERVER['SERVER_PORT'] = 443;
+}
