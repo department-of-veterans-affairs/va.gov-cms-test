@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "26c11f41e6b7f8343b1d7e3a5b5994b9",
+    "content-hash": "293706f8d450817b46b121f08a30ab24",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -27120,7 +27120,7 @@
         },
         {
             "name": "va-gov/content-build",
-            "version": "v0.0.3927",
+            "version": "v0.0.3928",
             "source": {
                 "type": "git",
                 "url": "https://github.com/department-of-veterans-affairs/content-build.git",
@@ -27156,7 +27156,7 @@
             "description": "Front-end for VA.gov. This repository contains the code that generates the www.va.gov website. It contains a Metalsmith static site builder that uses a Drupal CMS for content. This file is here to publish releases to https://packagist.org/packages/va-gov/content-build, so that the CMS CI system can install it and update it using standard composer processes, and so that we can run tests across both systems. See https://github.com/department-of-veterans-affairs/va.gov-cms for the CMS repo, and stand by for more documentation.",
             "support": {
                 "issues": "https://github.com/department-of-veterans-affairs/content-build/issues",
-                "source": "https://github.com/department-of-veterans-affairs/content-build/tree/v0.0.3927"
+                "source": "https://github.com/department-of-veterans-affairs/content-build/tree/v0.0.3928"
             },
             "time": "2026-03-13T20:05:43+00:00"
         },
