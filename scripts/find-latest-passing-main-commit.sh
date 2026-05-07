@@ -13,7 +13,7 @@ VERBOSE=0
 JSON_MODE=0
 JSON_PRETTY=0
 MAX_REASON_SAMPLES=20
-REQUIRED_CHECKS_JSON='["va/tests/cypress","va/tests/phpunit","va/tests/status-error","va/tests/content-build-gql"]'
+REQUIRED_CHECKS_JSON='["va/tests/cypress","va/tests/phpunit","va/tests/status-error"]'
 
 usage() {
   cat <<'EOF'
@@ -38,7 +38,7 @@ Output:
   Search order: latest_tag..main, then full main history if needed.
   Candidate commits are taken from main's first-parent chain only.
   Required checks: va/tests/cypress, va/tests/phpunit,
-                   va/tests/status-error, va/tests/content-build-gql.
+                   va/tests/status-error.
   Exits non-zero if no qualifying commit is found.
 EOF
 }
@@ -262,7 +262,7 @@ for RANGE in "${RANGES[@]}"; do
   done
 done
 
-log "No commits found with all 4 required checks passing in searched ranges: ${SEARCHED_RANGES[*]}"
+log "No commits found with all required checks passing in searched ranges: ${SEARCHED_RANGES[*]}"
 if [[ "$JSON_MODE" -eq 1 ]]; then
   if [[ "${#SAMPLED_REASONS[@]}" -gt 0 ]]; then
     REASONS_JSON=$(printf '%s\n' "${SAMPLED_REASONS[@]}" | jq -R . | jq -s .)

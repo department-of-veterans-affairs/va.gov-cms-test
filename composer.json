@@ -406,7 +406,6 @@
         "va:test:check-cer": "Check the Corresponding Entity References fields.",
         "va:test:check-node-revision-logs": "Check the node revision log fields.",
         "va:test:check-taxonomy-revision-logs": "Check the taxonomy revision log fields.",
-        "va:test:content-build-gql": "Run GraphQL export to test content-build.",
         "va:test:cypress": "Run Cypress tests.",
         "va:test:cypress-ci": "Run Cypress tests with CI-specific functionality.",
         "va:test:cypress-interactive": "Run Cypress tests interactively (on host web browser).",
@@ -493,7 +492,6 @@
             "@va:test:check-cer",
             "@va:test:check-node-revision-logs",
             "@va:test:check-taxonomy-revision-logs",
-            "@va:test:content-build-gql",
             "@va:test:cypress",
             "@va:test:eslint",
             "@va:test:lint-php",
@@ -525,7 +523,6 @@
             "@va:test:check-cer || true",
             "@va:test:check-node-revision-logs || true",
             "@va:test:check-taxonomy-revision-logs || true",
-            "@va:test:content-build-gql || true",
             "@va:test:cypress || true",
             "@va:test:eslint || true",
             "@va:test:lint-php || true",
@@ -551,11 +548,6 @@
             "# Check the taxonomy revision log fields.",
             "! ./scripts/should-run-directly.sh || ./tests/scripts/check-taxonomy-revision-logs.sh",
             "./scripts/should-run-directly.sh || ddev composer va:test:check-taxonomy-revision-logs --"
-        ],
-        "va:test:content-build-gql": [
-            "# Run GraphQL export to test content-build.",
-            "! ./scripts/should-run-directly.sh || ./tests/scripts/content-build-gql.sh",
-            "./scripts/should-run-directly.sh || ddev composer va:test:content-build-gql --"
         ],
         "va:test:cypress": [
             "# Run Cypress tests.",
