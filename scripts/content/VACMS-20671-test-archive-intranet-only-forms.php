@@ -86,7 +86,7 @@ while (($row = fgetcsv($input)) !== FALSE) {
   fputcsv($output, $row);
 }
 
-// If target rowid was specified but truly not found in the file, add it as a test row.
+// If target rowid was specified but truly not found, add it as a test row.
 if (!$found_target && $target_rowid !== NULL) {
   $new_row = array_fill(0, count($header), '');
   $new_row[$rowid_index] = $target_rowid;

@@ -61,7 +61,7 @@ class ParagraphMigrator {
    * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    * @throws \Drupal\migrate\MigrateException
    */
-  public function __construct(MigratePostRowSaveEvent $event = NULL) {
+  public function __construct(?MigratePostRowSaveEvent $event = NULL) {
     if (empty($event)) {
       return;
     }
