@@ -6,8 +6,6 @@ export NVM_DIR="$HOME/.nvm"
 source ~/.bashrc
 
 # Performs a local content-build.
-# See also:
-# - ../tests/scripts/content-build-gql.sh
 repo_root="$(git rev-parse --show-toplevel)"
 pushd "${repo_root}" > /dev/null
 

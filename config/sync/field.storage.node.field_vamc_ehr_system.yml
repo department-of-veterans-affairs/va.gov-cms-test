@@ -16,10 +16,10 @@ settings:
       label: VistA
     -
       value: cerner_staged
-      label: 'Converting to Cerner'
+      label: 'Converting to Oracle Health'
     -
       value: cerner
-      label: Cerner
+      label: 'Oracle Health'
   allowed_values_function: ''
 module: options
 locked: false

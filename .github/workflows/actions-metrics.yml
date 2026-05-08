@@ -1,3 +1,6 @@
+permissions:
+  contents: read
+
 on:
   workflow_run:
     workflows:
@@ -11,7 +14,7 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: Send GitHub Actions metrics to DataDog
-        uses: int128/datadog-actions-metrics@8653aad8535ad611b81de91131a330794cea5b12 # v1.157.0
+        uses: int128/datadog-actions-metrics@7d2cb5801be2ac88ae3efa2adf586adf9d733e1e # v1.164.0
         with:
           datadog-api-key: ${{ secrets.DATADOG_API_KEY }}
           collect-job-metrics: true

@@ -45,7 +45,6 @@ These tests run automatically when a PR is created and must all pass before merg
 | **Cypress** | Accessibility and behavioral tests | `composer va:test:cypress-parallel` | Tugboat |
 | **PHPUnit Functional** | Drupal functionality tests | `composer va:test:phpunit-functional` | Tugboat |
 | **Status-Error** | System status and configuration checks | `composer va:test:status-error-ci` | Tugboat |
-| **Content-Build GraphQL** | GraphQL query validation | `composer va:test:content-build-gql` | Tugboat |
 
 For detailed information about these tests, see [Testing](testing.md).
 
@@ -57,7 +56,7 @@ These tests must be performed manually after deployment to staging or production
 
 ### 1. SSO Testing
 
-**Purpose:** Verify Single Sign-On functionality  
+**Purpose:** Verify Single Sign-On functionality
 **Priority:** HIGH - Users cannot access CMS if SSO fails
 
 **Test Steps:**

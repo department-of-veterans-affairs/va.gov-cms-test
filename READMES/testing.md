@@ -59,9 +59,6 @@ forth.
 
 At present, these include:
 
-- **Content-Build: GraphQL** or `content-build-gql`, a script that performs the
-  initial retrieval of content-build data from Drupal via GraphQL, in order to
-  verify compatibility.
 - **Cypress**, a behavioral test framework that verifies correct behavior by
   puppeteering a headless Chromium browser.  This is the preferred location for
   new behavioral tests and is extensible with JavaScript rather than PHP.
@@ -285,10 +282,10 @@ set +o allexport
 ./tests/scripts/ci-wrapper.sh cypress 'va:test:cypress-parallel'`
 
 This will rerun the Cypress tests one by one and may resolve any failures that were due to paralellization
- 
+
 ## Testing JSON API
 
-As part of building a page type with [next-build](https://github.com/department-of-veterans-affairs/next-build/) tests should be added to ensure that the queries required to build those pages are functional. These tests are located in `/tests/cypress/integration/features/api/`. They can be as simple as 
+As part of building a page type with [next-build](https://github.com/department-of-veterans-affairs/next-build/) tests should be added to ensure that the queries required to build those pages are functional. These tests are located in `/tests/cypress/integration/features/api/`. They can be as simple as
 ```
 I should receive status code 200 when I request "[JSON API path with required includes and filters]"
 ```
