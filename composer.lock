@@ -3327,17 +3327,17 @@
         },
         {
             "name": "drupal/autosave_form",
-            "version": "1.10.0",
+            "version": "1.11.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/autosave_form.git",
-                "reference": "8.x-1.10"
+                "reference": "8.x-1.11"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/autosave_form-8.x-1.10.zip",
-                "reference": "8.x-1.10",
-                "shasum": "99e270c30bf09a2688a5b23814beced13f8f7ba4"
+                "url": "https://ftp.drupal.org/files/projects/autosave_form-8.x-1.11.zip",
+                "reference": "8.x-1.11",
+                "shasum": "26b5326a5bff571a5fef1ebf0b3998dadb37f968"
             },
             "require": {
                 "drupal/core": "^9.5 || ^10 || ^11"
@@ -3345,8 +3345,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "8.x-1.10",
-                    "datestamp": "1738605622",
+                    "version": "8.x-1.11",
+                    "datestamp": "1774966593",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
