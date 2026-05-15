@@ -22,7 +22,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4 # Use the latest version of the checkout action
+      uses: actions/checkout@v6 # Use the latest version of the checkout action
   
     - name: Install MySQL client
       run: |
